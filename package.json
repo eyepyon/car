@@ -1,0 +1,20 @@
+{
+  "name": "car",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "frontend": "pnpm --filter frontend",
+    "contract": "pnpm --filter contract",
+    "circuit": "pnpm --filter circuit",
+    "format": "pnpm exec biome format --write .",
+    "lint": "pnpm exec biome check --write ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.20.0",
+  "devDependencies": {
+    "@biomejs/biome": "2.3.11"
+  }
+}

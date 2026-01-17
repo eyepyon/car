@@ -1,0 +1,36 @@
+{
+  "name": "contract",
+  "private": true,
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "",
+  "author": "Haruki Kondo",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "format": "npx solhint --fix --noPrompt 'contracts/**/*.sol'",
+    "clean": "npx hardhat clean",
+    "compile": "npx hardhat compile",
+    "test": "npx hardhat test",
+    "verify": "npx hardhat ignition verify",
+    "coverage": "SOLIDITY_COVERAGE=true npx hardhat coverage",
+    "deploy:PasswordHashVerifier": "npx hardhat ignition deploy ./ignition/modules/PasswordHashVerifier.ts --verify",
+    "local": "npx hardhat node",
+    "getBalance": "npx hardhat getBalance",
+    "getChainInfo": "npx hardhat getChainInfo"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox-viem": "^4.1.0",
+    "@openzeppelin/contracts": "^5.0.0",
+    "@types/chai": "^4.3.20",
+    "@types/mocha": "^10.0.10",
+    "base64-sol": "^1.1.0",
+    "chai": "^4.5.0",
+    "dotenv": "^17.2.1",
+    "hardhat": "^2.26.1",
+    "mocha": "^11.7.5",
+    "solhint": "^5.0.4"
+  }
+}
