@@ -6,3 +6,11 @@
  */
 
 export { CameraCapture, type CameraCaptureProps } from './CameraCapture';
+export {
+  RecognitionResultDisplay,
+  type RecognitionResultDisplayProps,
+} from './RecognitionResult';
+export {
+  LicensePlateRecognitionDemo,
+  type LicensePlateRecognitionDemoProps,
+} from './LicensePlateRecognitionDemo';

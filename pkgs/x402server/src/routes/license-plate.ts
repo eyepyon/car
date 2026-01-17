@@ -13,6 +13,13 @@ import { zValidator } from '@hono/zod-validator';
 import { z } from 'zod';
 import type { Context } from 'hono';
 import { rateLimiter, type RateLimitConfig } from '../middleware/rate-limiter';
+import {
+  QwenVLClient,
+  QwenVLError,
+  createQwenVLClientFromEnv,
+  type QwenVLConfig,
+} from '../lib/qwen-vl-client';
+import { RecognitionLogger, recognitionLogger } from '../lib/recognition-logger';
 
 // ============================================================================
 // 型定義
@@ -156,7 +163,12 @@ export type RecognizeRequest = z.infer<typeof recognizeRequestSchema>;
 /**
  * ナンバープレート認識APIルーター
  */
-export function createLicensePlateRouter(config?: { rateLimitConfig?: RateLimitConfig }) {
+export function createLicensePlateRouter(config?: {
+  rateLimitConfig?: RateLimitConfig;
+  qwenClient?: QwenVLClient;
+  logger?: RecognitionLogger;
+  useMock?: boolean;
+}) {
   const app = new Hono();
 
   // レート制限ミドルウェアを適用
@@ -165,6 +177,21 @@ export function createLicensePlateRouter(config?: { rateLimitConfig?: RateLimitC
     windowMs: 60000, // 1分
     maxRequests: 100,
   };
+
+  // Qwen-VLクライアントの初期化（環境変数から、またはモック使用）
+  const useMock = config?.useMock ?? !process.env.DASHSCOPE_API_KEY;
+  let qwenClient: QwenVLClient | null = null;
+
+  if (!useMock) {
+    try {
+      qwenClient = config?.qwenClient ?? createQwenVLClientFromEnv();
+    } catch (error) {
+      console.warn('[LicensePlate] Qwen-VL client initialization failed, using mock:', error);
+    }
+  }
+
+  // ロガーの初期化
+  const logger = config?.logger ?? recognitionLogger;
 
   app.use('/*', rateLimiter(rateLimitConfig));
 
@@ -195,17 +222,25 @@ export function createLicensePlateRouter(config?: { rateLimitConfig?: RateLimitC
     }),
     async (c: Context) => {
       const startTime = Date.now();
+      const clientIp = c.req.header('x-forwarded-for') || c.req.header('x-real-ip') || 'unknown';
 
       try {
         const body = await c.req.json<RecognizeRequest>();
         const { image, mode } = body;
 
-        // TODO: タスク6でQwen-VLクライアントを実装後、実際の認識処理を追加
-        // 現在はモック実装
-
         // 画像データの基本検証
         if (!image || image.length === 0) {
           const processingTime = Date.now() - startTime;
+          const imageHash = RecognitionLogger.hashImage(image || '');
+
+          logger.logError({
+            imageHash,
+            processingTime,
+            errorCode: 'INVALID_IMAGE',
+            mode,
+            clientIp,
+          });
+
           return c.json<RecognizeResponse>(
             {
               success: false,
@@ -216,7 +251,79 @@ export function createLicensePlateRouter(config?: { rateLimitConfig?: RateLimitC
           );
         }
 
-        // モック認識結果（タスク6で実際のAI認識に置き換え）
+        const imageHash = RecognitionLogger.hashImage(image);
+
+        // Qwen-VLクライアントが利用可能な場合は実際の認識を実行
+        if (qwenClient) {
+          try {
+            const result = await qwenClient.recognize(image);
+            const processingTime = Date.now() - startTime;
+
+            if (result.parsedData) {
+              // 認識成功
+              logger.logSuccess({
+                imageHash,
+                processingTime,
+                confidence: result.parsedData.confidence,
+                mode,
+                clientIp,
+              });
+
+              return c.json<RecognizeResponse>({
+                success: true,
+                data: result.parsedData,
+                processingTime,
+              });
+            } else {
+              // ナンバープレートが検出されなかった
+              logger.logError({
+                imageHash,
+                processingTime,
+                errorCode: 'NO_PLATE_DETECTED',
+                mode,
+                clientIp,
+              });
+
+              return c.json<RecognizeResponse>(
+                {
+                  success: false,
+                  error: createRecognitionError('NO_PLATE_DETECTED'),
+                  processingTime,
+                },
+                400
+              );
+            }
+          } catch (error) {
+            const processingTime = Date.now() - startTime;
+
+            // QwenVLErrorの場合はエラーコードをマッピング
+            if (error instanceof QwenVLError) {
+              const errorCode = mapQwenErrorCode(error.code);
+
+              logger.logError({
+                imageHash,
+                processingTime,
+                errorCode,
+                mode,
+                clientIp,
+                errorMessage: error.message,
+              });
+
+              return c.json<RecognizeResponse>(
+                {
+                  success: false,
+                  error: createRecognitionError(errorCode),
+                  processingTime,
+                },
+                errorCode === 'TIMEOUT' ? 504 : 500
+              );
+            }
+
+            throw error;
+          }
+        }
+
+        // モック認識結果（Qwen-VLクライアントが利用不可の場合）
         const mockResult: LicensePlateData = {
           region: '品川',
           classificationNumber: '330',
@@ -230,6 +337,14 @@ export function createLicensePlateRouter(config?: { rateLimitConfig?: RateLimitC
 
         const processingTime = Date.now() - startTime;
 
+        logger.logSuccess({
+          imageHash,
+          processingTime,
+          confidence: mockResult.confidence,
+          mode,
+          clientIp,
+        });
+
         return c.json<RecognizeResponse>({
           success: true,
           data: mockResult,
@@ -240,6 +355,15 @@ export function createLicensePlateRouter(config?: { rateLimitConfig?: RateLimitC
 
         // エラーログ記録
         console.error('[LicensePlate] Recognition error:', error);
+
+        logger.logError({
+          imageHash: 'unknown',
+          processingTime,
+          errorCode: 'API_CONNECTION_FAILED',
+          mode: 'single',
+          clientIp,
+          errorMessage: error instanceof Error ? error.message : 'Unknown error',
+        });
 
         return c.json<RecognizeResponse>(
           {
@@ -254,6 +378,26 @@ export function createLicensePlateRouter(config?: { rateLimitConfig?: RateLimitC
   );
 
   return app;
+}
+
+/**
+ * QwenVLErrorのコードをRecognitionErrorCodeにマッピングする
+ */
+function mapQwenErrorCode(
+  qwenCode: 'API_CONNECTION_FAILED' | 'TIMEOUT' | 'INVALID_RESPONSE' | 'NO_PLATE_DETECTED' | 'PARSE_ERROR'
+): RecognitionErrorCode {
+  switch (qwenCode) {
+    case 'TIMEOUT':
+      return 'TIMEOUT';
+    case 'NO_PLATE_DETECTED':
+      return 'NO_PLATE_DETECTED';
+    case 'INVALID_RESPONSE':
+    case 'PARSE_ERROR':
+      return 'PARTIAL_RECOGNITION';
+    case 'API_CONNECTION_FAILED':
+    default:
+      return 'API_CONNECTION_FAILED';
+  }
 }
 
 export default createLicensePlateRouter;
