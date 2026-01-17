@@ -226,7 +226,7 @@ export function createLicensePlateRouter(config?: {
 
       try {
         const body = await c.req.json<RecognizeRequest>();
-        const { image, mode } = body;
+        const { image } = body;
 
         // 画像データの基本検証
         if (!image || image.length === 0) {
