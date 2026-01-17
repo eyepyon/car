@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>お問い合わせ - inCar</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#10B981'
+                    },
+                    borderRadius: {
+                        'none': '0px',
+                        'sm': '4px',
+                        DEFAULT: '8px',
+                        'md': '12px',
+                        'lg': '16px',
+                        'xl': '20px',
+                        '2xl': '24px',
+                        '3xl': '32px',
+                        'full': '9999px',
+                        'button': '8px'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :where([class^="ri-"])::before {
+            content: "\f3c2";
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <header class="bg-white shadow-sm border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="text-2xl font-['Pacifico'] text-primary">inCar</div>
+                </div>
+                <nav class="hidden md:flex space-x-8">
+                    <a href="/" data-readdy="true" class="text-gray-700 hover:text-primary transition-colors">ホーム</a>
+                    <a href="#" class="text-gray-700 hover:text-primary transition-colors">よくある質問</a>
+                    <a href="#" class="text-gray-700 hover:text-primary transition-colors">サポート</a>
+                </nav>
+                <a href="/" data-readdy="true" class="bg-primary text-white px-6 py-2 !rounded-button hover:bg-blue-600 transition-colors whitespace-nowrap">
+                    ホームに戻る
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="min-h-screen py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h1 class="text-4xl font-bold text-gray-900 mb-4">お問い合わせ</h1>
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                    inCar に関するご質問やご相談がございましたら、お気軽にお問い合わせください。専門スタッフが丁寧にサポートいたします。
+                </p>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-12">
+                <div class="lg:col-span-2">
+                    <div class="bg-white rounded-2xl shadow-lg p-8">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6">お問い合わせフォーム</h2>
+                        <form class="space-y-6">
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">お名前 <span class="text-red-500">*</span></label>
+                                    <input type="text" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm" placeholder="山田 太郎">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">メールアドレス <span class="text-red-500">*</span></label>
+                                    <input type="email" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm" placeholder="example@email.com">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">お問い合わせ種別 <span class="text-red-500">*</span></label>
+                                <div class="relative">
+                                    <div class="inquiry-type-dropdown w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm bg-white cursor-pointer flex justify-between items-center">
+                                        <span class="inquiry-type-selected text-gray-500">選択してください</span>
+                                        <div class="w-5 h-5 flex items-center justify-center">
+                                            <i class="ri-arrow-down-s-line text-gray-400"></i>
+                                        </div>
+                                    </div>
+                                    <div class="inquiry-type-options absolute top-full left-0 right-0 bg-white border border-gray-300 rounded-lg shadow-lg z-10 hidden">
+                                        <div class="inquiry-type-option px-4 py-3 hover:bg-gray-50 cursor-pointer text-sm" data-value="technical">技術的な質問</div>
+                                        <div class="inquiry-type-option px-4 py-3 hover:bg-gray-50 cursor-pointer text-sm" data-value="pricing">料金について</div>
+                                        <div class="inquiry-type-option px-4 py-3 hover:bg-gray-50 cursor-pointer text-sm" data-value="business">法人向けサービス</div>
+                                        <div class="inquiry-type-option px-4 py-3 hover:bg-gray-50 cursor-pointer text-sm" data-value="support">サポート・トラブル</div>
+                                        <div class="inquiry-type-option px-4 py-3 hover:bg-gray-50 cursor-pointer text-sm" data-value="other">その他</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">メッセージ <span class="text-red-500">*</span></label>
+                                <textarea required rows="6" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm resize-none" placeholder="お問い合わせ内容をできるだけ詳しくお書きください"></textarea>
+                            </div>
+
+                            <button type="submit" class="w-full bg-primary text-white py-4 !rounded-button text-lg font-semibold hover:bg-blue-600 transition-colors whitespace-nowrap">
+                                送信する
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="space-y-8">
+                    <div class="bg-white rounded-2xl shadow-lg p-6">
+                        <h3 class="text-xl font-bold text-gray-900 mb-6">直接連絡先</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-start">
+                                <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-4 mt-1">
+                                    <i class="ri-phone-line text-primary"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-gray-900 mb-1">サポート電話</h4>
+                                    <p class="text-primary font-semibold text-lg">0120-123-456</p>
+                                    <p class="text-gray-600 text-sm">平日 9:00 - 18:00</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start">
+                                <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mr-4 mt-1">
+                                    <i class="ri-mail-line text-secondary"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-gray-900 mb-1">メールサポート</h4>
+                                    <p class="text-primary font-semibold">support@incar.jp</p>
+                                    <p class="text-gray-600 text-sm">24時間受付（返信：1営業日以内）</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl shadow-lg p-6">
+                        <h3 class="text-xl font-bold text-gray-900 mb-4">よくある質問</h3>
+                        <p class="text-gray-600 mb-4">お問い合わせの前に、よくある質問もご確認ください。</p>
+                        <a href="#" class="inline-flex items-center text-primary font-semibold hover:text-blue-600 transition-colors">
+                            FAQ を見る
+                            <div class="w-4 h-4 flex items-center justify-center ml-2">
+                                <i class="ri-arrow-right-line"></i>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="bg-white rounded-2xl shadow-lg p-6">
+                        <h3 class="text-xl font-bold text-gray-900 mb-4">営業時間・サポート時間</h3>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                                <span class="text-gray-700">電話サポート</span>
+                                <span class="font-semibold text-gray-900">平日 9:00 - 18:00</span>
+                            </div>
+                            <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                                <span class="text-gray-700">メールサポート</span>
+                                <span class="font-semibold text-gray-900">24時間受付</span>
+                            </div>
+                            <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                                <span class="text-gray-700">返信目安時間</span>
+                                <span class="font-semibold text-gray-900">1営業日以内</span>
+                            </div>
+                            <div class="flex justify-between items-center py-2">
+                                <span class="text-gray-700">緊急時対応</span>
+                                <span class="font-semibold text-gray-900">24時間365日</span>
+                            </div>
+                        </div>
+                        <div class="mt-4 p-3 bg-blue-50 rounded-lg">
+                            <p class="text-sm text-blue-800">
+                                <span class="font-semibold">緊急時</span>は専用ダイヤル（アプリ内表示）をご利用ください
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-gray-900 text-white py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <div class="text-2xl font-['Pacifico'] text-primary mb-4">inCar</div>
+                    <p class="text-gray-400 mb-6">車のナンバー認識で決済が変わる。新しいカーライフを始めませんか。</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors">
+                            <i class="ri-twitter-line"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors">
+                            <i class="ri-facebook-line"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors">
+                            <i class="ri-instagram-line"></i>
+                        </a>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">サービス</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition-colors">自動決済機能</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">投げ銭機能</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">トークンローン</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">カメラキット</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">法人向け</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition-colors">inCar ゲート</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">導入事例</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">料金プラン</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">お問い合わせ</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">サポート</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="faq.html" class="hover:text-white transition-colors">よくある質問</a></li>
+                        <li><a href="kiyaku.html" class="hover:text-white transition-colors">利用規約</a></li>
+                        <li><a href="privacy.html" class="hover:text-white transition-colors">プライバシーポリシー</a></li>
+                        <li><a href="contact.html" class="hover:text-white transition-colors">お問い合わせ</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
+                <p>&copy; 2026 inCar. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script id="dropdown-functionality">
+        document.addEventListener('DOMContentLoaded', function() {
+            const dropdown = document.querySelector('.inquiry-type-dropdown');
+            const options = document.querySelector('.inquiry-type-options');
+            const selected = document.querySelector('.inquiry-type-selected');
+            const optionItems = document.querySelectorAll('.inquiry-type-option');
+
+            dropdown.addEventListener('click', function() {
+                options.classList.toggle('hidden');
+            });
+
+            optionItems.forEach(option => {
+                option.addEventListener('click', function() {
+                    const value = this.getAttribute('data-value');
+                    const text = this.textContent;
+                    selected.textContent = text;
+                    selected.classList.remove('text-gray-500');
+                    selected.classList.add('text-gray-900');
+                    options.classList.add('hidden');
+                });
+            });
+
+            document.addEventListener('click', function(e) {
+                if (!dropdown.contains(e.target)) {
+                    options.classList.add('hidden');
+                }
+            });
+        });
+    </script>
+
+    <script id="form-submission">
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form');
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const submitButton = form.querySelector('button[type="submit"]');
+                const originalText = submitButton.textContent;
+
+                submitButton.textContent = '送信中...';
+                submitButton.disabled = true;
+
+                setTimeout(() => {
+                    alert('お問い合わせを受け付けました。1営業日以内にご返信いたします。');
+                    form.reset();
+                    document.querySelector('.inquiry-type-selected').textContent = '選択してください';
+                    document.querySelector('.inquiry-type-selected').classList.add('text-gray-500');
+                    document.querySelector('.inquiry-type-selected').classList.remove('text-gray-900');
+                    submitButton.textContent = originalText;
+                    submitButton.disabled = false;
+                }, 2000);
+            });
+        });
+    </script>
+</body>
+</html>

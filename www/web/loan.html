@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>トークンローン - inCar</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#10B981'
+                    },
+                    borderRadius: {
+                        'none': '0px',
+                        'sm': '4px',
+                        DEFAULT: '8px',
+                        'md': '12px',
+                        'lg': '16px',
+                        'xl': '20px',
+                        '2xl': '24px',
+                        '3xl': '32px',
+                        'full': '9999px',
+                        'button': '8px'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :where([class^="ri-"])::before {
+            content: "\f3c2";
+        }
+    </style>
+</head>
+<body class="bg-white">
+    <header class="bg-white shadow-sm border-b border-gray-100 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="text-2xl font-['Pacifico'] text-primary">inCar</div>
+                </div>
+                <nav class="hidden md:flex space-x-8">
+                    <a href="https://readdy.ai/home/34df637f-1be3-4fe8-8415-49114df95fab/788ceaaf-16a0-4d48-9c4f-c186d5edebeb" data-readdy="true" class="text-gray-700 hover:text-primary transition-colors">ホーム</a>
+                    <a href="#features" class="text-gray-700 hover:text-primary transition-colors">機能詳細</a>
+                    <a href="#conditions" class="text-gray-700 hover:text-primary transition-colors">利用条件</a>
+                    <a href="#process" class="text-gray-700 hover:text-primary transition-colors">審査プロセス</a>
+                    <a href="#apply" class="text-gray-700 hover:text-primary transition-colors">申込み</a>
+                </nav>
+                <div class="flex items-center space-x-4">
+                    <a href="https://readdy.ai/home/34df637f-1be3-4fe8-8415-49114df95fab/788ceaaf-16a0-4d48-9c4f-c186d5edebeb" data-readdy="true" class="border border-gray-300 text-gray-700 px-6 py-2 !rounded-button hover:border-primary hover:text-primary transition-colors whitespace-nowrap">
+                        <div class="w-4 h-4 flex items-center justify-center mr-2 inline-block">
+                            <i class="ri-arrow-left-line"></i>
+                        </div>
+                        戻る
+                    </a>
+                    <button class="md:hidden w-8 h-8 flex items-center justify-center" data-mobile-menu-toggle>
+                        <i class="ri-menu-line text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="md:hidden hidden border-t border-gray-100 py-4" data-mobile-menu>
+                <nav class="flex flex-col space-y-4">
+                    <a href="https://readdy.ai/home/34df637f-1be3-4fe8-8415-49114df95fab/788ceaaf-16a0-4d48-9c4f-c186d5edebeb" data-readdy="true" class="text-gray-700 hover:text-primary transition-colors">ホーム</a>
+                    <a href="#features" class="text-gray-700 hover:text-primary transition-colors">機能詳細</a>
+                    <a href="#conditions" class="text-gray-700 hover:text-primary transition-colors">利用条件</a>
+                    <a href="#process" class="text-gray-700 hover:text-primary transition-colors">審査プロセス</a>
+                    <a href="#apply" class="text-gray-700 hover:text-primary transition-colors">申込み</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <section class="relative min-h-screen flex items-center justify-center overflow-hidden" style="background-image: url('https://readdy.ai/api/search-image?query=Luxury%20car%20with%20digital%20financial%20overlay%20tokens%20floating%20around%20vehicle%20modern%20automotive%20finance%20technology%20clean%20white%20background%20left%20side%20empty%20space%20for%20text%20professional%20photography%20blue%20and%20gold%20accents%20seamless%20blend%20with%20white%20background%20instant%20loan%20concept&width=1920&height=1080&seq=token-loan-hero&orientation=landscape'); background-size: cover; background-position: center;">
+        <div class="absolute inset-0 bg-gradient-to-r from-white/98 via-white/90 to-transparent"></div>
+        <div class="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center min-h-screen py-20">
+                <div class="w-full lg:w-3/5">
+                    <div class="inline-block bg-orange-100 text-orange-600 px-6 py-3 rounded-full text-lg font-semibold mb-8">
+                        車の価値を活用した新しい金融サービス
+                    </div>
+                    <h1 class="text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+                        <span class="text-orange-500">トークンローン</span><br>
+                        即座に利用可能
+                    </h1>
+                    <p class="text-xl text-gray-600 mb-8 leading-relaxed max-w-2xl">
+                        お持ちの車の査定額を元に、一定金額のトークンを即時発行。面倒な手続きなしで、今すぐ便利な決済ライフを始められます。
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 mb-12">
+                        <button class="bg-orange-500 text-white px-8 py-4 !rounded-button text-lg font-semibold hover:bg-orange-600 transition-colors whitespace-nowrap flex items-center justify-center">
+                            <div class="w-6 h-6 flex items-center justify-center mr-2">
+                                <i class="ri-coins-line"></i>
+                            </div>
+                            今すぐ申込み
+                        </button>
+                        <button class="border-2 border-gray-300 text-gray-700 px-8 py-4 !rounded-button text-lg font-semibold hover:border-orange-500 hover:text-orange-500 transition-colors whitespace-nowrap flex items-center justify-center">
+                            <div class="w-6 h-6 flex items-center justify-center mr-2">
+                                <i class="ri-calculator-line"></i>
+                            </div>
+                            借入シミュレーション
+                        </button>
+                    </div>
+                    <div class="flex items-center space-x-8 text-sm text-gray-500">
+                        <div class="flex items-center">
+                            <div class="w-4 h-4 flex items-center justify-center mr-2">
+                                <i class="ri-check-line text-secondary"></i>
+                            </div>
+                            最短 30分で審査完了
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-4 h-4 flex items-center justify-center mr-2">
+                                <i class="ri-check-line text-secondary"></i>
+                            </div>
+                            年利 3.5% から
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-4 h-4 flex items-center justify-center mr-2">
+                                <i class="ri-check-line text-secondary"></i>
+                            </div>
+                            車の所有権はそのまま
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">トークンローンの仕組み</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">車の価値を担保に、デジタルトークンを即座に発行。従来のローンとは全く異なる新しい金融体験をお届けします</p>
+            </div>
+            <div class="grid md:grid-cols-4 gap-8 mb-16">
+                <div class="text-center">
+                    <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="ri-camera-line text-3xl text-primary"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">1. 車両査定</h3>
+                    <p class="text-gray-600">AI による高精度査定システムで、お客様の車の正確な価値を算出します。</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-20 h-20 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="ri-shield-check-line text-3xl text-orange-500"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">2. 審査・承認</h3>
+                    <p class="text-gray-600">最短 30分で審査完了。車の価値と信用情報を総合的に判断します。</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="ri-coins-line text-3xl text-secondary"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">3. トークン発行</h3>
+                    <p class="text-gray-600">査定額の最大 70% までのトークンを即座に inCar ウォレットに発行します。</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="ri-smartphone-line text-3xl text-purple-500"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">4. 即座に利用</h3>
+                    <p class="text-gray-600">発行されたトークンで駐車料金やドライブスルーなどの決済が可能です。</p>
+                </div>
+            </div>
+            <div class="bg-white rounded-2xl p-8 shadow-lg">
+                <div class="grid lg:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h3 class="text-3xl font-bold text-gray-900 mb-6">従来のローンとの違い</h3>
+                        <div class="space-y-6">
+                            <div class="flex items-start">
+                                <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-4 mt-1">
+                                    <i class="ri-check-line text-secondary"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-gray-900 mb-2">車の所有権はそのまま</h4>
+                                    <p class="text-gray-600">車を担保にしますが、所有権は移転せず、普段通りご利用いただけます。</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-4 mt-1">
+                                    <i class="ri-check-line text-secondary"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-gray-900 mb-2">デジタルトークンで即時利用</h4>
+                                    <p class="text-gray-600">現金ではなくデジタルトークンなので、inCar 決済システムで即座に利用可能です。</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-4 mt-1">
+                                    <i class="ri-check-line text-secondary"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-gray-900 mb-2">柔軟な返済システム</h4>
+                                    <p class="text-gray-600">利用した分だけの返済や、まとめて返済など、ライフスタイルに合わせて選択可能です。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <img src="https://readdy.ai/api/search-image?query=Digital%20tokens%20floating%20above%20smartphone%20screen%20with%20car%20in%20background%20modern%20financial%20technology%20concept%20clean%20white%20background%20professional%20photography%20blue%20and%20gold%20digital%20effects%20futuristic%20design&width=600&height=500&seq=token-system-visual&orientation=portrait" alt="トークンシステム" class="w-full rounded-2xl shadow-lg object-cover object-top">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">詳細機能</h2>
+                <p class="text-xl text-gray-600">トークンローンの豊富な機能で、より便利で安心な金融サービスを体験してください</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-gray-50 p-8 rounded-2xl">
+                    <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mb-6">
+                        <i class="ri-eye-line text-2xl text-primary"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">リアルタイム残高確認</h3>
+                    <p class="text-gray-600 mb-6">アプリ内で利用可能なトークン残高、返済状況、利息計算をリアルタイムで確認できます。</p>
+                    <img src="https://readdy.ai/api/search-image?query=Mobile%20app%20interface%20showing%20digital%20wallet%20balance%20and%20transaction%20history%20clean%20modern%20UI%20design%20blue%20color%20scheme%20professional%20fintech%20application%20screen&width=400&height=250&seq=balance-feature&orientation=landscape" alt="残高確認機能" class="w-full h-48 object-cover object-top rounded-lg">
+                </div>
+                <div class="bg-gray-50 p-8 rounded-2xl">
+                    <div class="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mb-6">
+                        <i class="ri-refresh-line text-2xl text-secondary"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">自動返済機能</h3>
+                    <p class="text-gray-600 mb-6">指定した銀行口座から自動引き落としで返済。返済忘れの心配がありません。</p>
+                    <img src="https://readdy.ai/api/search-image?query=Automatic%20payment%20system%20with%20bank%20connection%20digital%20interface%20showing%20scheduled%20payments%20modern%20banking%20technology%20clean%20design%20green%20accent%20colors&width=400&height=250&seq=auto-payment&orientation=landscape" alt="自動返済機能" class="w-full h-48 object-cover object-top rounded-lg">
+                </div>
+                <div class="bg-gray-50 p-8 rounded-2xl">
+                    <div class="w-16 h-16 bg-orange-100 rounded-2xl flex items-center justify-center mb-6">
+                        <i class="ri-line-chart-line text-2xl text-orange-500"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">利用履歴・分析</h3>
+                    <p class="text-gray-600 mb-6">トークンの利用履歴を詳細に分析。支出パターンを把握して賢い資金管理が可能です。</p>
+                    <img src="https://readdy.ai/api/search-image?query=Financial%20analytics%20dashboard%20with%20charts%20and%20graphs%20showing%20spending%20patterns%20modern%20data%20visualization%20orange%20color%20scheme%20professional%20interface&width=400&height=250&seq=analytics-feature&orientation=landscape" alt="利用履歴分析" class="w-full h-48 object-cover object-top rounded-lg">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="conditions" class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">利用条件</h2>
+                <p class="text-xl text-gray-600">透明性の高い利用条件で、安心してご利用いただけます</p>
+            </div>
+            <div class="grid lg:grid-cols-2 gap-12">
+                <div class="bg-white p-8 rounded-2xl shadow-lg">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-6">基本条件</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <div class="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mr-4 mt-1">
+                                <i class="ri-check-line text-primary text-sm"></i>
+                            </div>
+                            <div>
+                                <span class="font-semibold text-gray-900">年齢：</span>
+                                <span class="text-gray-600">満 20歳以上 65歳以下</span>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mr-4 mt-1">
+                                <i class="ri-check-line text-primary text-sm"></i>
+                            </div>
+                            <div>
+                                <span class="font-semibold text-gray-900">収入：</span>
+                                <span class="text-gray-600">安定した収入がある方</span>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mr-4 mt-1">
+                                <i class="ri-check-line text-primary text-sm"></i>
+                            </div>
+                            <div>
+                                <span class="font-semibold text-gray-900">車両：</span>
+                                <span class="text-gray-600">本人名義の普通自動車（軽自動車含む）</span>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mr-4 mt-1">
+                                <i class="ri-check-line text-primary text-sm"></i>
+                            </div>
+                            <div>
+                                <span class="font-semibold text-gray-900">居住地：</span>
+                                <span class="text-gray-600">日本国内に居住している方</span>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="w-6 h-6 bg-red-100 rounded-full flex items-center justify-center mr-4 mt-1">
+                                <i class="ri-close-line text-red-500 text-sm"></i>
+                            </div>
+                            <div>
+                                <span class="font-semibold text-gray-900">除外対象：</span>
+                                <span class="text-gray-600">「わ」「れ」ナンバー車両は対象外</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-8 rounded-2xl shadow-lg">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-6">必要書類</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mr-4 mt-1">
+                                <i class="ri-file-text-line text-secondary text-sm"></i>
+                            </div>
+                            <div>
+                                <span class="font-semibold text-gray-900">本人確認書類</span>
+                                <p class="text-gray-600 text-sm mt-1">運転免許証、マイナンバーカード、パスポートのいずれか</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mr-4 mt-1">
+                                <i class="ri-file-text-line text-secondary text-sm"></i>
+                            </div>
+                            <div>
+                                <span class="font-semibold text-gray-900">車検証</span>
+                                <p class="text-gray-600 text-sm mt-1">車両の所有者確認のため</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mr-4 mt-1">
+                                <i class="ri-file-text-line text-secondary text-sm"></i>
+                            </div>
+                            <div>
+                                <span class="font-semibold text-gray-900">収入証明書</span>
+                                <p class="text-gray-600 text-sm mt-1">源泉徴収票、給与明細、確定申告書のいずれか</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mr-4 mt-1">
+                                <i class="ri-file-text-line text-secondary text-sm"></i>
+                            </div>
+                            <div>
+                                <span class="font-semibold text-gray-900">銀行口座情報</span>
+                                <p class="text-gray-600 text-sm mt-1">返済用口座の通帳またはキャッシュカード</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-12 bg-blue-50 p-8 rounded-2xl">
+                <h3 class="text-2xl font-bold text-gray-900 mb-6 text-center">借入可能額・条件</h3>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-primary mb-2">10万円〜</div>
+                        <div class="text-gray-600">最低借入額</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-primary mb-2">査定額の70%</div>
+                        <div class="text-gray-600">最大借入額</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-primary mb-2">年利 3.5%〜</div>
+                        <div class="text-gray-600">金利（審査により決定）</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="process" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">審査プロセス</h2>
+                <p class="text-xl text-gray-600">スピーディーで透明性の高い審査プロセスをご紹介します</p>
+            </div>
+            <div class="max-w-4xl mx-auto">
+                <div class="space-y-8">
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mr-6">
+                            <span class="text-xl font-bold text-primary">1</span>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">オンライン申込み</h3>
+                            <p class="text-gray-600 mb-4">必要事項を入力し、必要書類をアップロード。所要時間は約 10分です。</p>
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <span class="text-sm text-gray-500">所要時間：約 10分</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mr-6">
+                            <span class="text-xl font-bold text-orange-500">2</span>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">AI 車両査定</h3>
+                            <p class="text-gray-600 mb-4">最新の AI 技術により、車両の正確な査定を実施。市場価格と車両状態を総合的に判断します。</p>
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <span class="text-sm text-gray-500">所要時間：約 15分</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mr-6">
+                            <span class="text-xl font-bold text-secondary">3</span>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">信用審査</h3>
+                            <p class="text-gray-600 mb-4">信用情報機関への照会と収入状況の確認を行います。プライバシーは厳重に保護されます。</p>
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <span class="text-sm text-gray-500">所要時間：約 15分</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mr-6">
+                            <span class="text-xl font-bold text-purple-500">4</span>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">審査結果通知・契約</h3>
+                            <p class="text-gray-600 mb-4">審査結果をメールとアプリでお知らせ。承認後、電子契約で手続き完了です。</p>
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <span class="text-sm text-gray-500">所要時間：約 5分</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mr-6">
+                            <span class="text-xl font-bold text-yellow-600">5</span>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">トークン発行・利用開始</h3>
+                            <p class="text-gray-600 mb-4">承認されたトークンが inCar ウォレットに即座に発行され、すぐにご利用いただけます。</p>
+                            <div class="bg-green-50 p-4 rounded-lg">
+                                <span class="text-sm text-green-600 font-semibold">即座に利用開始</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-12 text-center">
+                    <div class="inline-block bg-blue-50 px-8 py-4 rounded-2xl">
+                        <span class="text-2xl font-bold text-primary">最短 30分</span>
+                        <span class="text-gray-600 ml-2">で審査完了</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">利率・手数料情報</h2>
+                <p class="text-xl text-gray-600">明確で透明性の高い料金体系をご確認ください</p>
+            </div>
+            <div class="grid lg:grid-cols-2 gap-12">
+                <div class="bg-white p-8 rounded-2xl shadow-lg">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-6">金利体系</h3>
+                    <div class="space-y-6">
+                        <div class="border-l-4 border-blue-500 pl-6">
+                            <h4 class="text-lg font-semibold text-gray-900 mb-2">基本金利</h4>
+                            <div class="text-3xl font-bold text-blue-500 mb-2">年利 3.5% 〜 12.0%</div>
+                            <p class="text-gray-600 text-sm">審査結果により決定されます</p>
+                        </div>
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <h5 class="font-semibold text-gray-900 mb-2">金利決定要因</h5>
+                            <ul class="text-sm text-gray-600 space-y-1">
+                                <li>• 車両の査定額・年式</li>
+                                <li>• 信用情報・収入状況</li>
+                                <li>• 借入希望額</li>
+                                <li>• 返済期間</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-8 rounded-2xl shadow-lg">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-6">手数料一覧</h3>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center py-3 border-b border-gray-100">
+                            <span class="text-gray-700">申込手数料</span>
+                            <span class="font-semibold text-green-600">無料</span>
+                        </div>
+                        <div class="flex justify-between items-center py-3 border-b border-gray-100">
+                            <span class="text-gray-700">査定手数料</span>
+                            <span class="font-semibold text-green-600">無料</span>
+                        </div>
+                        <div class="flex justify-between items-center py-3 border-b border-gray-100">
+                            <span class="text-gray-700">契約手数料</span>
+                            <span class="font-semibold text-green-600">無料</span>
+                        </div>
+                        <div class="flex justify-between items-center py-3 border-b border-gray-100">
+                            <span class="text-gray-700">繰上返済手数料</span>
+                            <span class="font-semibold text-green-600">無料</span>
+                        </div>
+                        <div class="flex justify-between items-center py-3 border-b border-gray-100">
+                            <span class="text-gray-700">遅延損害金</span>
+                            <span class="font-semibold text-gray-900">年利 20.0%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-12 bg-white p-8 rounded-2xl shadow-lg">
+                <h3 class="text-2xl font-bold text-gray-900 mb-6 text-center">返済シミュレーション例</h3>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="text-center p-6 bg-blue-50 rounded-xl">
+                        <h4 class="text-lg font-semibold text-gray-900 mb-4">借入額 50万円の場合</h4>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between">
+                                <span>金利：</span>
+                                <span class="font-semibold">年利 5.0%</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>返済期間：</span>
+                                <span class="font-semibold">36ヶ月</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>月々返済額：</span>
+                                <span class="font-semibold text-primary">約 14,970円</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>総返済額：</span>
+                                <span class="font-semibold">約 538,920円</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center p-6 bg-green-50 rounded-xl">
+                        <h4 class="text-lg font-semibold text-gray-900 mb-4">借入額 100万円の場合</h4>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between">
+                                <span>金利：</span>
+                                <span class="font-semibold">年利 4.5%</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>返済期間：</span>
+                                <span class="font-semibold">48ヶ月</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>月々返済額：</span>
+                                <span class="font-semibold text-primary">約 22,870円</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>総返済額：</span>
+                                <span class="font-semibold">約 1,097,760円</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center p-6 bg-orange-50 rounded-xl">
+                        <h4 class="text-lg font-semibold text-gray-900 mb-4">借入額 200万円の場合</h4>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between">
+                                <span>金利：</span>
+                                <span class="font-semibold">年利 4.0%</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>返済期間：</span>
+                                <span class="font-semibold">60ヶ月</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>月々返済額：</span>
+                                <span class="font-semibold text-primary">約 36,830円</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>総返済額：</span>
+                                <span class="font-semibold">約 2,209,800円</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-6 text-center text-sm text-gray-500">
+                    ※ 上記は参考例です。実際の金利・返済額は審査により決定されます。
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">返済方法</h2>
+                <p class="text-xl text-gray-600">ライフスタイルに合わせて選べる柔軟な返済オプション</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8 mb-12">
+                <div class="bg-gray-50 p-8 rounded-2xl text-center">
+                    <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="ri-bank-line text-3xl text-primary"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">自動引き落とし</h3>
+                    <p class="text-gray-600 mb-6">指定の銀行口座から毎月自動で返済。返済忘れの心配がありません。</p>
+                    <div class="bg-blue-50 p-4 rounded-lg">
+                        <span class="text-sm text-blue-600 font-semibold">推奨</span>
+                    </div>
+                </div>
+                <div class="bg-gray-50 p-8 rounded-2xl text-center">
+                    <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="ri-smartphone-line text-3xl text-secondary"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">アプリ内決済</h3>
+                    <p class="text-gray-600 mb-6">inCar アプリから直接返済。クレジットカードや電子マネーに対応。</p>
+                    <div class="bg-green-50 p-4 rounded-lg">
+                        <span class="text-sm text-green-600 font-semibold">即時反映</span>
+                    </div>
+                </div>
+                <div class="bg-gray-50 p-8 rounded-2xl text-center">
+                    <div class="w-20 h-20 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="ri-exchange-line text-3xl text-orange-500"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">銀行振込</h3>
+                    <p class="text-gray-600 mb-6">指定の口座への銀行振込。ATM やネットバンキングから返済可能。</p>
+                    <div class="bg-orange-50 p-4 rounded-lg">
+                        <span class="text-sm text-orange-600 font-semibold">手数料お客様負担</span>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-blue-50 p-8 rounded-2xl">
+                <h3 class="text-2xl font-bold text-gray-900 mb-6 text-center">返済スケジュール管理</h3>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-900 mb-4">柔軟な返済プラン</h4>
+                        <ul class="space-y-3 text-gray-600">
+                            <li class="flex items-start">
+                                <div class="w-2 h-2 bg-primary rounded-full mr-3 mt-2"></div>
+                                <span>利用した分だけの返済（最低返済額以上）</span>
+                            </li>
+                            <li class="flex items-start">
+                                <div class="w-2 h-2 bg-primary rounded-full mr-3 mt-2"></div>
+                                <span>まとめて返済（繰上返済手数料無料）</span>
+                            </li>
+                            <li class="flex items-start">
+                                <div class="w-2 h-2 bg-primary rounded-full mr-3 mt-2"></div>
+                                <span>返済額の変更（月1回まで）</span>
+                            </li>
+                            <li class="flex items-start">
+                                <div class="w-2 h-2 bg-primary rounded-full mr-3 mt-2"></div>
+                                <span>返済日の変更（5日、15日、25日から選択）</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-900 mb-4">返済サポート機能</h4>
+                        <ul class="space-y-3 text-gray-600">
+                            <li class="flex items-start">
+                                <div class="w-2 h-2 bg-secondary rounded-full mr-3 mt-2"></div>
+                                <span>返済日の3日前にプッシュ通知</span>
+                            </li>
+                            <li class="flex items-start">
+                                <div class="w-2 h-2 bg-secondary rounded-full mr-3 mt-2"></div>
+                                <span>返済履歴の詳細確認</span>
+                            </li>
+                            <li class="flex items-start">
+                                <div class="w-2 h-2 bg-secondary rounded-full mr-3 mt-2"></div>
+                                <span>残高不足時の事前アラート</span>
+                            </li>
+                            <li class="flex items-start">
+                                <div class="w-2 h-2 bg-secondary rounded-full mr-3 mt-2"></div>
+                                <span>24時間チャットサポート</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="apply" class="py-20 bg-gray-50">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">トークンローン申込み</h2>
+                <p class="text-xl text-gray-600">簡単な入力で申込み完了。最短 30分で審査結果をお知らせします</p>
+            </div>
+            <div class="bg-white p-8 rounded-2xl shadow-lg">
+                <form class="space-y-8">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-900 mb-2">お名前（姓）</label>
+                            <input type="text" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm" placeholder="山田">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-900 mb-2">お名前（名）</label>
+                            <input type="text" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm" placeholder="太郎">
+                        </div>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-900 mb-2">お名前（フリガナ・姓）</label>
+                            <input type="text" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm" placeholder="ヤマダ">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-900 mb-2">お名前（フリガナ・名）</label>
+                            <input type="text" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm" placeholder="タロウ">
+                        </div>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-900 mb-2">生年月日</label>
+                            <input type="date" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-900 mb-2">性別</label>
+                            <div class="flex space-x-4 pt-3">
+                                <label class="flex items-center cursor-pointer">
+                                    <div class="relative">
+                                        <input type="radio" name="gender" value="male" class="sr-only" data-radio>
+                                        <div class="w-5 h-5 border-2 border-gray-300 rounded-full flex items-center justify-center" data-radio-display>
+                                            <div class="w-2 h-2 bg-primary rounded-full opacity-0 transition-opacity" data-radio-dot></div>
+                                        </div>
+                                    </div>
+                                    <span class="ml-2 text-sm text-gray-700">男性</span>
+                                </label>
+                                <label class="flex items-center cursor-pointer">
+                                    <div class="relative">
+                                        <input type="radio" name="gender" value="female" class="sr-only" data-radio>
+                                        <div class="w-5 h-5 border-2 border-gray-300 rounded-full flex items-center justify-center" data-radio-display>
+                                            <div class="w-2 h-2 bg-primary rounded-full opacity-0 transition-opacity" data-radio-dot></div>
+                                        </div>
+                                    </div>
+                                    <span class="ml-2 text-sm text-gray-700">女性</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-900 mb-2">メールアドレス</label>
+                        <input type="email" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm" placeholder="example@email.com">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-900 mb-2">電話番号</label>
+                        <input type="tel" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm" placeholder="090-1234-5678">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-900 mb-2">郵便番号</label>
+                        <input type="text" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm" placeholder="123-4567">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-900 mb-2">住所</label>
+                        <input type="text" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm" placeholder="東京都渋谷区〇〇 1-2-3">
+                    </div>
+                    <div class="border-t border-gray-200 pt-8">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-6">車両情報</h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-900 mb-2">メーカー</label>
+                                <input type="text" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm" placeholder="トヨタ">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-900 mb-2">車種</label>
+                                <input type="text" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm" placeholder="プリウス">
+                            </div>
+                        </div>
+                        <div class="grid md:grid-cols-2 gap-6 mt-6">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-900 mb-2">年式</label>
+                                <input type="text" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm" placeholder="2020">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-900 mb-2">走行距離（km）</label>
+                                <input type="text" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm" placeholder="50000">
+                            </div>
+                        </div>
+                        <div class="mt-6">
+                            <label class="block text-sm font-semibold text-gray-900 mb-2">ナンバープレート</label>
+                            <input type="text" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm" placeholder="品川 500 あ 12-34">
+                        </div>
+                    </div>
+                    <div class="border-t border-gray-200 pt-8">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-6">借入希望</h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-900 mb-2">希望借入額</label>
+                                <div class="relative">
+                                    <input type="text" class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm" placeholder="500000">
+                                    <div class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">円</div>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-900 mb-2">希望返済期間</label>
+                                <div class="relative">
+                                    <button type="button" class="w-full px-4 py-3 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm text-left bg-white" data-dropdown-toggle="repayment-period">
+                                        <span data-dropdown-text>36ヶ月</span>
+                                    </button>
+                                    <div class="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 flex items-center justify-center">
+                                        <i class="ri-arrow-down-s-line text-gray-400"></i>
+                                    </div>
+                                    <div class="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-10 hidden" data-dropdown-menu="repayment-period">
+                                        <div class="py-1">
+                                            <button type="button" class="w-full px-4 py-2 text-left hover:bg-gray-50 text-sm" data-dropdown-item="12ヶ月">12ヶ月</button>
+                                            <button type="button" class="w-full px-4 py-2 text-left hover:bg-gray-50 text-sm" data-dropdown-item="24ヶ月">24ヶ月</button>
+                                            <button type="button" class="w-full px-4 py-2 text-left hover:bg-gray-50 text-sm" data-dropdown-item="36ヶ月">36ヶ月</button>
+                                            <button type="button" class="w-full px-4 py-2 text-left hover:bg-gray-50 text-sm" data-dropdown-item="48ヶ月">48ヶ月</button>
+                                            <button type="button" class="w-full px-4 py-2 text-left hover:bg-gray-50 text-sm" data-dropdown-item="60ヶ月">60ヶ月</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="border-t border-gray-200 pt-8">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-6">年収情報</h3>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-900 mb-2">年収</label>
+                            <div class="relative">
+                                <input type="text" class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm" placeholder="4000000">
+                                <div class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">円</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="border-t border-gray-200 pt-8">
+                        <div class="flex items-start">
+                            <div class="relative flex-shrink-0 mt-1">
+                                <input type="checkbox" class="sr-only" data-checkbox>
+                                <div class="w-5 h-5 border-2 border-gray-300 rounded flex items-center justify-center cursor-pointer" data-checkbox-display>
+                                    <i class="ri-check-line text-white text-sm opacity-0 transition-opacity" data-checkbox-icon></i>
+                                </div>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm text-gray-700">
+                                    <a href="#" class="text-primary hover:underline">利用規約</a>、
+                                    <a href="#" class="text-primary hover:underline">プライバシーポリシー</a>、
+                                    <a href="#" class="text-primary hover:underline">個人情報の取扱いについて</a>
+                                    に同意します。
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="bg-orange-500 text-white px-12 py-4 !rounded-button text-lg font-semibold hover:bg-orange-600 transition-colors whitespace-nowrap">
+                            申込みを送信する
+                        </button>
+                        <p class="text-sm text-gray-500 mt-4">
+                            申込み後、最短 30分で審査結果をメールでお知らせします
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">よくある質問</h2>
+                <p class="text-xl text-gray-600">トークンローンに関するよくある質問にお答えします</p>
+            </div>
+            <div class="max-w-4xl mx-auto space-y-6">
+                <div class="bg-gray-50 rounded-2xl p-6" data-faq-item>
+                    <button class="w-full flex justify-between items-center text-left" data-faq-toggle>
+                        <h3 class="text-lg font-semibold text-gray-900">トークンローンとは何ですか？</h3>
+                        <div class="w-6 h-6 flex items-center justify-center">
+                            <i class="ri-add-line text-xl text-gray-400 transition-transform" data-faq-icon></i>
+                        </div>
+                    </button>
+                    <div class="hidden mt-4 text-gray-600" data-faq-content>
+                        <p>車の査定額を担保に、デジタルトークンを発行する新しい金融サービスです。発行されたトークンは inCar の決済システムで利用でき、駐車料金やドライブスルーなどの支払いに使用できます。</p>
+                    </div>
+                </div>
+                <div class="bg-gray-50 rounded-2xl p-6" data-faq-item>
+                    <button class="w-full flex justify-between items-center text-left" data-faq-toggle>
+                        <h3 class="text-lg font-semibold text-gray-900">審査にはどのくらい時間がかかりますか？</h3>
+                        <div class="w-6 h-6 flex items-center justify-center">
+                            <i class="ri-add-line text-xl text-gray-400 transition-transform" data-faq-icon></i>
+                        </div>
+                    </button>
+                    <div class="hidden mt-4 text-gray-600" data-faq-content>
+                        <p>最短 30分で審査が完了します。AI による車両査定と信用審査を並行して行うため、従来のローンと比べて大幅に時間を短縮できます。審査結果はメールとアプリでお知らせします。</p>
+                    </div>
+                </div>
+                <div class="bg-gray-50 rounded-2xl p-6" data-faq-item>
+                    <button class="w-full flex justify-between items-center text-left" data-faq-toggle>
+                        <h3 class="text-lg font-semibold text-gray-900">車の所有権はどうなりますか？</h3>
+                        <div class="w-6 h-6 flex items-center justify-center">
+                            <i class="ri-add-line text-xl text-gray-400 transition-transform" data-faq-icon></i>
+                        </div>
+                    </button>
+                    <div class="hidden mt-4 text-gray-600" data-faq-content>
+                        <p>車の所有権はお客様のままです。担保として設定しますが、普段通り車をご利用いただけます。完済後は担保設定も自動的に解除されます。</p>
+                    </div>
+                </div>
+                <div class="bg-gray-50 rounded-2xl p-6" data-faq-item>
+                    <button class="w-full flex justify-between items-center text-left" data-faq-toggle>
+                        <h3 class="text-lg font-semibold text-gray-900">トークンはどこで使えますか？</h3>
+                        <div class="w-6 h-6 flex items-center justify-center">
+                            <i class="ri-add-line text-xl text-gray-400 transition-transform" data-faq-icon></i>
+                        </div>
+                    </button>
+                    <div class="hidden mt-4 text-gray-600" data-faq-content>
+                        <p>inCar 決済システムを導入している駐車場、ドライブスルー、ガソリンスタンドなどでご利用いただけます。対応店舗は順次拡大中で、アプリ内のマップから確認できます。</p>
+                    </div>
+                </div>
+                <div class="bg-gray-50 rounded-2xl p-6" data-faq-item>
+                    <button class="w-full flex justify-between items-center text-left" data-faq-toggle>
+                        <h3 class="text-lg font-semibold text-gray-900">繰上返済は可能ですか？</h3>
+                        <div class="w-6 h-6 flex items-center justify-center">
+                            <i class="ri-add-line text-xl text-gray-400 transition-transform" data-faq-icon></i>
+                        </div>
+                    </button>
+                    <div class="hidden mt-4 text-gray-600" data-faq-content>
+                        <p>はい、いつでも繰上返済が可能です。繰上返済手数料は一切かかりません。アプリから簡単に手続きでき、返済した分の利息負担を軽減できます。</p>
+                    </div>
+                </div>
+                <div class="bg-gray-50 rounded-2xl p-6" data-faq-item>
+                    <button class="w-full flex justify-between items-center text-left" data-faq-toggle>
+                        <h3 class="text-lg font-semibold text-gray-900">万が一返済が困難になった場合はどうすればよいですか？</h3>
+                        <div class="w-6 h-6 flex items-center justify-center">
+                            <i class="ri-add-line text-xl text-gray-400 transition-transform" data-faq-icon></i>
+                        </div>
+                    </button>
+                    <div class="hidden mt-4 text-gray-600" data-faq-content>
+                        <p>まずはカスタマーサポートにご相談ください。返済条件の見直しや、一時的な返済猶予など、お客様の状況に応じた解決策をご提案します。24時間チャットサポートでいつでもご相談いただけます。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-20 bg-gradient-to-r from-orange-500 to-orange-600" style="background-image: url('https://readdy.ai/api/search-image?query=Modern%20car%20dashboard%20with%20digital%20financial%20interface%20orange%20gradient%20overlay%20professional%20automotive%20technology%20clean%20futuristic%20design%20high%20contrast%20token%20loan%20concept&width=1920&height=600&seq=token-cta-bg&orientation=landscape'); background-size: cover; background-position: center; background-blend-mode: overlay;">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-4xl font-bold text-white mb-6">今すぐトークンローンを始めよう</h2>
+            <p class="text-xl text-orange-100 mb-12">車の価値を活用した新しい金融体験を、今すぐ体験してください。</p>
+            <div class="flex flex-col sm:flex-row gap-6 justify-center">
+                <button class="bg-white text-orange-500 px-8 py-4 !rounded-button text-lg font-semibold hover:bg-gray-100 transition-colors whitespace-nowrap flex items-center justify-center">
+                    <div class="w-6 h-6 flex items-center justify-center mr-2">
+                        <i class="ri-coins-line"></i>
+                    </div>
+                    今すぐ申込み
+                </button>
+                <button class="border-2 border-white text-white px-8 py-4 !rounded-button text-lg font-semibold hover:bg-white hover:text-orange-500 transition-colors whitespace-nowrap flex items-center justify-center">
+                    <div class="w-6 h-6 flex items-center justify-center mr-2">
+                        <i class="ri-calculator-line"></i>
+                    </div>
+                    借入シミュレーション
+                </button>
+            </div>
+            <div class="mt-8 text-orange-100 text-sm">
+                最短 30分で審査完了 / 年利 3.5% から / 手数料無料
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-gray-900 text-white py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-4 gap-8 mb-12">
+                <div>
+                    <div class="text-2xl font-['Pacifico'] text-primary mb-4">inCar</div>
+                    <p class="text-gray-400 mb-6">車のナンバー認識で決済が変わる。新しいカーライフを始めませんか。</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors">
+                            <i class="ri-twitter-line"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors">
+                            <i class="ri-facebook-line"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors">
+                            <i class="ri-instagram-line"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors">
+                            <i class="ri-youtube-line"></i>
+                        </a>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">サービス</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition-colors">自動決済機能</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">投げ銭機能</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors text-orange-400 font-semibold">トークンローン</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">カメラキット</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">料金プラン</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">法人向け</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition-colors">inCar ゲート</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">導入事例</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">API ドキュメント</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">パートナープログラム</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">お問い合わせ</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">サポート</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="faq.html" class="hover:text-white transition-colors">よくある質問</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">特定商取引法</a></li>
+                        <li><a href="kiyaku.html" class="hover:text-white transition-colors">利用規約</a></li>
+                        <li><a href="privacy.html" class="hover:text-white transition-colors">プライバシーポリシー</a></li>
+                        <li><a href="contact.html" class="hover:text-white transition-colors">お問い合わせ</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 pt-8">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <p class="text-gray-400 mb-4 md:mb-0">&copy; 2026 inCar. All rights reserved.</p>
+                    <div class="flex items-center space-x-6 text-gray-400 text-sm">
+                        <span>日本語</span>
+                        <span>|</span>
+                        <span>English</span>
+                        <span>|</span>
+                        <span>한국어</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script id="smooth-scroll">
+        document.addEventListener('DOMContentLoaded', function() {
+            const links = document.querySelectorAll('a[href^="#"]');
+            links.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+
+    <script id="mobile-menu">
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuButton = document.querySelector('[data-mobile-menu-toggle]');
+            const mobileMenu = document.querySelector('[data-mobile-menu]');
+
+            if (mobileMenuButton && mobileMenu) {
+                mobileMenuButton.addEventListener('click', function() {
+                    mobileMenu.classList.toggle('hidden');
+                });
+            }
+        });
+    </script>
+
+    <script id="form-controls">
+        document.addEventListener('DOMContentLoaded', function() {
+            const radioButtons = document.querySelectorAll('[data-radio]');
+            radioButtons.forEach(radio => {
+                const display = radio.parentElement.querySelector('[data-radio-display]');
+                const dot = radio.parentElement.querySelector('[data-radio-dot]');
+
+                radio.addEventListener('change', function() {
+                    document.querySelectorAll(`[name="${this.name}"]`).forEach(r => {
+                        const rDisplay = r.parentElement.querySelector('[data-radio-display]');
+                        const rDot = r.parentElement.querySelector('[data-radio-dot]');
+                        rDisplay.classList.remove('border-primary');
+                        rDisplay.classList.add('border-gray-300');
+                        rDot.classList.remove('opacity-100');
+                        rDot.classList.add('opacity-0');
+                    });
+
+                    if (this.checked) {
+                        display.classList.remove('border-gray-300');
+                        display.classList.add('border-primary');
+                        dot.classList.remove('opacity-0');
+                        dot.classList.add('opacity-100');
+                    }
+                });
+            });
+
+            const checkboxes = document.querySelectorAll('[data-checkbox]');
+            checkboxes.forEach(checkbox => {
+                const display = checkbox.parentElement.querySelector('[data-checkbox-display]');
+                const icon = checkbox.parentElement.querySelector('[data-checkbox-icon]');
+
+                display.addEventListener('click', function() {
+                    checkbox.checked = !checkbox.checked;
+
+                    if (checkbox.checked) {
+                        display.classList.remove('border-gray-300');
+                        display.classList.add('border-primary', 'bg-primary');
+                        icon.classList.remove('opacity-0');
+                        icon.classList.add('opacity-100');
+                    } else {
+                        display.classList.remove('border-primary', 'bg-primary');
+                        display.classList.add('border-gray-300');
+                        icon.classList.remove('opacity-100');
+                        icon.classList.add('opacity-0');
+                    }
+                });
+            });
+        });
+    </script>
+
+    <script id="dropdown">
+        document.addEventListener('DOMContentLoaded', function() {
+            const dropdownToggles = document.querySelectorAll('[data-dropdown-toggle]');
+
+            dropdownToggles.forEach(toggle => {
+                const menuId = toggle.getAttribute('data-dropdown-toggle');
+                const menu = document.querySelector(`[data-dropdown-menu="${menuId}"]`);
+                const text = toggle.querySelector('[data-dropdown-text]');
+
+                if (menu) {
+                    toggle.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        menu.classList.toggle('hidden');
+                    });
+
+                    const items = menu.querySelectorAll('[data-dropdown-item]');
+                    items.forEach(item => {
+                        item.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            const value = this.getAttribute('data-dropdown-item');
+                            text.textContent = value;
+                            menu.classList.add('hidden');
+                        });
+                    });
+                }
+            });
+
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('[data-dropdown-toggle]')) {
+                    document.querySelectorAll('[data-dropdown-menu]').forEach(menu => {
+                        menu.classList.add('hidden');
+                    });
+                }
+            });
+        });
+    </script>
+
+    <script id="faq">
+        document.addEventListener('DOMContentLoaded', function() {
+            const faqItems = document.querySelectorAll('[data-faq-item]');
+
+            faqItems.forEach(item => {
+                const toggle = item.querySelector('[data-faq-toggle]');
+                const content = item.querySelector('[data-faq-content]');
+                const icon = item.querySelector('[data-faq-icon]');
+
+                toggle.addEventListener('click', function() {
+                    const isOpen = !content.classList.contains('hidden');
+
+                    if (isOpen) {
+                        content.classList.add('hidden');
+                        icon.style.transform = 'rotate(0deg)';
+                    } else {
+                        content.classList.remove('hidden');
+                        icon.style.transform = 'rotate(45deg)';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

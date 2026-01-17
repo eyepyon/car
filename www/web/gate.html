@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>inCar ゲートシステム導入相談 - 企業・自治体向けソリューション</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#10B981'
+                    },
+                    borderRadius: {
+                        'none': '0px',
+                        'sm': '4px',
+                        DEFAULT: '8px',
+                        'md': '12px',
+                        'lg': '16px',
+                        'xl': '20px',
+                        '2xl': '24px',
+                        '3xl': '32px',
+                        'full': '9999px',
+                        'button': '8px'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :where([class^="ri-"])::before {
+            content: "\f3c2";
+        }
+    </style>
+</head>
+<body class="bg-white">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="/" data-readdy="true" class="flex items-center mr-8 cursor-pointer">
+                        <div class="w-6 h-6 flex items-center justify-center mr-2">
+                            <i class="ri-arrow-left-line text-gray-600"></i>
+                        </div>
+                        <span class="text-gray-600 hover:text-primary transition-colors">戻る</span>
+                    </a>
+                    <div class="text-2xl font-['Pacifico'] text-primary">inCar</div>
+                </div>
+                <nav class="hidden md:flex space-x-8">
+                    <a href="#consultation" class="text-gray-700 hover:text-primary transition-colors cursor-pointer">お問い合わせ</a>
+                    <a href="#cases" class="text-gray-700 hover:text-primary transition-colors cursor-pointer">導入事例</a>
+                    <a href="#pricing" class="text-gray-700 hover:text-primary transition-colors cursor-pointer">料金プラン</a>
+                    <a href="#flow" class="text-gray-700 hover:text-primary transition-colors cursor-pointer">導入の流れ</a>
+                </nav>
+                <div class="flex items-center space-x-4">
+                    <span class="text-gray-600 text-sm">お急ぎの方は</span>
+                    <a href="tel:0120-123-456" class="text-primary font-semibold cursor-pointer">0120-123-456</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative py-20 bg-gradient-to-br from-blue-50 to-white overflow-hidden">
+        <div class="absolute inset-0" style="background-image: url('https://readdy.ai/api/search-image?query=Modern%20parking%20garage%20entrance%20with%20automatic%20barrier%20gate%20system%20for%20vehicles%20clean%20white%20background%20left%20empty%20space%20for%20text%20overlay%20professional%20automotive%20technology%20setting%20cars%20approaching%20automated%20gate&width=1920&height=800&seq=consultation-hero-vehicle&orientation=landscape'); background-size: cover; background-position: center;"></div>
+        <div class="absolute inset-0 bg-gradient-to-r from-white/95 via-white/85 to-transparent"></div>
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-2xl">
+                <div class="inline-block bg-primary text-white px-6 py-2 rounded-full text-sm font-semibold mb-6">
+                    企業・自治体向けソリューション
+                </div>
+                <h1 class="text-5xl font-bold text-gray-900 mb-6 leading-tight">
+                    inCar ゲートシステム<br>
+                    <span class="text-primary">導入相談</span>
+                </h1>
+                <p class="text-xl text-gray-600 mb-8 leading-relaxed">
+                    お客様のニーズに合わせた最適なソリューションをご提案いたします。わずか 10万円から導入可能な最先端のナンバー認識システムで、駐車場やドライブスルーの管理を革新しませんか。
+                </p>
+                <div class="flex items-center space-x-6">
+                    <button onclick="scrollToForm()" class="bg-primary text-white px-8 py-4 !rounded-button text-lg font-semibold hover:bg-blue-600 transition-colors whitespace-nowrap cursor-pointer">
+                        今すぐ相談する
+                    </button>
+                    <div class="flex items-center text-gray-600">
+                        <div class="w-6 h-6 flex items-center justify-center mr-2">
+                            <i class="ri-time-line"></i>
+                        </div>
+                        <span class="text-sm">平日 9:00-18:00 対応</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Consultation Form Section -->
+    <section id="consultation" class="py-20 bg-white">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">導入相談フォーム</h2>
+                <p class="text-xl text-gray-600">お客様の状況に合わせて最適なプランをご提案いたします</p>
+            </div>
+            <div class="bg-gray-50 rounded-2xl p-8">
+                <form class="space-y-6">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-900 mb-2">企業名 <span class="text-red-500">*</span></label>
+                            <input type="text" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm" placeholder="株式会社サンプル">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-900 mb-2">担当者名 <span class="text-red-500">*</span></label>
+                            <input type="text" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm" placeholder="田中 太郎">
+                        </div>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-900 mb-2">メールアドレス <span class="text-red-500">*</span></label>
+                            <input type="email" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm" placeholder="tanaka@example.com">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-900 mb-2">電話番号 <span class="text-red-500">*</span></label>
+                            <input type="tel" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm" placeholder="03-1234-5678">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-900 mb-2">導入予定場所</label>
+                        <input type="text" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm" placeholder="東京都千代田区丸の内1-1-1 サンプルビル駐車場">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-900 mb-2">利用用途</label>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <label class="flex items-center p-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-blue-50 transition-colors">
+                                <input type="radio" name="usage-type" value="parking" class="sr-only">
+                                <div class="w-4 h-4 border-2 border-gray-300 rounded-full mr-3 flex items-center justify-center">
+                                    <div class="w-2 h-2 bg-primary rounded-full hidden"></div>
+                                </div>
+                                <span class="text-sm">駐車場管理</span>
+                            </label>
+                            <label class="flex items-center p-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-blue-50 transition-colors">
+                                <input type="radio" name="usage-type" value="drive-thru" class="sr-only">
+                                <div class="w-4 h-4 border-2 border-gray-300 rounded-full mr-3 flex items-center justify-center">
+                                    <div class="w-2 h-2 bg-primary rounded-full hidden"></div>
+                                </div>
+                                <span class="text-sm">ドライブスルー</span>
+                            </label>
+                            <label class="flex items-center p-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-blue-50 transition-colors">
+                                <input type="radio" name="usage-type" value="other" class="sr-only">
+                                <div class="w-4 h-4 border-2 border-gray-300 rounded-full mr-3 flex items-center justify-center">
+                                    <div class="w-2 h-2 bg-primary rounded-full hidden"></div>
+                                </div>
+                                <span class="text-sm">その他</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-900 mb-2">車両台数・規模感</label>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                            <label class="flex items-center p-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-blue-50 transition-colors">
+                                <input type="radio" name="vehicle-capacity" value="under-10" class="sr-only">
+                                <div class="w-4 h-4 border-2 border-gray-300 rounded-full mr-3 flex items-center justify-center">
+                                    <div class="w-2 h-2 bg-primary rounded-full hidden"></div>
+                                </div>
+                                <span class="text-sm">10台未満</span>
+                            </label>
+                            <label class="flex items-center p-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-blue-50 transition-colors">
+                                <input type="radio" name="vehicle-capacity" value="10-50" class="sr-only">
+                                <div class="w-4 h-4 border-2 border-gray-300 rounded-full mr-3 flex items-center justify-center">
+                                    <div class="w-2 h-2 bg-primary rounded-full hidden"></div>
+                                </div>
+                                <span class="text-sm">10-50台</span>
+                            </label>
+                            <label class="flex items-center p-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-blue-50 transition-colors">
+                                <input type="radio" name="vehicle-capacity" value="50-100" class="sr-only">
+                                <div class="w-4 h-4 border-2 border-gray-300 rounded-full mr-3 flex items-center justify-center">
+                                    <div class="w-2 h-2 bg-primary rounded-full hidden"></div>
+                                </div>
+                                <span class="text-sm">50-100台</span>
+                            </label>
+                            <label class="flex items-center p-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-blue-50 transition-colors">
+                                <input type="radio" name="vehicle-capacity" value="over-100" class="sr-only">
+                                <div class="w-4 h-4 border-2 border-gray-300 rounded-full mr-3 flex items-center justify-center">
+                                    <div class="w-2 h-2 bg-primary rounded-full hidden"></div>
+                                </div>
+                                <span class="text-sm">100台以上</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-900 mb-2">希望連絡時間</label>
+                        <select class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm pr-8">
+                            <option>9:00-12:00</option>
+                            <option>12:00-15:00</option>
+                            <option>15:00-18:00</option>
+                            <option>いつでも可</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-900 mb-2">相談内容</label>
+                        <textarea rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm" placeholder="導入に関するご質問やご要望をお聞かせください"></textarea>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="bg-primary text-white px-12 py-4 !rounded-button text-lg font-semibold hover:bg-blue-600 transition-colors whitespace-nowrap cursor-pointer">
+                            相談内容を送信する
+                        </button>
+                        <p class="text-sm text-gray-600 mt-4">送信後、2営業日以内にご連絡いたします</p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Case Studies Section -->
+    <section id="cases" class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">導入事例</h2>
+                <p class="text-xl text-gray-600">様々な業界・規模での導入実績をご紹介します</p>
+            </div>
+            <div class="grid lg:grid-cols-3 gap-8">
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+                    <img src="https://readdy.ai/api/search-image?query=Modern%20office%20building%20parking%20garage%20entrance%20with%20automated%20gate%20barrier%20system%20professional%20corporate%20environment%20cars%20entering%20through%20automated%20vehicle%20recognition%20gate%20clean%20architecture%20business%20district&width=400&height=250&seq=case-office-parking&orientation=landscape" alt="オフィスビル駐車場導入事例" class="w-full h-48 object-cover object-top">
+                    <div class="p-6">
+                        <div class="inline-block bg-blue-100 text-primary px-3 py-1 rounded-full text-sm font-semibold mb-3">
+                            オフィスビル駐車場
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">東京丸の内 A ビル</h3>
+                        <div class="space-y-2 mb-4">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">駐車台数</span>
+                                <span class="font-semibold">120台</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">導入期間</span>
+                                <span class="font-semibold">2週間</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">コスト削減</span>
+                                <span class="font-semibold text-secondary">月額 30万円</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 text-sm">管理人員を 3名から 1名に削減し、24時間無人運営を実現。車両の入退場時間も 50% 短縮されました。</p>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+                    <img src="https://readdy.ai/api/search-image?query=Drive-thru%20restaurant%20with%20automated%20license%20plate%20recognition%20system%20cars%20queuing%20at%20fast%20food%20ordering%20lane%20modern%20technology%20integration%20commercial%20setting%20customer%20vehicles&width=400&height=250&seq=case-drive-thru&orientation=landscape" alt="ドライブスルー導入事例" class="w-full h-48 object-cover object-top">
+                    <div class="p-6">
+                        <div class="inline-block bg-green-100 text-secondary px-3 py-1 rounded-full text-sm font-semibold mb-3">
+                            ドライブスルー
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">マクドナルド新宿店</h3>
+                        <div class="space-y-2 mb-4">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">処理車両数</span>
+                                <span class="font-semibold">日300台</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">導入期間</span>
+                                <span class="font-semibold">1週間</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">売上向上</span>
+                                <span class="font-semibold text-secondary">25% 増加</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 text-sm">車両認識による自動注文履歴管理で、リピーター向けのカスタマイズサービスを実現。顧客満足度が大幅に向上しました。</p>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+                    <img src="https://readdy.ai/api/search-image?query=Government%20municipal%20building%20parking%20facility%20with%20security%20gate%20system%20official%20administrative%20building%20cars%20entering%20through%20automated%20barrier%20gate%20public%20facility%20organized%20environment&width=400&height=250&seq=case-government-parking&orientation=landscape" alt="自治体駐車場導入事例" class="w-full h-48 object-cover object-top">
+                    <div class="p-6">
+                        <div class="inline-block bg-orange-100 text-orange-500 px-3 py-1 rounded-full text-sm font-semibold mb-3">
+                            自治体駐車場
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">千葉市役所本庁舎</h3>
+                        <div class="space-y-2 mb-4">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">駐車台数</span>
+                                <span class="font-semibold">200台</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">導入期間</span>
+                                <span class="font-semibold">3週間</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">セキュリティ</span>
+                                <span class="font-semibold text-secondary">100% 向上</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 text-sm">不正駐車の完全排除と来庁者の利便性向上を同時に実現。車両の入退場管理で職員の業務効率も大幅に改善されました。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">料金プラン詳細</h2>
+                <p class="text-xl text-gray-600">お客様の規模とニーズに合わせた最適なプランをご用意</p>
+            </div>
+            <div class="grid lg:grid-cols-3 gap-8">
+                <div class="border border-gray-200 rounded-2xl p-8 hover:shadow-lg transition-shadow">
+                    <div class="text-center mb-6">
+                        <h3 class="text-2xl font-bold text-gray-900 mb-2">スタンダード</h3>
+                        <div class="text-4xl font-bold text-primary mb-2">¥100,000</div>
+                        <p class="text-gray-600">初期費用・設置込み</p>
+                    </div>
+                    <div class="space-y-3 mb-8">
+                        <div class="flex items-center">
+                            <div class="w-5 h-5 flex items-center justify-center mr-3">
+                                <i class="ri-check-line text-secondary"></i>
+                            </div>
+                            <span class="text-sm">車両台数 10台まで</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-5 h-5 flex items-center justify-center mr-3">
+                                <i class="ri-check-line text-secondary"></i>
+                            </div>
+                            <span class="text-sm">基本ナンバー認識機能</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-5 h-5 flex items-center justify-center mr-3">
+                                <i class="ri-check-line text-secondary"></i>
+                            </div>
+                            <span class="text-sm">クラウド管理システム</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-5 h-5 flex items-center justify-center mr-3">
+                                <i class="ri-check-line text-secondary"></i>
+                            </div>
+                            <span class="text-sm">平日サポート</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-5 h-5 flex items-center justify-center mr-3">
+                                <i class="ri-check-line text-secondary"></i>
+                            </div>
+                            <span class="text-sm">月額運用費 ¥5,000</span>
+                        </div>
+                    </div>
+                    <button class="w-full border-2 border-primary text-primary py-3 !rounded-button font-semibold hover:bg-primary hover:text-white transition-colors whitespace-nowrap cursor-pointer">
+                        詳細を確認
+                    </button>
+                </div>
+                <div class="border-2 border-primary rounded-2xl p-8 relative shadow-lg">
+                    <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                        <div class="bg-primary text-white px-6 py-2 rounded-full text-sm font-semibold">
+                            おすすめ
+                        </div>
+                    </div>
+                    <div class="text-center mb-6">
+                        <h3 class="text-2xl font-bold text-gray-900 mb-2">プロフェッショナル</h3>
+                        <div class="text-4xl font-bold text-primary mb-2">¥300,000</div>
+                        <p class="text-gray-600">初期費用・設置込み</p>
+                    </div>
+                    <div class="space-y-3 mb-8">
+                        <div class="flex items-center">
+                            <div class="w-5 h-5 flex items-center justify-center mr-3">
+                                <i class="ri-check-line text-secondary"></i>
+                            </div>
+                            <span class="text-sm">車両台数 100台まで</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-5 h-5 flex items-center justify-center mr-3">
+                                <i class="ri-check-line text-secondary"></i>
+                            </div>
+                            <span class="text-sm">高精度 AI 認識機能</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-5 h-5 flex items-center justify-center mr-3">
+                                <i class="ri-check-line text-secondary"></i>
+                            </div>
+                            <span class="text-sm">リアルタイム分析</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-5 h-5 flex items-center justify-center mr-3">
+                                <i class="ri-check-line text-secondary"></i>
+                            </div>
+                            <span class="text-sm">24時間サポート</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-5 h-5 flex items-center justify-center mr-3">
+                                <i class="ri-check-line text-secondary"></i>
+                            </div>
+                            <span class="text-sm">月額運用費 ¥15,000</span>
+                        </div>
+                    </div>
+                    <button class="w-full bg-primary text-white py-3 !rounded-button font-semibold hover:bg-blue-600 transition-colors whitespace-nowrap cursor-pointer">
+                        詳細を確認
+                    </button>
+                </div>
+                <div class="border border-gray-200 rounded-2xl p-8 hover:shadow-lg transition-shadow">
+                    <div class="text-center mb-6">
+                        <h3 class="text-2xl font-bold text-gray-900 mb-2">エンタープライズ</h3>
+                        <div class="text-4xl font-bold text-primary mb-2">お見積り</div>
+                        <p class="text-gray-600">カスタマイズ対応</p>
+                    </div>
+                    <div class="space-y-3 mb-8">
+                        <div class="flex items-center">
+                            <div class="w-5 h-5 flex items-center justify-center mr-3">
+                                <i class="ri-check-line text-secondary"></i>
+                            </div>
+                            <span class="text-sm">車両台数 無制限</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-5 h-5 flex items-center justify-center mr-3">
+                                <i class="ri-check-line text-secondary"></i>
+                            </div>
+                            <span class="text-sm">カスタム機能開発</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-5 h-5 flex items-center justify-center mr-3">
+                                <i class="ri-check-line text-secondary"></i>
+                            </div>
+                            <span class="text-sm">既存システム連携</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-5 h-5 flex items-center justify-center mr-3">
+                                <i class="ri-check-line text-secondary"></i>
+                            </div>
+                            <span class="text-sm">専任サポート担当</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-5 h-5 flex items-center justify-center mr-3">
+                                <i class="ri-check-line text-secondary"></i>
+                            </div>
+                            <span class="text-sm">SLA 保証</span>
+                        </div>
+                    </div>
+                    <button class="w-full border-2 border-primary text-primary py-3 !rounded-button font-semibold hover:bg-primary hover:text-white transition-colors whitespace-nowrap cursor-pointer">
+                        お見積り依頼
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Implementation Flow Section -->
+    <section id="flow" class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">導入までの流れ</h2>
+                <p class="text-xl text-gray-600">お問い合わせから運用開始まで、スムーズな導入をサポート</p>
+            </div>
+            <div class="space-y-12">
+                <div class="flex flex-col lg:flex-row items-center">
+                    <div class="lg:w-1/2 mb-8 lg:mb-0">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center font-bold text-lg mr-4">1</div>
+                            <h3 class="text-2xl font-bold text-gray-900">お問い合わせ・ヒアリング</h3>
+                        </div>
+                        <p class="text-gray-600 mb-4">お客様のご要望や現在の課題をお聞かせください。専門スタッフが最適なソリューションをご提案いたします。</p>
+                        <div class="text-sm text-primary font-semibold">所要期間：1-2日</div>
+                    </div>
+                    <div class="lg:w-1/2 lg:pl-12">
+                        <img src="https://readdy.ai/api/search-image?query=Business%20consultation%20meeting%20professional%20office%20setting%20client%20and%20consultant%20discussing%20vehicle%20gate%20system%20documents%20modern%20conference%20room%20clean%20corporate%20environment%20technology%20planning&width=500&height=300&seq=step1-consultation&orientation=landscape" alt="ヒアリング" class="w-full rounded-xl shadow-lg object-cover object-top">
+                    </div>
+                </div>
+                <div class="flex flex-col lg:flex-row-reverse items-center">
+                    <div class="lg:w-1/2 mb-8 lg:mb-0">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center font-bold text-lg mr-4">2</div>
+                            <h3 class="text-2xl font-bold text-gray-900">現地調査・見積もり</h3>
+                        </div>
+                        <p class="text-gray-600 mb-4">設置予定場所の現地調査を行い、最適な機器配置と詳細な見積もりをご提示いたします。</p>
+                        <div class="text-sm text-primary font-semibold">所要期間：3-5日</div>
+                    </div>
+                    <div class="lg:w-1/2 lg:pr-12">
+                        <img src="https://readdy.ai/api/search-image?query=Technical%20survey%20parking%20garage%20engineer%20measuring%20installation%20points%20for%20vehicle%20gate%20system%20professional%20equipment%20site%20inspection%20modern%20parking%20facility%20car%20entrance%20evaluation&width=500&height=300&seq=step2-survey&orientation=landscape" alt="現地調査" class="w-full rounded-xl shadow-lg object-cover object-top">
+                    </div>
+                </div>
+                <div class="flex flex-col lg:flex-row items-center">
+                    <div class="lg:w-1/2 mb-8 lg:mb-0">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center font-bold text-lg mr-4">3</div>
+                            <h3 class="text-2xl font-bold text-gray-900">契約・設置工事</h3>
+                        </div>
+                        <p class="text-gray-600 mb-4">ご契約後、専門技術者による設置工事を実施。車両の通行に支障をきたさないよう配慮して作業を進めます。</p>
+                        <div class="text-sm text-primary font-semibold">所要期間：1-2週間</div>
+                    </div>
+                    <div class="lg:w-1/2 lg:pl-12">
+                        <img src="https://readdy.ai/api/search-image?query=Installation%20work%20vehicle%20gate%20system%20technicians%20installing%20camera%20equipment%20and%20barrier%20gate%20professional%20construction%20work%20modern%20automotive%20technology%20setup%20parking%20entrance&width=500&height=300&seq=step3-installation&orientation=landscape" alt="設置工事" class="w-full rounded-xl shadow-lg object-cover object-top">
+                    </div>
+                </div>
+                <div class="flex flex-col lg:flex-row-reverse items-center">
+                    <div class="lg:w-1/2 mb-8 lg:mb-0">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center font-bold text-lg mr-4">4</div>
+                            <h3 class="text-2xl font-bold text-gray-900">システム設定・テスト</h3>
+                        </div>
+                        <p class="text-gray-600 mb-4">AI の学習設定と動作テストを実施。お客様の運用方法に合わせた細かな調整を行います。</p>
+                        <div class="text-sm text-primary font-semibold">所要期間：2-3日</div>
+                    </div>
+                    <div class="lg:w-1/2 lg:pr-12">
+                        <img src="https://readdy.ai/api/search-image?query=System%20testing%20computer%20monitoring%20screens%20showing%20vehicle%20license%20plate%20recognition%20software%20control%20room%20technical%20setup%20AI%20calibration%20testing%20car%20gate%20system&width=500&height=300&seq=step4-testing&orientation=landscape" alt="システム設定" class="w-full rounded-xl shadow-lg object-cover object-top">
+                    </div>
+                </div>
+                <div class="flex flex-col lg:flex-row items-center">
+                    <div class="lg:w-1/2 mb-8 lg:mb-0">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-secondary text-white rounded-full flex items-center justify-center font-bold text-lg mr-4">5</div>
+                            <h3 class="text-2xl font-bold text-gray-900">運用開始・サポート</h3>
+                        </div>
+                        <p class="text-gray-600 mb-4">システム運用開始後も継続的なサポートを提供。定期メンテナンスと機能改善で安定稼働を保証します。</p>
+                        <div class="text-sm text-secondary font-semibold">継続サポート</div>
+                    </div>
+                    <div class="lg:w-1/2 lg:pl-12">
+                        <img src="https://readdy.ai/api/search-image?query=Operational%20vehicle%20gate%20system%20cars%20smoothly%20entering%20through%20automated%20barrier%20gate%20successful%20implementation%20busy%20parking%20facility%20efficient%20traffic%20flow%20modern%20automotive%20technology&width=500&height=300&seq=step5-operation&orientation=landscape" alt="運用開始" class="w-full rounded-xl shadow-lg object-cover object-top">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="py-20 bg-white">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">よくある質問</h2>
+                <p class="text-xl text-gray-600">お客様からよくいただくご質問にお答えします</p>
+            </div>
+            <div class="space-y-4">
+                <div class="border border-gray-200 rounded-lg">
+                    <button class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 transition-colors cursor-pointer" onclick="toggleFaq(this)">
+                        <span class="font-semibold text-gray-900">導入にかかる期間はどのくらいですか？</span>
+                        <div class="w-6 h-6 flex items-center justify-center">
+                            <i class="ri-add-line text-gray-600"></i>
+                        </div>
+                    </button>
+                    <div class="px-6 pb-4 hidden">
+                        <p class="text-gray-600">お問い合わせから運用開始まで、通常 3-4週間程度です。現地調査の結果や設置規模により前後する場合がございます。お急ぎの場合はご相談ください。</p>
+                    </div>
+                </div>
+                <div class="border border-gray-200 rounded-lg">
+                    <button class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 transition-colors cursor-pointer" onclick="toggleFaq(this)">
+                        <span class="font-semibold text-gray-900">既存の車両管理システムとの連携は可能ですか？</span>
+                        <div class="w-6 h-6 flex items-center justify-center">
+                            <i class="ri-add-line text-gray-600"></i>
+                        </div>
+                    </button>
+                    <div class="px-6 pb-4 hidden">
+                        <p class="text-gray-600">はい、多くの既存システムとの連携が可能です。API 連携により料金計算システムや会計システムとの統合も対応いたします。詳細はお問い合わせください。</p>
+                    </div>
+                </div>
+                <div class="border border-gray-200 rounded-lg">
+                    <button class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 transition-colors cursor-pointer" onclick="toggleFaq(this)">
+                        <span class="font-semibold text-gray-900">ドライブスルーでの利用は可能ですか？</span>
+                        <div class="w-6 h-6 flex items-center justify-center">
+                            <i class="ri-add-line text-gray-600"></i>
+                        </div>
+                    </button>
+                    <div class="px-6 pb-4 hidden">
+                        <p class="text-gray-600">はい、ドライブスルーでの利用も可能です。車両認識により顧客の注文履歴を自動で呼び出し、パーソナライズされたサービス提供が実現できます。</p>
+                    </div>
+                </div>
+                <div class="border border-gray-200 rounded-lg">
+                    <button class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 transition-colors cursor-pointer" onclick="toggleFaq(this)">
+                        <span class="font-semibold text-gray-900">月額の運用費用には何が含まれますか？</span>
+                        <div class="w-6 h-6 flex items-center justify-center">
+                            <i class="ri-add-line text-gray-600"></i>
+                        </div>
+                    </button>
+                    <div class="px-6 pb-4 hidden">
+                        <p class="text-gray-600">クラウドシステムの利用料、AI の継続学習、定期メンテナンス、技術サポートが含まれます。追加料金は一切発生いたしません。</p>
+                    </div>
+                </div>
+                <div class="border border-gray-200 rounded-lg">
+                    <button class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 transition-colors cursor-pointer" onclick="toggleFaq(this)">
+                        <span class="font-semibold text-gray-900">セキュリティ対策はどのようになっていますか？</span>
+                        <div class="w-6 h-6 flex items-center justify-center">
+                            <i class="ri-add-line text-gray-600"></i>
+                        </div>
+                    </button>
+                    <div class="px-6 pb-4 hidden">
+                        <p class="text-gray-600">エンドツーエンド暗号化、ゼロ知識証明技術により、プライバシー情報は完全に保護されます。ISO27001 準拠のセキュリティ体制で運用しています。</p>
+                    </div>
+                </div>
+                <div class="border border-gray-200 rounded-lg">
+                    <button class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 transition-colors cursor-pointer" onclick="toggleFaq(this)">
+                        <span class="font-semibold text-gray-900">故障時の対応はどうなりますか？</span>
+                        <div class="w-6 h-6 flex items-center justify-center">
+                            <i class="ri-add-line text-gray-600"></i>
+                        </div>
+                    </button>
+                    <div class="px-6 pb-4 hidden">
+                        <p class="text-gray-600">24時間監視システムにより故障を即座に検知し、プロフェッショナルプラン以上では 4時間以内の現地対応を保証しています。</p>
+                    </div>
+                </div>
+                <div class="border border-gray-200 rounded-lg">
+                    <button class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 transition-colors cursor-pointer" onclick="toggleFaq(this)">
+                        <span class="font-semibold text-gray-900">車両認識精度はどの程度ですか？</span>
+                        <div class="w-6 h-6 flex items-center justify-center">
+                            <i class="ri-add-line text-gray-600"></i>
+                        </div>
+                    </button>
+                    <div class="px-6 pb-4 hidden">
+                        <p class="text-gray-600">最新の AI 技術により 99.5% 以上の認識精度を実現しています。天候や時間帯に関係なく安定した性能を提供します。</p>
+                    </div>
+                </div>
+                <div class="border border-gray-200 rounded-lg">
+                    <button class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 transition-colors cursor-pointer" onclick="toggleFaq(this)">
+                        <span class="font-semibold text-gray-900">導入後のカスタマイズは可能ですか？</span>
+                        <div class="w-6 h-6 flex items-center justify-center">
+                            <i class="ri-add-line text-gray-600"></i>
+                        </div>
+                    </button>
+                    <div class="px-6 pb-4 hidden">
+                        <p class="text-gray-600">はい、運用開始後も機能追加やカスタマイズが可能です。お客様のニーズの変化に合わせて柔軟に対応いたします。</p>
+                    </div>
+                </div>
+                <div class="border border-gray-200 rounded-lg">
+                    <button class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 transition-colors cursor-pointer" onclick="toggleFaq(this)">
+                        <span class="font-semibold text-gray-900">解約時の手続きはどうなりますか？</span>
+                        <div class="w-6 h-6 flex items-center justify-center">
+                            <i class="ri-add-line text-gray-600"></i>
+                        </div>
+                    </button>
+                    <div class="px-6 pb-4 hidden">
+                        <p class="text-gray-600">契約期間満了の 30日前までにご連絡いただければ、違約金なしで解約可能です。設置機器の撤去作業も無料で対応いたします。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-20 bg-gradient-to-r from-primary to-blue-600">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-4xl font-bold text-white mb-6">今すぐ導入相談を始めませんか？</h2>
+            <p class="text-xl text-blue-100 mb-12">専門スタッフがお客様の課題解決に向けて最適なプランをご提案いたします</p>
+            <div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
+                <button onclick="scrollToForm()" class="bg-white text-primary px-8 py-4 !rounded-button text-lg font-semibold hover:bg-gray-100 transition-colors whitespace-nowrap cursor-pointer">
+                    フォームで相談する
+                </button>
+                <div class="flex items-center text-white">
+                    <div class="w-6 h-6 flex items-center justify-center mr-3">
+                        <i class="ri-phone-line"></i>
+                    </div>
+                    <div class="text-left">
+                        <div class="font-semibold">お電話でのお問い合わせ</div>
+                        <div class="text-blue-100">0120-123-456（平日 9:00-18:00）</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <div class="text-2xl font-['Pacifico'] text-primary mb-4">inCar</div>
+                    <p class="text-gray-400 mb-6">車のナンバー認識で決済が変わる。新しいカーライフを始めませんか。</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors cursor-pointer">
+                            <i class="ri-twitter-line"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors cursor-pointer">
+                            <i class="ri-facebook-line"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors cursor-pointer">
+                            <i class="ri-instagram-line"></i>
+                        </a>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">サービス</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition-colors cursor-pointer">自動決済機能</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors cursor-pointer">投げ銭機能</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors cursor-pointer">トークンローン</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors cursor-pointer">カメラキット</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">法人向け</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition-colors cursor-pointer">inCar ゲート</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors cursor-pointer">導入事例</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors cursor-pointer">料金プラン</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors cursor-pointer">お問い合わせ</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">サポート</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="faq.html" class="hover:text-white transition-colors">よくある質問</a></li>
+                        <li><a href="kiyaku.html" class="hover:text-white transition-colors">利用規約</a></li>
+                        <li><a href="privacy.html" class="hover:text-white transition-colors">プライバシーポリシー</a></li>
+                        <li><a href="contact.html" class="hover:text-white transition-colors">お問い合わせ</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
+                <p>&copy; 2026 inCar. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script id="form-interactions">
+        document.addEventListener('DOMContentLoaded', function() {
+            const radioButtons = document.querySelectorAll('input[type="radio"]');
+            radioButtons.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    const name = this.name;
+                    document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
+                        const indicator = r.parentElement.querySelector('div > div');
+                        if (r.checked) {
+                            indicator.classList.remove('hidden');
+                            r.parentElement.classList.add('border-primary', 'bg-blue-50');
+                        } else {
+                            indicator.classList.add('hidden');
+                            r.parentElement.classList.remove('border-primary', 'bg-blue-50');
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+
+    <script id="faq-functionality">
+        function toggleFaq(button) {
+            const content = button.nextElementSibling;
+            const icon = button.querySelector('i');
+
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                icon.className = 'ri-subtract-line text-gray-600';
+            } else {
+                content.classList.add('hidden');
+                icon.className = 'ri-add-line text-gray-600';
+            }
+        }
+    </script>
+
+    <script id="scroll-functionality">
+        function scrollToForm() {
+            document.getElementById('consultation').scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const links = document.querySelectorAll('a[href^="#"]');
+            links.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
