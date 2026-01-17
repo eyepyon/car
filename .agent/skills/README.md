@@ -1,0 +1,1 @@
+# Google Antigravity用のSKill格納フォルダ
