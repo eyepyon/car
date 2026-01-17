@@ -7,6 +7,8 @@
     "frontend": "pnpm --filter frontend",
     "contract": "pnpm --filter contract",
     "circuit": "pnpm --filter circuit",
+    "mcp": "pnpm --filter mcp",
+    "x402server": "pnpm --filter x402server",
     "format": "pnpm exec biome format --write .",
     "lint": "pnpm exec biome check --write ."
   },

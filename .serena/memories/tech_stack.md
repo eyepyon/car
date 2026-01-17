@@ -7,7 +7,6 @@ pnpm workspace (v10.20.0) を使ったモノレポ構成。フロントエンド
 - TypeScript（メイン言語）
 - Solidity（スマートコントラクト）
 - Circom（ZK証明回路）
-- PHP/Python（バックエンド計画）
 
 ## フロントエンド（pkgs/frontend）
 ### フレームワーク・ライブラリ
@@ -23,8 +22,19 @@ pnpm workspace (v10.20.0) を使ったモノレポ構成。フロントエンド
 - ESLint 9（flat config）
 - Sharp（画像処理）
 
-## バックエンド（contract: pkgs/contract）
-### ブロックチェーン
+## バックエンド
+
+### MCP/API サーバー（pkgs/mcp, pkgs/x402server）
+- **Model Context Protocol (MCP) SDK 1.9.0**: Claude等のAIとの統合
+- **Hono 4.7.1**: 高速軽量Webフレームワーク
+- **x402-axios/x402-hono**: x402決済プロトコル実装
+- **Axios 1.8.4**: HTTPクライアント
+- **Express 4.18.2**: Node.jsサーバーフレームワーク（Lambda用）
+- **@vendia/serverless-express 4.12.6**: AWS Lambda対応
+- **@hono/node-server 1.13.8**: Hono Node.jsアダプター
+- **tsx**: TypeScript実行環境
+
+### ブロックチェーン（pkgs/contract）
 - **Hardhat 2.26.1**: 開発環境
 - **Viem**: Ethereum クライアント
 - **Base Sepolia**: デプロイ先L2チェーン（Chain ID: 84532）
@@ -58,6 +68,10 @@ pnpm workspace (v10.20.0) を使ったモノレポ構成。フロントエンド
 - **ERC4337**: アカウント抽象化（SmartAccount）
 - **ZK証明**: プライバシー保護
 - **Base L2**: 低コスト・高速決済
+- **x402**: ステーブルコイン（USDC）による決済プロトコル
+  - 自動支払いインターセプター
+  - API使用量ベースの課金
+  - Base Sepoliaテストネットで動作
 
 ## コード品質ツール
 - **Biome 2.3.11**: フォーマッター・リンター（プロジェクトルート）

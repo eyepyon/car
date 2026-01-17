@@ -13,7 +13,9 @@
 ├── pkgs/                    # モノレポパッケージ
 │   ├── frontend/           # Next.js Webアプリ
 │   ├── contract/           # Solidityスマートコントラクト
-│   └── circuit/            # Circom ZK証明回路
+│   ├── circuit/            # Circom ZK証明回路
+│   ├── mcp/                # x402 MCPクライアント
+│   └── x402server/         # x402 決済サーバー
 ├── AGENTS.md               # AI開発ガイドライン
 ├── README.md               # プロジェクト説明
 ├── biome.json              # Biome設定（フォーマット・リント）
@@ -111,6 +113,49 @@ circuit/
 
 **エントリーポイント**: `src/PasswordHash.circom`
 
+### 4. MCP（pkgs/mcp）
+```
+mcp/
+├── src/                  # TypeScriptソースコード
+│   ├── index.ts         # MCPサーバーメインエントリー
+│   ├── lambda-server.ts # AWS Lambda実装
+│   └── helpers.ts       # ヘルパー関数
+├── bundle.js            # バンドルされたサーバー
+├── esbuild.js           # esbuildビルド設定
+├── run.sh               # 実行スクリプト
+├── eslint.config.js     # ESLint設定
+├── tsconfig.json        # TypeScript設定
+├── README.md            # セットアップドキュメント
+└── package.json
+```
+
+**エントリーポイント**: `src/index.ts`
+**機能**: 
+- Model Context Protocol (MCP) サーバー実装
+- x402決済プロトコルを使用した自動支払い機能
+- Claude Desktop等のMCPクライアントとの統合
+- リソースサーバーからの有料データ取得
+
+### 5. x402server（pkgs/x402server）
+```
+x402server/
+├── src/                 # TypeScriptソースコード
+│   └── index.ts        # Honoサーバーメインエントリー
+├── Dockerfile          # Docker設定
+├── eslint.config.js    # ESLint設定
+├── tsconfig.json       # TypeScript設定
+├── README.md           # デプロイドキュメント
+└── package.json
+```
+
+**エントリーポイント**: `src/index.ts`
+**機能**:
+- Honoフレームワークによる高速APIサーバー
+- x402-hono決済ミドルウェアの実装
+- ステーブルコイン（USDC）による有料APIエンドポイント
+- Google Cloud Run対応のDocker化
+- `/weather` エンドポイント（デモ用有料データ提供）
+
 ## 命名規則
 
 ### ファイル
@@ -188,8 +233,13 @@ PasswordHashVerifier.sol
 contract (Hardhat)
   ↓ (デプロイ)
 Base Sepolia
-  ↑ (検証)
+  ↑ (検証・支払い)
 frontend (Next.js)
+  ↑ (支払い要求)
+x402server (Hono)
+  ↑ (MCPプロトコル)
+mcp (MCP Client)
+  ↑ (Claude等のMCPクライアント)
 ```
 
 ## 重要な成果物

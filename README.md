@@ -321,3 +321,25 @@ pnpm format
 # リント（修正含む）
 pnpm lint
 ```
+
+### x402サーバー
+
+#### ローカルでx402サーバーを起動すること
+
+```bash
+pnpm x402server dev
+```
+
+### MCPサーバー
+
+#### MCPサーバーのビルド
+
+```bash
+pnpm mcp build
+```
+
+#### MCPサーバーの起動
+
+```bash
+pnpm mcp dev
+```

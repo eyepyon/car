@@ -59,21 +59,29 @@ car - ナンバープレート連動ウォレットシステム
 3. その値を使ったAA用のSmartAccount（ERC4337規格準拠）を作成
 4. スマホなどに金額案内などと同時に利用承認の通知が来る
 5. 承認したらゲートが開く
-6. 出るときAIカメラで自動的にゲートを開けるのと課金トランザクション発生（課金する時にx402を使う？？）
+6. 出るときAIカメラで自動的にゲートを開けるのと課金トランザクション発生
+7. **x402決済プロトコル**により、ステーブルコイン（USDC）での自動決済を実現
+   - MCPクライアント（mcp）がClaude Desktopと統合し、AIによる音声コマンドでの決済操作
+   - x402serverがAPI課金エンドポイントを提供（$0.001/リクエスト等の従量課金）
+   - 自動支払いインターセプターにより、リクエスト送信前に決済を完了
 
 ## システム構成
-pnpm workspaceを使用したモノレポ構成。以下の3つの主要パッケージで構成：
+pnpm workspaceを使用したモノレポ構成。以下の5つの主要パッケージで構成：
 - **frontend**: Next.js + React 19のWebアプリケーション（PWA対応）
 - **contract**: Hardhat + Solidityのスマートコントラクト（Base Sepolia L2）
 - **circuit**: Circomによるゼロ知識証明回路（Groth16）
+- **mcp**: x402決済プロトコル対応MCPクライアント（Claude Desktop統合）
+- **x402server**: x402決済対応Honoサーバー（有料API提供、Google Cloud Run対応）
 
 ## 技術スタック
 | カテゴリ | 技術 |
 |---------|------|
 | **フロントエンド** | Next.js, TypeScript, TailwindCSS, Shadcn/ui, React Bits, biome |
-| **バックエンド** | laravel, php, flask, python |
-| **AI** | Qwen, allenai/Molmo2-8B |
-| **Web3** | Base Sepolia, AA, SmartAccount, ゼロ知識証明, Solidity, Circom, x402 |
+| **バックエンド** | Hono, x402-hono, Express, MCP SDK |
+| **AI** | Qwen, allenai/Molmo2-8B, Claude Desktop (MCP統合) |
+| **Web3** | Base Sepolia, AA, SmartAccount, ゼロ知識証明, Solidity, Circom, x402決済プロトコル |
+| **決済** | x402, x402-axios, x402-hono, USDC (ステーブルコイン) |
+| **インフラ** | Google Cloud Run, Docker, AWS Lambda |
 
 ## ビジネスモデル
 - 施設側: 自動決済による回転率向上（30%）、降車回数削減（90%）

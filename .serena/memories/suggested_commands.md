@@ -37,6 +37,12 @@ pnpm contract <command>
 
 # ZK回路
 pnpm circuit <command>
+
+# x402 MCPクライアント
+pnpm mcp <command>
+
+# x402サーバー
+pnpm x402server <command>
 ```
 
 ## フロントエンド（pkgs/frontend）
@@ -144,6 +150,109 @@ pnpm circuit cp:zk
 
 # カスタム回路名指定
 ./scripts/compile.sh <CircuitName>
+```
+
+## x402 MCPクライアント（pkgs/mcp）
+
+### 開発・実行
+```bash
+# 開発モードで起動（tsx使用）
+pnpm mcp dev
+
+# ビルド（TypeScript + esbuild）
+pnpm mcp build
+
+# ビルド済みバンドルを実行
+pnpm mcp start
+
+# AWS Lambda版を起動
+pnpm mcp lambda
+```
+
+### コード品質
+```bash
+# フォーマット
+pnpm mcp format
+pnpm mcp format:check
+
+# リント
+pnpm mcp lint
+pnpm mcp lint:check
+```
+
+### 環境変数設定
+```bash
+# .env ファイルに以下を設定
+PRIVATE_KEY=0x...                        # 支払い用ウォレット秘密鍵
+RESOURCE_SERVER_URL=http://localhost:4021 # リソースサーバーURL
+ENDPOINT_PATH=/weather                    # エンドポイントパス
+```
+
+### Claude Desktop統合
+`~/Library/Application Support/Claude/claude_desktop_config.json` に追加：
+```json
+{
+  "mcpServers": {
+    "x402-demo": {
+      "command": "pnpm",
+      "args": ["--silent", "-C", "/path/to/pkgs/mcp", "dev"],
+      "env": {
+        "PRIVATE_KEY": "0x...",
+        "RESOURCE_SERVER_URL": "http://localhost:4021",
+        "ENDPOINT_PATH": "/weather"
+      }
+    }
+  }
+}
+```
+
+## x402サーバー（pkgs/x402server）
+
+### 開発・実行
+```bash
+# 開発モードで起動
+pnpm x402server dev
+
+# TypeScriptコンパイル
+pnpm x402server build
+
+# コンパイル済みコードを実行
+pnpm x402server start
+```
+
+### Docker操作
+```bash
+# Dockerイメージビルド（linux/amd64）
+pnpm x402server docker:build
+
+# Dockerコンテナでローカル実行
+pnpm x402server docker:run
+```
+
+### 環境変数設定
+```bash
+# .env ファイルに以下を設定
+FACILITATOR_URL=https://facilitator.x402.io  # x402ファシリテーターURL
+ADDRESS=0x...                                 # 支払い受取アドレス
+NETWORK=base-sepolia                          # ブロックチェーンネットワーク
+PORT=4021                                     # サーバーポート（省略可）
+```
+
+### Google Cloud Run デプロイ
+```bash
+# 1. Google Cloud SDK認証
+gcloud auth login
+
+# 2. プロジェクト設定
+gcloud config set project <project-id>
+
+# 3. Cloud Runにデプロイ
+gcloud run deploy x402-api \
+  --source . \
+  --platform managed \
+  --region asia-northeast1 \
+  --allow-unauthenticated \
+  --set-env-vars FACILITATOR_URL=<url>,ADDRESS=<address>,NETWORK=base-sepolia
 ```
 
 ## Git コマンド（macOS/Darwin）
