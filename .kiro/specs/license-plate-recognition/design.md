@@ -23,6 +23,7 @@ graph TB
         Preview[Preview Display]
         Validator[Image Validator]
         RecognitionUI[Recognition Result UI]
+        ChatUI[Chat UI]
     end
 
     subgraph Backend["バックエンド (Hono/Laravel/Flask)"]
@@ -32,12 +33,19 @@ graph TB
         Logger[Error Logger]
         LaravelAPI[Laravel API - /api/]
         FlaskAPI[Flask API - /papi/]
+        GateAPI[Gate Control API]
+        ChatAPI[Chat API]
     end
 
     subgraph AI["AI Layer"]
         QwenClient[Qwen-VL Client]
         MolmoClient[Molmo2-8B Client]
         DashScope[DashScope API]
+        QwenMCP[Qwen MCP Server]
+    end
+
+    subgraph External["外部サービス"]
+        SesameAPI[Sesame Web API]
     end
 
     Camera --> Preview
@@ -51,6 +59,10 @@ graph TB
     Cache --> API
     API --> RecognitionUI
     API --> Logger
+    API --> GateAPI
+    GateAPI --> SesameAPI
+    ChatUI --> ChatAPI
+    ChatAPI --> QwenMCP
 ```
 
 ### データフロー

@@ -32,10 +32,15 @@ Web3 × AI融合のモビリティプラットフォーム。フロントエン�
 - Laravel 11（PHP 8.3+、メインAPI）
 - Flask（Python、バッチ処理・AI連携）
 - x402（決済プロトコル）
+- Sesame Web API（ゲート開閉制御）
 
 ### API Routes
 - `/api/` - Laravel API（メイン）
 - `/papi/` - Flask API（Python）
+
+### External APIs
+- Sesame Web API（スマートロック制御）
+- Qwen MCP Server（会話AI連携）
 
 ### Documentation
 - `/docs/` - APIドキュメント（PHP/Python別）

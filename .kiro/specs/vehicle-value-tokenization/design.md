@@ -33,11 +33,15 @@ graph TB
         NotificationAPI[Notification API]
         LaravelAPI[Laravel API - /api/]
         FlaskAPI[Flask API - /papi/]
+        GateAPI[Gate Control API]
+        ChatAPI[Chat API]
     end
 
     subgraph External["外部サービス"]
         AppraisalOracle[Market Price Oracle]
         PushService[Push Notification Service]
+        SesameAPI[Sesame Web API]
+        QwenMCP[Qwen MCP Server]
     end
 
     subgraph Contract["スマートコントラクト (Base Sepolia)"]

@@ -41,12 +41,14 @@ pnpm workspaceによるモノレポ構成。機能ドメインごとにパッケ
 **Purpose**: メインバックエンドAPI（Laravel 11）
 **API Route**: `/api/` 以下
 **Database**: MySQL 8.0+（マイグレーションはLaravelで管理）
+**追加機能**: Sesame Web API連携によるゲート開閉API
 
 ### Python Backend
 **Location**: `/python/`
 **Purpose**: バッチ処理・AI連携API（Flask）
 **API Route**: `/papi/` 以下
 **Framework**: Flask（必須ではないが推奨）
+**追加機能**: 会話用プロンプトからQwen MCPサーバー呼び出し
 
 ### Documentation
 **Location**: `/docs/`

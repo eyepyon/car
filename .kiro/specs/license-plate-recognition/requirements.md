@@ -12,6 +12,8 @@
 - **Recognition_API**: バックエンドのナンバープレート認識エンドポイント
 - **Qwen_VL_Client**: Qwen-VL AIモデルとの通信を行うクライアント
 - **Image_Validator**: 画像品質を検証するコンポーネント
+- **Gate_Control_API**: Sesame Web APIを使用してゲートの開閉を制御するLaravel APIエンドポイント
+- **Qwen_MCP_Client**: 会話用プロンプトからQwen MCPサーバーを呼び出すPython APIクライアント
 
 ## 要件
 
@@ -111,3 +113,28 @@
 3. THE License_Plate_Recognition_Service SHALL 画像サイズを最適化してネットワーク転送を効率化する
 4. WHEN 高負荷時 THEN License_Plate_Recognition_Service SHALL レート制限を適用し、適切なエラーレスポンスを返す
 5. THE License_Plate_Recognition_Service SHALL 認識結果をキャッシュして重複リクエストを最適化する
+
+
+### 要件 9: ゲート開閉連携
+
+**ユーザーストーリー:** システムとして、ナンバープレート認識成功後にゲートを自動開閉したい。これにより、シームレスな入退場を実現できる。
+
+#### 受け入れ基準
+
+1. WHEN ナンバープレートが認識される THEN Gate_Control_API SHALL Sesame Web APIを呼び出してゲートを解錠する
+2. THE Gate_Control_API SHALL Laravel APIエンドポイント（/api/gate/unlock）として実装する
+3. WHEN ゲート解錠に成功する THEN Gate_Control_API SHALL 解錠成功レスポンスを返す
+4. IF Sesame Web APIへの接続が失敗する THEN Gate_Control_API SHALL リトライ処理を実行し、最終的にエラーを返す
+5. THE Gate_Control_API SHALL ゲート操作ログを記録する
+
+### 要件 10: 会話AI連携
+
+**ユーザーストーリー:** ユーザーとして、音声やテキストで車両情報を問い合わせたい。これにより、ハンズフリーで情報を取得できる。
+
+#### 受け入れ基準
+
+1. WHEN ユーザーが会話プロンプトを送信する THEN Qwen_MCP_Client SHALL Qwen MCPサーバーを呼び出す
+2. THE Qwen_MCP_Client SHALL Python APIエンドポイント（/papi/chat）として実装する
+3. THE Qwen_MCP_Client SHALL ナンバープレート認識結果をコンテキストとして含める
+4. WHEN 会話応答が生成される THEN Qwen_MCP_Client SHALL 日本語で応答を返す
+5. IF MCPサーバーへの接続が失敗する THEN Qwen_MCP_Client SHALL 適切なエラーメッセージを返す

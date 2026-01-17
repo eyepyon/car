@@ -27,6 +27,12 @@ graph TB
         AccountUI[SmartAccount UI]
     end
 
+    subgraph Backend["バックエンド (Laravel/Flask)"]
+        LaravelAPI[Laravel API - /api/]
+        FlaskAPI[Flask API - /papi/]
+        WalletAPI[Wallet Registration API]
+    end
+
     subgraph Circuit["ZK回路 (Circom)"]
         LicensePlateHash[LicensePlateHash.circom]
         Poseidon[Poseidon Hash]
@@ -51,13 +57,23 @@ graph TB
     Poseidon --> ProofGen
     ProofGen --> AddressDeriver
     AddressDeriver --> AccountUI
-    AccountUI --> Verifier
+    AccountUI --> LaravelAPI
+    LaravelAPI --> WalletAPI
+    WalletAPI --> Verifier
     Verifier --> Registry
     Registry --> AccountFactory
     AccountFactory --> RentalHandler
     AccountFactory --> Bundler
     Bundler --> Paymaster
 ```
+
+### バックエンドAPI構成
+
+| APIルート | フレームワーク | 用途 |
+|----------|--------------|------|
+| `/api/wallet/*` | Laravel 11 | ウォレット登録・取得API |
+| `/api/vehicle/*` | Laravel 11 | 車両情報管理API |
+| `/papi/zk/*` | Flask | ZK証明検証補助API |
 
 ### データフロー
 

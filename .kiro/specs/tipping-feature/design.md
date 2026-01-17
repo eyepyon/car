@@ -37,6 +37,13 @@ graph TB
         HistoryService[History Service]
     end
 
+    subgraph Backend["バックエンド (Laravel/Flask)"]
+        LaravelAPI[Laravel API - /api/]
+        FlaskAPI[Flask API - /papi/]
+        GateAPI[Gate Control API]
+        ChatAPI[Chat API]
+    end
+
     subgraph Integration["統合レイヤー"]
         LPRecognition[License Plate Recognition - Flask API]
         WalletDeriver[Wallet Address Deriver - Laravel API]
@@ -57,6 +64,8 @@ graph TB
         OBD2[OBD-II Device]
         QwenAPI[Qwen AI - OpenAI SDK]
         PushService[Push Notification Service]
+        SesameAPI[Sesame Web API]
+        QwenMCP[Qwen MCP Server]
     end
 
     TipUI --> TipService
@@ -76,7 +85,18 @@ graph TB
     HistoryView --> HistoryService
     HazardDetector --> OBD2
     HazardDetector --> TipUI
+    GateAPI --> SesameAPI
+    ChatAPI --> QwenMCP
 ```
+
+### バックエンドAPI構成
+
+| APIルート | フレームワーク | 用途 |
+|----------|--------------|------|
+| `/api/tip/*` | Laravel 11 | 投げ銭履歴・設定API |
+| `/api/gate/unlock` | Laravel 11 | Sesame Web API連携ゲート開閉 |
+| `/papi/recognize` | Flask | ナンバープレート認識（Qwen-VL） |
+| `/papi/chat` | Flask | Qwen MCP Server連携会話AI |
 
 ### データフロー
 
@@ -561,9 +581,9 @@ app.post('/tip', async (c) => {
 // GET /tip/status/:txHash - トランザクションステータスを取得
 app.get('/tip/status/:txHash', async (c) => {
   const txHash = c.req.param('txHash') as `0x${string}`;
-  
+
   const receipt = await publicClient.getTransactionReceipt({ hash: txHash });
-  
+
   return c.json({
     transactionHash: txHash,
     status: receipt.status === 'success' ? 'confirmed' : 'failed',
