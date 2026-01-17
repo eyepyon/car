@@ -1,0 +1,23 @@
+{
+  "name": "qwen-sample",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "bun run ./src/index.ts",
+    "format": "bun x biome format --write ."
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.3.11",
+    "@types/bun": "latest",
+    "dotenv": "^17.2.3"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/server-filesystem": "^2026.1.14",
+    "@openai/agents": "^0.3.9",
+    "openai": "^6.16.0"
+  }
+}

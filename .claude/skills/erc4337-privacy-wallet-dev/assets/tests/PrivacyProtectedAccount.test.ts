@@ -19,7 +19,7 @@ describe("PrivacyProtectedAccount", function () {
 
     // Compute vehicle commitment off-chain (simulating frontend behavior)
     vehicleCommitment = ethers.keccak256(
-      ethers.solidityPacked(["string", "bytes32"], [plateNumber, userSalt])
+      ethers.solidityPacked(["string", "bytes32"], [plateNumber, userSalt]),
     );
 
     // Deploy AccountFactory
@@ -33,12 +33,12 @@ describe("PrivacyProtectedAccount", function () {
     const accountAddress = await accountFactory.getAddress(
       owner.address,
       vehicleCommitment,
-      salt
+      salt,
     );
 
     account = await ethers.getContractAt(
       "PrivacyProtectedAccount",
-      accountAddress
+      accountAddress,
     );
   });
 
@@ -57,7 +57,7 @@ describe("PrivacyProtectedAccount", function () {
 
     it("should not allow double initialization", async function () {
       await expect(
-        account.initialize(owner.address, vehicleCommitment)
+        account.initialize(owner.address, vehicleCommitment),
       ).to.be.revertedWith("account: already initialized");
     });
   });
@@ -66,7 +66,7 @@ describe("PrivacyProtectedAccount", function () {
     it("should verify vehicle ownership with correct preimage", async function () {
       const isValid = await account.verifyVehicleOwnership(
         plateNumber,
-        userSalt
+        userSalt,
       );
       expect(isValid).to.be.true;
     });
@@ -75,7 +75,7 @@ describe("PrivacyProtectedAccount", function () {
       const wrongPlate = "XYZ-9999";
       const isValid = await account.verifyVehicleOwnership(
         wrongPlate,
-        userSalt
+        userSalt,
       );
       expect(isValid).to.be.false;
     });
@@ -84,7 +84,7 @@ describe("PrivacyProtectedAccount", function () {
       const wrongSalt = ethers.id("wrong-salt");
       const isValid = await account.verifyVehicleOwnership(
         plateNumber,
-        wrongSalt
+        wrongSalt,
       );
       expect(isValid).to.be.false;
     });
@@ -96,11 +96,11 @@ describe("PrivacyProtectedAccount", function () {
       for (let i = 0; i < storageSlots; i++) {
         const storage = await ethers.provider.getStorage(
           await account.getAddress(),
-          i
+          i,
         );
         // Raw plate number should never appear in storage
         expect(storage).to.not.include(
-          ethers.hexlify(ethers.toUtf8Bytes(plateNumber))
+          ethers.hexlify(ethers.toUtf8Bytes(plateNumber)),
         );
       }
     });
@@ -110,10 +110,15 @@ describe("PrivacyProtectedAccount", function () {
     it("should allow owner to update vehicle commitment", async function () {
       const newPlateNumber = "NEW-5678";
       const newCommitment = ethers.keccak256(
-        ethers.solidityPacked(["string", "bytes32"], [newPlateNumber, userSalt])
+        ethers.solidityPacked(
+          ["string", "bytes32"],
+          [newPlateNumber, userSalt],
+        ),
       );
 
-      await expect(account.connect(owner).updateVehicleCommitment(newCommitment))
+      await expect(
+        account.connect(owner).updateVehicleCommitment(newCommitment),
+      )
         .to.emit(account, "VehicleCommitmentUpdated")
         .withArgs(vehicleCommitment, newCommitment);
 
@@ -124,13 +129,13 @@ describe("PrivacyProtectedAccount", function () {
       const newCommitment = ethers.keccak256(ethers.toUtf8Bytes("new-data"));
 
       await expect(
-        account.connect(otherUser).updateVehicleCommitment(newCommitment)
+        account.connect(otherUser).updateVehicleCommitment(newCommitment),
       ).to.be.revertedWith("only owner");
     });
 
     it("should not allow zero commitment", async function () {
       await expect(
-        account.connect(owner).updateVehicleCommitment(ethers.ZeroHash)
+        account.connect(owner).updateVehicleCommitment(ethers.ZeroHash),
       ).to.be.revertedWith("account: commitment cannot be zero");
     });
   });
@@ -148,7 +153,7 @@ describe("PrivacyProtectedAccount", function () {
 
       // Execute transfer
       await expect(
-        account.connect(owner).execute(recipient, amount, "0x")
+        account.connect(owner).execute(recipient, amount, "0x"),
       ).to.changeEtherBalances([account, otherUser], [-amount, amount]);
     });
 
@@ -190,7 +195,7 @@ describe("PrivacyProtectedAccount", function () {
   describe("Access Control", function () {
     it("should restrict execute to owner or EntryPoint", async function () {
       await expect(
-        account.connect(otherUser).execute(otherUser.address, 0, "0x")
+        account.connect(otherUser).execute(otherUser.address, 0, "0x"),
       ).to.be.revertedWith("account: not Owner or EntryPoint");
     });
 
@@ -201,7 +206,7 @@ describe("PrivacyProtectedAccount", function () {
         owner.sendTransaction({
           to: await account.getAddress(),
           value: amount,
-        })
+        }),
       ).to.changeEtherBalance(account, amount);
     });
   });
@@ -211,7 +216,7 @@ describe("PrivacyProtectedAccount", function () {
       // Measure gas for verification
       const tx = await account.verifyVehicleOwnership.staticCall(
         plateNumber,
-        userSalt
+        userSalt,
       );
 
       // Gas should be reasonable (view function, no state changes)

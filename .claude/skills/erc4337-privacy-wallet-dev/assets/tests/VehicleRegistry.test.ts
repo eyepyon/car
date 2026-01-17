@@ -19,7 +19,8 @@ describe("VehicleRegistry", function () {
   let metadataHash: string;
 
   beforeEach(async function () {
-    [owner, wallet1, wallet2, verifier, unauthorized] = await ethers.getSigners();
+    [owner, wallet1, wallet2, verifier, unauthorized] =
+      await ethers.getSigners();
 
     // Deploy registry
     const VehicleRegistry = await ethers.getContractFactory("VehicleRegistry");
@@ -27,13 +28,15 @@ describe("VehicleRegistry", function () {
 
     // Compute commitments off-chain
     commitment1 = ethers.keccak256(
-      ethers.solidityPacked(["string", "bytes32"], [plateNumber1, userSalt])
+      ethers.solidityPacked(["string", "bytes32"], [plateNumber1, userSalt]),
     );
     commitment2 = ethers.keccak256(
-      ethers.solidityPacked(["string", "bytes32"], [plateNumber2, userSalt])
+      ethers.solidityPacked(["string", "bytes32"], [plateNumber2, userSalt]),
     );
     metadataHash = ethers.keccak256(
-      ethers.toUtf8Bytes(JSON.stringify({ model: "Tesla Model 3", year: 2024 }))
+      ethers.toUtf8Bytes(
+        JSON.stringify({ model: "Tesla Model 3", year: 2024 }),
+      ),
     );
 
     // Authorize verifier
@@ -43,80 +46,72 @@ describe("VehicleRegistry", function () {
   describe("Vehicle Registration", function () {
     it("should register vehicle with commitment", async function () {
       await expect(
-        registry.connect(wallet1).registerVehicle(
-          commitment1,
-          wallet1.address,
-          metadataHash
-        )
+        registry
+          .connect(wallet1)
+          .registerVehicle(commitment1, wallet1.address, metadataHash),
       )
         .to.emit(registry, "VehicleRegistered")
-        .withArgs(commitment1, wallet1.address, await ethers.provider.getBlock("latest").then(b => b!.timestamp + 1));
+        .withArgs(
+          commitment1,
+          wallet1.address,
+          await ethers.provider
+            .getBlock("latest")
+            .then((b) => b!.timestamp + 1),
+        );
     });
 
     it("should not allow zero commitment", async function () {
       await expect(
-        registry.connect(wallet1).registerVehicle(
-          ethers.ZeroHash,
-          wallet1.address,
-          metadataHash
-        )
+        registry
+          .connect(wallet1)
+          .registerVehicle(ethers.ZeroHash, wallet1.address, metadataHash),
       ).to.be.revertedWith("VehicleRegistry: invalid commitment");
     });
 
     it("should not allow zero wallet address", async function () {
       await expect(
-        registry.connect(wallet1).registerVehicle(
-          commitment1,
-          ethers.ZeroAddress,
-          metadataHash
-        )
+        registry
+          .connect(wallet1)
+          .registerVehicle(commitment1, ethers.ZeroAddress, metadataHash),
       ).to.be.revertedWith("VehicleRegistry: invalid wallet");
     });
 
     it("should not allow duplicate commitment registration", async function () {
-      await registry.connect(wallet1).registerVehicle(
-        commitment1,
-        wallet1.address,
-        metadataHash
-      );
+      await registry
+        .connect(wallet1)
+        .registerVehicle(commitment1, wallet1.address, metadataHash);
 
       await expect(
-        registry.connect(wallet2).registerVehicle(
-          commitment1,
-          wallet2.address,
-          metadataHash
-        )
+        registry
+          .connect(wallet2)
+          .registerVehicle(commitment1, wallet2.address, metadataHash),
       ).to.be.revertedWith("VehicleRegistry: already registered");
     });
 
     it("should not allow wallet to register multiple vehicles", async function () {
-      await registry.connect(wallet1).registerVehicle(
-        commitment1,
-        wallet1.address,
-        metadataHash
-      );
+      await registry
+        .connect(wallet1)
+        .registerVehicle(commitment1, wallet1.address, metadataHash);
 
       await expect(
-        registry.connect(wallet1).registerVehicle(
-          commitment2,
-          wallet1.address,
-          metadataHash
-        )
+        registry
+          .connect(wallet1)
+          .registerVehicle(commitment2, wallet1.address, metadataHash),
       ).to.be.revertedWith("VehicleRegistry: wallet already linked");
     });
   });
 
   describe("Vehicle Record Retrieval", function () {
     beforeEach(async function () {
-      await registry.connect(wallet1).registerVehicle(
-        commitment1,
-        wallet1.address,
-        metadataHash
-      );
+      await registry
+        .connect(wallet1)
+        .registerVehicle(commitment1, wallet1.address, metadataHash);
     });
 
     it("should allow verifier to get vehicle record", async function () {
-      const record = await registry.connect(verifier).getVehicleRecord(commitment1);
+      const record = await registry
+        .connect(verifier)
+        .getVehicleRecord(commitment1);
 
       expect(record.commitment).to.equal(commitment1);
       expect(record.walletAddress).to.equal(wallet1.address);
@@ -126,78 +121,82 @@ describe("VehicleRegistry", function () {
 
     it("should not allow unauthorized to get vehicle record", async function () {
       await expect(
-        registry.connect(unauthorized).getVehicleRecord(commitment1)
+        registry.connect(unauthorized).getVehicleRecord(commitment1),
       ).to.be.revertedWith("VehicleRegistry: not authorized verifier");
     });
 
     it("should get commitment by wallet address", async function () {
-      const commitment = await registry.connect(wallet1).getCommitmentByWallet(
-        wallet1.address
-      );
+      const commitment = await registry
+        .connect(wallet1)
+        .getCommitmentByWallet(wallet1.address);
       expect(commitment).to.equal(commitment1);
     });
 
     it("should allow verifier to get commitment by wallet", async function () {
-      const commitment = await registry.connect(verifier).getCommitmentByWallet(
-        wallet1.address
-      );
+      const commitment = await registry
+        .connect(verifier)
+        .getCommitmentByWallet(wallet1.address);
       expect(commitment).to.equal(commitment1);
     });
   });
 
   describe("Vehicle Commitment Update", function () {
     beforeEach(async function () {
-      await registry.connect(wallet1).registerVehicle(
-        commitment1,
-        wallet1.address,
-        metadataHash
-      );
+      await registry
+        .connect(wallet1)
+        .registerVehicle(commitment1, wallet1.address, metadataHash);
     });
 
     it("should allow owner to update commitment", async function () {
       await expect(
-        registry.connect(wallet1).updateVehicleCommitment(commitment1, commitment2)
+        registry
+          .connect(wallet1)
+          .updateVehicleCommitment(commitment1, commitment2),
       )
         .to.emit(registry, "VehicleUpdated")
         .withArgs(commitment1, commitment2, wallet1.address);
 
       // Old commitment should be inactive
-      const oldRecord = await registry.connect(verifier).getVehicleRecord(commitment1);
+      const oldRecord = await registry
+        .connect(verifier)
+        .getVehicleRecord(commitment1);
       expect(oldRecord.isActive).to.be.false;
 
       // New commitment should be active
-      const newRecord = await registry.connect(verifier).getVehicleRecord(commitment2);
+      const newRecord = await registry
+        .connect(verifier)
+        .getVehicleRecord(commitment2);
       expect(newRecord.isActive).to.be.true;
       expect(newRecord.walletAddress).to.equal(wallet1.address);
     });
 
     it("should not allow non-owner to update commitment", async function () {
       await expect(
-        registry.connect(wallet2).updateVehicleCommitment(commitment1, commitment2)
+        registry
+          .connect(wallet2)
+          .updateVehicleCommitment(commitment1, commitment2),
       ).to.be.revertedWith("VehicleRegistry: not vehicle owner");
     });
 
     it("should not allow update to existing commitment", async function () {
       // Register second vehicle first
-      await registry.connect(wallet2).registerVehicle(
-        commitment2,
-        wallet2.address,
-        metadataHash
-      );
+      await registry
+        .connect(wallet2)
+        .registerVehicle(commitment2, wallet2.address, metadataHash);
 
       await expect(
-        registry.connect(wallet1).updateVehicleCommitment(commitment1, commitment2)
+        registry
+          .connect(wallet1)
+          .updateVehicleCommitment(commitment1, commitment2),
       ).to.be.revertedWith("VehicleRegistry: new commitment already exists");
     });
   });
 
   describe("Vehicle Deactivation", function () {
     beforeEach(async function () {
-      await registry.connect(wallet1).registerVehicle(
-        commitment1,
-        wallet1.address,
-        metadataHash
-      );
+      await registry
+        .connect(wallet1)
+        .registerVehicle(commitment1, wallet1.address, metadataHash);
     });
 
     it("should allow owner to deactivate vehicle", async function () {
@@ -205,19 +204,21 @@ describe("VehicleRegistry", function () {
         .to.emit(registry, "VehicleDeactivated")
         .withArgs(commitment1, wallet1.address);
 
-      const record = await registry.connect(verifier).getVehicleRecord(commitment1);
+      const record = await registry
+        .connect(verifier)
+        .getVehicleRecord(commitment1);
       expect(record.isActive).to.be.false;
 
       // Wallet mapping should be cleared
-      const walletCommitment = await registry.connect(wallet1).getCommitmentByWallet(
-        wallet1.address
-      );
+      const walletCommitment = await registry
+        .connect(wallet1)
+        .getCommitmentByWallet(wallet1.address);
       expect(walletCommitment).to.equal(ethers.ZeroHash);
     });
 
     it("should not allow non-owner to deactivate vehicle", async function () {
       await expect(
-        registry.connect(wallet2).deactivateVehicle(commitment1)
+        registry.connect(wallet2).deactivateVehicle(commitment1),
       ).to.be.revertedWith("VehicleRegistry: not vehicle owner");
     });
 
@@ -225,18 +226,16 @@ describe("VehicleRegistry", function () {
       await registry.connect(wallet1).deactivateVehicle(commitment1);
 
       await expect(
-        registry.connect(wallet1).deactivateVehicle(commitment1)
+        registry.connect(wallet1).deactivateVehicle(commitment1),
       ).to.be.revertedWith("VehicleRegistry: already inactive");
     });
   });
 
   describe("Verification", function () {
     beforeEach(async function () {
-      await registry.connect(wallet1).registerVehicle(
-        commitment1,
-        wallet1.address,
-        metadataHash
-      );
+      await registry
+        .connect(wallet1)
+        .registerVehicle(commitment1, wallet1.address, metadataHash);
     });
 
     it("should verify active vehicle registration", async function () {
@@ -271,7 +270,7 @@ describe("VehicleRegistry", function () {
 
     it("should not allow unauthorized verification", async function () {
       await expect(
-        registry.connect(unauthorized).verifyVehicleRegistration(commitment1)
+        registry.connect(unauthorized).verifyVehicleRegistration(commitment1),
       ).to.be.revertedWith("VehicleRegistry: not authorized verifier");
     });
   });
@@ -279,12 +278,13 @@ describe("VehicleRegistry", function () {
   describe("Verifier Authorization", function () {
     it("should allow owner to authorize verifier", async function () {
       await expect(
-        registry.setVerifierAuthorization(unauthorized.address, true)
+        registry.setVerifierAuthorization(unauthorized.address, true),
       )
         .to.emit(registry, "VerifierAuthorized")
         .withArgs(unauthorized.address, true);
 
-      expect(await registry.authorizedVerifiers(unauthorized.address)).to.be.true;
+      expect(await registry.authorizedVerifiers(unauthorized.address)).to.be
+        .true;
     });
 
     it("should allow owner to revoke verifier", async function () {
@@ -297,36 +297,44 @@ describe("VehicleRegistry", function () {
 
     it("should not allow non-owner to authorize verifier", async function () {
       await expect(
-        registry.connect(unauthorized).setVerifierAuthorization(unauthorized.address, true)
+        registry
+          .connect(unauthorized)
+          .setVerifierAuthorization(unauthorized.address, true),
       ).to.be.revertedWith("OwnableUnauthorizedAccount");
     });
   });
 
   describe("Metadata Management", function () {
     beforeEach(async function () {
-      await registry.connect(wallet1).registerVehicle(
-        commitment1,
-        wallet1.address,
-        metadataHash
-      );
+      await registry
+        .connect(wallet1)
+        .registerVehicle(commitment1, wallet1.address, metadataHash);
     });
 
     it("should allow owner to update metadata", async function () {
       const newMetadataHash = ethers.keccak256(
-        ethers.toUtf8Bytes(JSON.stringify({ model: "Tesla Model S", year: 2025 }))
+        ethers.toUtf8Bytes(
+          JSON.stringify({ model: "Tesla Model S", year: 2025 }),
+        ),
       );
 
-      await registry.connect(wallet1).updateMetadata(commitment1, newMetadataHash);
+      await registry
+        .connect(wallet1)
+        .updateMetadata(commitment1, newMetadataHash);
 
-      const record = await registry.connect(verifier).getVehicleRecord(commitment1);
+      const record = await registry
+        .connect(verifier)
+        .getVehicleRecord(commitment1);
       expect(record.metadataHash).to.equal(newMetadataHash);
     });
 
     it("should not allow non-owner to update metadata", async function () {
-      const newMetadataHash = ethers.keccak256(ethers.toUtf8Bytes("new metadata"));
+      const newMetadataHash = ethers.keccak256(
+        ethers.toUtf8Bytes("new metadata"),
+      );
 
       await expect(
-        registry.connect(wallet2).updateMetadata(commitment1, newMetadataHash)
+        registry.connect(wallet2).updateMetadata(commitment1, newMetadataHash),
       ).to.be.revertedWith("VehicleRegistry: not vehicle owner");
     });
   });
@@ -339,8 +347,12 @@ describe("VehicleRegistry", function () {
 
       await registry.registerVehicleBatch(commitments, wallets, metadatas);
 
-      const record1 = await registry.connect(verifier).getVehicleRecord(commitment1);
-      const record2 = await registry.connect(verifier).getVehicleRecord(commitment2);
+      const record1 = await registry
+        .connect(verifier)
+        .getVehicleRecord(commitment1);
+      const record2 = await registry
+        .connect(verifier)
+        .getVehicleRecord(commitment2);
 
       expect(record1.walletAddress).to.equal(wallet1.address);
       expect(record2.walletAddress).to.equal(wallet2.address);
@@ -352,42 +364,38 @@ describe("VehicleRegistry", function () {
       const metadatas = [metadataHash];
 
       await expect(
-        registry.registerVehicleBatch(commitments, wallets, metadatas)
+        registry.registerVehicleBatch(commitments, wallets, metadatas),
       ).to.be.revertedWith("VehicleRegistry: array length mismatch");
     });
   });
 
   describe("Privacy Guarantees", function () {
     it("should not store raw plate number", async function () {
-      await registry.connect(wallet1).registerVehicle(
-        commitment1,
-        wallet1.address,
-        metadataHash
-      );
+      await registry
+        .connect(wallet1)
+        .registerVehicle(commitment1, wallet1.address, metadataHash);
 
       // Verify storage doesn't contain raw plate number
       const storageSlots = 20;
       for (let i = 0; i < storageSlots; i++) {
         const storage = await ethers.provider.getStorage(
           await registry.getAddress(),
-          i
+          i,
         );
         expect(storage).to.not.include(
-          ethers.hexlify(ethers.toUtf8Bytes(plateNumber1))
+          ethers.hexlify(ethers.toUtf8Bytes(plateNumber1)),
         );
       }
     });
 
     it("should only allow access through authorized interfaces", async function () {
-      await registry.connect(wallet1).registerVehicle(
-        commitment1,
-        wallet1.address,
-        metadataHash
-      );
+      await registry
+        .connect(wallet1)
+        .registerVehicle(commitment1, wallet1.address, metadataHash);
 
       // Unauthorized users should not be able to query records
       await expect(
-        registry.connect(unauthorized).getVehicleRecord(commitment1)
+        registry.connect(unauthorized).getVehicleRecord(commitment1),
       ).to.be.revertedWith("VehicleRegistry: not authorized verifier");
     });
   });

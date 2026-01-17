@@ -31,7 +31,7 @@ describe("AccountFactory", function () {
       const implementation = await factory.accountImplementation();
       const accountImpl = await ethers.getContractAt(
         "PrivacyProtectedAccount",
-        implementation
+        implementation,
       );
       expect(await accountImpl.entryPoint()).to.equal(entryPoint.address);
     });
@@ -40,21 +40,21 @@ describe("AccountFactory", function () {
   describe("Deterministic Address Generation", function () {
     it("should generate deterministic addresses", async function () {
       const commitment = ethers.keccak256(
-        ethers.solidityPacked(["string", "bytes32"], [plateNumber1, userSalt])
+        ethers.solidityPacked(["string", "bytes32"], [plateNumber1, userSalt]),
       );
       const salt = 12345;
 
       const predictedAddress = await factory.getAddress(
         user1.address,
         commitment,
-        salt
+        salt,
       );
 
       await factory.createAccount(user1.address, commitment, salt);
 
       const account = await ethers.getContractAt(
         "PrivacyProtectedAccount",
-        predictedAddress
+        predictedAddress,
       );
 
       expect(await account.owner()).to.equal(user1.address);
@@ -62,34 +62,50 @@ describe("AccountFactory", function () {
 
     it("should generate same address for same parameters", async function () {
       const commitment = ethers.keccak256(
-        ethers.solidityPacked(["string", "bytes32"], [plateNumber1, userSalt])
+        ethers.solidityPacked(["string", "bytes32"], [plateNumber1, userSalt]),
       );
       const salt = 12345;
 
-      const address1 = await factory.getAddress(user1.address, commitment, salt);
-      const address2 = await factory.getAddress(user1.address, commitment, salt);
+      const address1 = await factory.getAddress(
+        user1.address,
+        commitment,
+        salt,
+      );
+      const address2 = await factory.getAddress(
+        user1.address,
+        commitment,
+        salt,
+      );
 
       expect(address1).to.equal(address2);
     });
 
     it("should generate different addresses for different parameters", async function () {
       const commitment1 = ethers.keccak256(
-        ethers.solidityPacked(["string", "bytes32"], [plateNumber1, userSalt])
+        ethers.solidityPacked(["string", "bytes32"], [plateNumber1, userSalt]),
       );
       const commitment2 = ethers.keccak256(
-        ethers.solidityPacked(["string", "bytes32"], [plateNumber2, userSalt])
+        ethers.solidityPacked(["string", "bytes32"], [plateNumber2, userSalt]),
       );
       const salt = 12345;
 
-      const address1 = await factory.getAddress(user1.address, commitment1, salt);
-      const address2 = await factory.getAddress(user1.address, commitment2, salt);
+      const address1 = await factory.getAddress(
+        user1.address,
+        commitment1,
+        salt,
+      );
+      const address2 = await factory.getAddress(
+        user1.address,
+        commitment2,
+        salt,
+      );
 
       expect(address1).to.not.equal(address2);
     });
 
     it("should generate different addresses for different salts", async function () {
       const commitment = ethers.keccak256(
-        ethers.solidityPacked(["string", "bytes32"], [plateNumber1, userSalt])
+        ethers.solidityPacked(["string", "bytes32"], [plateNumber1, userSalt]),
       );
 
       const address1 = await factory.getAddress(user1.address, commitment, 111);
@@ -102,18 +118,23 @@ describe("AccountFactory", function () {
   describe("Account Creation", function () {
     it("should create account with correct parameters", async function () {
       const commitment = ethers.keccak256(
-        ethers.solidityPacked(["string", "bytes32"], [plateNumber1, userSalt])
+        ethers.solidityPacked(["string", "bytes32"], [plateNumber1, userSalt]),
       );
       const salt = 12345;
 
       await expect(factory.createAccount(user1.address, commitment, salt))
         .to.emit(factory, "AccountCreated")
-        .withArgs(await factory.getAddress(user1.address, commitment, salt), user1.address, commitment, salt);
+        .withArgs(
+          await factory.getAddress(user1.address, commitment, salt),
+          user1.address,
+          commitment,
+          salt,
+        );
     });
 
     it("should return existing account if already created", async function () {
       const commitment = ethers.keccak256(
-        ethers.solidityPacked(["string", "bytes32"], [plateNumber1, userSalt])
+        ethers.solidityPacked(["string", "bytes32"], [plateNumber1, userSalt]),
       );
       const salt = 12345;
 
@@ -130,21 +151,35 @@ describe("AccountFactory", function () {
 
     it("should create multiple accounts for different users", async function () {
       const commitment1 = ethers.keccak256(
-        ethers.solidityPacked(["string", "bytes32"], [plateNumber1, userSalt])
+        ethers.solidityPacked(["string", "bytes32"], [plateNumber1, userSalt]),
       );
       const commitment2 = ethers.keccak256(
-        ethers.solidityPacked(["string", "bytes32"], [plateNumber2, userSalt])
+        ethers.solidityPacked(["string", "bytes32"], [plateNumber2, userSalt]),
       );
       const salt = 12345;
 
       await factory.createAccount(user1.address, commitment1, salt);
       await factory.createAccount(user2.address, commitment2, salt);
 
-      const address1 = await factory.getAddress(user1.address, commitment1, salt);
-      const address2 = await factory.getAddress(user2.address, commitment2, salt);
+      const address1 = await factory.getAddress(
+        user1.address,
+        commitment1,
+        salt,
+      );
+      const address2 = await factory.getAddress(
+        user2.address,
+        commitment2,
+        salt,
+      );
 
-      const account1 = await ethers.getContractAt("PrivacyProtectedAccount", address1);
-      const account2 = await ethers.getContractAt("PrivacyProtectedAccount", address2);
+      const account1 = await ethers.getContractAt(
+        "PrivacyProtectedAccount",
+        address1,
+      );
+      const account2 = await ethers.getContractAt(
+        "PrivacyProtectedAccount",
+        address2,
+      );
 
       expect(await account1.owner()).to.equal(user1.address);
       expect(await account2.owner()).to.equal(user2.address);
@@ -155,11 +190,11 @@ describe("AccountFactory", function () {
     it("should compute vehicle commitment correctly", async function () {
       const commitment = await factory.computeVehicleCommitment(
         plateNumber1,
-        userSalt
+        userSalt,
       );
 
       const expectedCommitment = ethers.keccak256(
-        ethers.solidityPacked(["string", "bytes32"], [plateNumber1, userSalt])
+        ethers.solidityPacked(["string", "bytes32"], [plateNumber1, userSalt]),
       );
 
       expect(commitment).to.equal(expectedCommitment);
@@ -168,11 +203,11 @@ describe("AccountFactory", function () {
     it("should produce different commitments for different plate numbers", async function () {
       const commitment1 = await factory.computeVehicleCommitment(
         plateNumber1,
-        userSalt
+        userSalt,
       );
       const commitment2 = await factory.computeVehicleCommitment(
         plateNumber2,
-        userSalt
+        userSalt,
       );
 
       expect(commitment1).to.not.equal(commitment2);
@@ -182,8 +217,14 @@ describe("AccountFactory", function () {
       const salt1 = ethers.id("salt1");
       const salt2 = ethers.id("salt2");
 
-      const commitment1 = await factory.computeVehicleCommitment(plateNumber1, salt1);
-      const commitment2 = await factory.computeVehicleCommitment(plateNumber1, salt2);
+      const commitment1 = await factory.computeVehicleCommitment(
+        plateNumber1,
+        salt1,
+      );
+      const commitment2 = await factory.computeVehicleCommitment(
+        plateNumber1,
+        salt2,
+      );
 
       expect(commitment1).to.not.equal(commitment2);
     });
@@ -194,10 +235,16 @@ describe("AccountFactory", function () {
       const owners = [user1.address, user2.address];
       const commitments = [
         ethers.keccak256(
-          ethers.solidityPacked(["string", "bytes32"], [plateNumber1, userSalt])
+          ethers.solidityPacked(
+            ["string", "bytes32"],
+            [plateNumber1, userSalt],
+          ),
         ),
         ethers.keccak256(
-          ethers.solidityPacked(["string", "bytes32"], [plateNumber2, userSalt])
+          ethers.solidityPacked(
+            ["string", "bytes32"],
+            [plateNumber2, userSalt],
+          ),
         ),
       ];
       const salts = [111, 222];
@@ -205,7 +252,7 @@ describe("AccountFactory", function () {
       const accounts = await factory.createAccountBatch.staticCall(
         owners,
         commitments,
-        salts
+        salts,
       );
 
       expect(accounts.length).to.equal(2);
@@ -216,22 +263,32 @@ describe("AccountFactory", function () {
       const owners = [user1.address, user2.address];
       const commitments = [
         ethers.keccak256(
-          ethers.solidityPacked(["string", "bytes32"], [plateNumber1, userSalt])
+          ethers.solidityPacked(
+            ["string", "bytes32"],
+            [plateNumber1, userSalt],
+          ),
         ),
         ethers.keccak256(
-          ethers.solidityPacked(["string", "bytes32"], [plateNumber2, userSalt])
+          ethers.solidityPacked(
+            ["string", "bytes32"],
+            [plateNumber2, userSalt],
+          ),
         ),
       ];
       const salts = [111, 222];
 
-      const addresses = await factory.getAddressBatch(owners, commitments, salts);
+      const addresses = await factory.getAddressBatch(
+        owners,
+        commitments,
+        salts,
+      );
 
       expect(addresses.length).to.equal(2);
       expect(addresses[0]).to.equal(
-        await factory.getAddress(owners[0], commitments[0], salts[0])
+        await factory.getAddress(owners[0], commitments[0], salts[0]),
       );
       expect(addresses[1]).to.equal(
-        await factory.getAddress(owners[1], commitments[1], salts[1])
+        await factory.getAddress(owners[1], commitments[1], salts[1]),
       );
     });
 
@@ -244,11 +301,11 @@ describe("AccountFactory", function () {
       const salts = [111];
 
       await expect(
-        factory.createAccountBatch(owners, commitments, salts)
+        factory.createAccountBatch(owners, commitments, salts),
       ).to.be.revertedWith("AccountFactory: array length mismatch");
 
       await expect(
-        factory.getAddressBatch(owners, commitments, salts)
+        factory.getAddressBatch(owners, commitments, salts),
       ).to.be.revertedWith("AccountFactory: array length mismatch");
     });
   });
@@ -260,12 +317,20 @@ describe("AccountFactory", function () {
       const factory2 = await AccountFactory.deploy(entryPoint.address);
 
       const commitment = ethers.keccak256(
-        ethers.solidityPacked(["string", "bytes32"], [plateNumber1, userSalt])
+        ethers.solidityPacked(["string", "bytes32"], [plateNumber1, userSalt]),
       );
       const salt = 12345;
 
-      const address1 = await factory.getAddress(user1.address, commitment, salt);
-      const address2 = await factory2.getAddress(user1.address, commitment, salt);
+      const address1 = await factory.getAddress(
+        user1.address,
+        commitment,
+        salt,
+      );
+      const address2 = await factory2.getAddress(
+        user1.address,
+        commitment,
+        salt,
+      );
 
       // Addresses should be the same across different factory instances
       expect(address1).to.equal(address2);
@@ -275,7 +340,7 @@ describe("AccountFactory", function () {
   describe("Gas Efficiency", function () {
     it("should create account with reasonable gas", async function () {
       const commitment = ethers.keccak256(
-        ethers.solidityPacked(["string", "bytes32"], [plateNumber1, userSalt])
+        ethers.solidityPacked(["string", "bytes32"], [plateNumber1, userSalt]),
       );
       const salt = 12345;
 

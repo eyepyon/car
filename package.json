@@ -9,6 +9,7 @@
     "circuit": "pnpm --filter circuit",
     "mcp": "pnpm --filter mcp",
     "x402server": "pnpm --filter x402server",
+    "qwen-sample": "pnpm --filter qwen-sample",
     "format": "pnpm exec biome format --write .",
     "lint": "pnpm exec biome check --write ."
   },
