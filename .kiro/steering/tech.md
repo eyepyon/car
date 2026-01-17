@@ -38,6 +38,10 @@ Web3 × AI融合のモビリティプラットフォーム。フロントエン�
 - `/api/` - Laravel API（メイン）
 - `/papi/` - Flask API（Python）
 
+### API Domain
+- **Production**: `https://api.incar.style`
+- **Frontend環境変数**: `NEXT_PUBLIC_API_BASE_URL`
+
 ### External APIs
 - Sesame Web API（スマートロック制御）
 - Qwen MCP Server（会話AI連携）
