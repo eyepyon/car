@@ -9,7 +9,7 @@
  * **Validates: Requirements 8.4**
  */
 
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it } from 'vitest';
 import * as fc from 'fast-check';
 import { Hono } from 'hono';
 import {
@@ -32,18 +32,6 @@ const validRateLimitConfigArbitrary = (): fc.Arbitrary<RateLimitConfig> =>
     windowMs: fc.integer({ min: 100, max: 60000 }),
     maxRequests: fc.integer({ min: 1, max: 1000 }),
   });
-
-/**
- * レート制限を超えるリクエスト数を生成
- */
-const exceedingRequestCountArbitrary = (maxRequests: number): fc.Arbitrary<number> =>
-  fc.integer({ min: maxRequests + 1, max: maxRequests + 100 });
-
-/**
- * レート制限内のリクエスト数を生成
- */
-const withinLimitRequestCountArbitrary = (maxRequests: number): fc.Arbitrary<number> =>
-  fc.integer({ min: 1, max: Math.max(1, maxRequests - 1) });
 
 // ============================================================================
 // プロパティテスト

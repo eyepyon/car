@@ -158,19 +158,31 @@ export function CameraCapture({
    * @see Requirements 1.2
    */
   const checkCameraPermission = useCallback(async () => {
-    try {
-      // navigator.permissions APIが利用可能な場合
-      if (navigator.permissions) {
-        const result = await navigator.permissions.query({ name: 'camera' as PermissionName });
-        if (result.state === 'denied') {
-          setStatus('permission_denied');
-          onError(createCaptureError('PERMISSION_DENIED'));
-          return false;
-        }
-      }
+    // mediaDevices / getUserMedia が利用できない場合は、従来どおり権限チェックは行わず true を返す
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
       return true;
-    } catch {
-      // permissions APIが利用できない場合は、getUserMediaで直接確認
+    }
+
+    try {
+      // 実際にカメラ取得を試みて、権限の有無を確認
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+
+      // ここでは権限確認のみのため、取得したストリームはすぐに停止する
+      stream.getTracks().forEach((track) => track.stop());
+
+      return true;
+    } catch (error) {
+      const err = error as DOMException | undefined;
+
+      // ユーザーまたはブラウザによりカメラアクセスが拒否された場合
+      if (err && (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError')) {
+        setStatus('permission_denied');
+        onError(createCaptureError('PERMISSION_DENIED'));
+        return false;
+      }
+
+      // それ以外のエラーの場合は、従来どおりここではエラー扱いにせず true を返す
+      // （実際のカメラ起動時に詳細なエラー処理を行う）
       return true;
     }
   }, [onError]);

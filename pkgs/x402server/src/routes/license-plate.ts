@@ -198,7 +198,8 @@ export function createLicensePlateRouter(config?: { rateLimitConfig?: RateLimitC
 
       try {
         const body = await c.req.json<RecognizeRequest>();
-        const { image, mode } = body;
+        const { image } = body;
+        // Note: `mode` パラメータは将来の実装で使用予定（タスク6でリアルタイム認識とシングル認識を区別）
 
         // TODO: タスク6でQwen-VLクライアントを実装後、実際の認識処理を追加
         // 現在はモック実装

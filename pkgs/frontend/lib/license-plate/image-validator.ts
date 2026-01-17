@@ -227,10 +227,11 @@ export function estimateAngle(imageData: ImageData): number {
     }
   }
 
-  // 水平（0度または180度）からの偏差を計算
-  // 90度に近いほど垂直エッジが多い（正常）
-  // 0度や180度に近いほど水平エッジが多い（正常）
-  // 45度付近は斜めのエッジが多い（角度が急）
+  // 水平（0度または180度）または垂直（90度）からの偏差を計算
+  // 戻り値の意味:
+  //   0度に近い = 水平または垂直エッジが支配的（正常に整列）
+  //   45度に近い = 斜めのエッジが支配的（プレートが傾いている）
+  // この偏差値が大きいほど、プレートの角度が急であることを示す
   const deviation = Math.min(dominantAngle, Math.abs(90 - dominantAngle), Math.abs(180 - dominantAngle));
 
   return deviation;

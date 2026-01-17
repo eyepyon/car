@@ -7,7 +7,7 @@
  * @see Requirements 8.2, 8.4
  */
 
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { Hono } from 'hono';
 import {
   RateLimitManager,

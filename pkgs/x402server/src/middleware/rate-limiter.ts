@@ -183,6 +183,19 @@ export const DEFAULT_RATE_LIMIT_CONFIG: RateLimitConfig = {
 /**
  * グローバルなレート制限マネージャーインスタンス
  * （テスト時にリセット可能）
+ *
+ * NOTE: 現在のシングルトン実装の制限事項
+ * ========================================
+ * この実装では、全てのAPIコンシューマーが同じレート制限を共有します。
+ * プロトタイプやMVP段階では十分ですが、本番環境では以下の改善を検討してください：
+ *
+ * 1. クライアント別レート制限（IPアドレス、APIキー、セッションIDベース）
+ * 2. 分散環境対応（Redis等の外部ストアを使用）
+ * 3. テナント別の制限設定
+ *
+ * 将来の実装例：
+ * - getOrCreateRateLimitManager(config, clientId) でクライアント別に管理
+ * - Redisベースの分散レート制限マネージャーの導入
  */
 let globalRateLimitManager: RateLimitManager | null = null;
 
