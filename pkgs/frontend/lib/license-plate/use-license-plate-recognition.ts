@@ -224,7 +224,7 @@ export function useLicensePlateRecognition(
         // 画像検証
         if (!skipValidation) {
           setState('validating');
-          const validationResult = validateImage(image);
+          const validationResult = await validateImage(image);
 
           if (!validationResult.isValid) {
             const validationError: RecognitionError = {

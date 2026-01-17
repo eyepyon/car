@@ -6,7 +6,24 @@
  */
 
 // 画像検証
-export { validateImage, type ImageValidatorConfig } from './image-validator';
+export {
+  validateImage,
+  validateImageSync,
+  validateResolution,
+  validateBlur,
+  validateAngle,
+  validateLighting,
+  calculateImageQualityMetrics,
+  validateImageWithMetrics,
+  getImageDataFromBase64,
+  calculateAverageBrightness,
+  calculateLaplacianVariance,
+  estimateAngle,
+  VALIDATION_THRESHOLDS,
+  ALL_VALIDATION_ERROR_CODES,
+  isValidValidationErrorCode,
+  type ImageQualityMetrics,
+} from './image-validator';
 
 // 重複認識抑制
 export {

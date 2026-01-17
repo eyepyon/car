@@ -1,11 +1,11 @@
 {
-  "name": "inCar",
-  "short_name": "inCar",
-  "description": "次世代オートモーティブ生成AIアプリケーション",
+  "name": "CarWallet",
+  "short_name": "CarWallet",
+  "description": "ナンバープレート連動ウォレットシステム",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#000000",
+  "theme_color": "#3b82f6",
   "orientation": "portrait-primary",
   "icons": [
     {
@@ -27,7 +27,7 @@
       "purpose": "maskable"
     }
   ],
-  "categories": ["automotive", "productivity"],
+  "categories": ["automotive", "finance", "productivity"],
   "lang": "ja",
   "dir": "ltr",
   "prefer_related_applications": false
