@@ -4,6 +4,7 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import type { Network, Resource } from "x402-hono";
 import { paymentMiddleware } from "x402-hono";
+import { createLicensePlateRouter } from "./routes/license-plate";
 // Import walrus functions from relative paths
 
 config();
@@ -41,6 +42,10 @@ app.get("/health", async (c) => {
     port,
   });
 });
+
+// License plate recognition API routes
+// @see Requirements 3.1, 3.4, 8.2, 8.4
+app.route("/api/license-plate", createLicensePlateRouter());
 
 app.use(
   // /weather endpoint にアクセスした時に requires paymentを発動させる

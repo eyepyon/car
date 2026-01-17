@@ -10,61 +10,61 @@
 
 ## タスク
 
-- [ ]   1. 共通型定義とユーティリティの作成
-    - [ ] 1.1 LicensePlateData型とRecognitionError型を定義する
+- [x]   1. 共通型定義とユーティリティの作成
+    - [x] 1.1 LicensePlateData型とRecognitionError型を定義する
         - `pkgs/frontend/types/license-plate.ts` を作成
         - PlateType、RecognitionErrorCode等の列挙型を定義
         - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6_
-    - [ ]\* 1.2 型定義のプロパティテストを作成する
+    - [x]\* 1.2 型定義のプロパティテストを作成する
         - **Property 4: 認識結果データ構造の完全性**
         - **Property 5: フルテキストの整合性**
         - **Property 6: 信頼度スコアの範囲**
         - **Validates: Requirements 4.1-4.6**
 
-- [ ]   2. フロントエンド: カメラキャプチャコンポーネント
-    - [ ] 2.1 CameraCaptureComponentを実装する
+- [x]   2. フロントエンド: カメラキャプチャコンポーネント
+    - [x] 2.1 CameraCaptureComponentを実装する
         - `pkgs/frontend/components/license-plate/CameraCapture.tsx` を作成
         - react-webcamを使用してカメラアクセスを実装
         - シングルショットモードとリアルタイムモードをサポート
         - _Requirements: 1.1, 1.4, 7.1_
-    - [ ] 2.2 カメラ権限とエラーハンドリングを実装する
+    - [x] 2.2 カメラ権限とエラーハンドリングを実装する
         - 権限リクエストダイアログの表示
         - デバイス未検出時のエラーメッセージ
         - _Requirements: 1.2, 1.3_
-    - [ ]\* 2.3 CameraCaptureComponentのユニットテストを作成する
+    - [x]\* 2.3 CameraCaptureComponentのユニットテストを作成する
         - カメラ権限のモックテスト
         - エラーハンドリングのテスト
         - _Requirements: 1.2, 1.3_
-    - [ ]\* 2.4 画像キャプチャのプロパティテストを作成する
+    - [x]\* 2.4 画像キャプチャのプロパティテストを作成する
         - **Property 1: 画像キャプチャの有効性**
         - **Validates: Requirements 1.1, 1.5**
 
-- [ ]   3. フロントエンド: 画像検証
-    - [ ] 3.1 ImageValidatorを実装する
+- [x]   3. フロントエンド: 画像検証
+    - [x] 3.1 ImageValidatorを実装する
         - `pkgs/frontend/lib/license-plate/image-validator.ts` を作成
         - ぼやけ検出、角度検出、照明検出を実装
         - ValidationResultとValidationErrorを返す
         - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5_
-    - [ ]\* 3.2 ImageValidatorのプロパティテストを作成する
+    - [x]\* 3.2 ImageValidatorのプロパティテストを作成する
         - **Property 2: 画像検証の完全性**
         - **Property 3: 画像品質エラーの適切性**
         - **Validates: Requirements 2.1-2.5**
 
-- [ ]   4. チェックポイント - フロントエンド基盤の確認
+- [x]   4. チェックポイント - フロントエンド基盤の確認
     - 全てのテストが通ることを確認
     - 質問があればユーザーに確認
 
-- [ ]   5. バックエンド: Recognition API
-    - [ ] 5.1 Recognition APIエンドポイントを作成する
+- [x]   5. バックエンド: Recognition API
+    - [x] 5.1 Recognition APIエンドポイントを作成する
         - `pkgs/x402server/src/routes/license-plate.ts` を作成
         - POST /api/license-plate/recognize エンドポイントを実装
         - リクエスト/レスポンスのバリデーション
         - _Requirements: 3.1, 3.4_
-    - [ ] 5.2 レート制限を実装する
+    - [x] 5.2 レート制限を実装する
         - 同時リクエスト数の制限
         - レート制限超過時のエラーレスポンス
         - _Requirements: 8.2, 8.4_
-    - [ ]\* 5.3 レート制限のプロパティテストを作成する
+    - [x]\* 5.3 レート制限のプロパティテストを作成する
         - **Property 11: レート制限の動作**
         - **Validates: Requirements 8.4**
 
