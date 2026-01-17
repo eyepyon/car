@@ -12,8 +12,13 @@ Kiro-style Spec Driven Development implementation & t-wada san's Test Driven Dev
 
 必要に応じて以下のSKILLを使ってください。
 
-- React Best Practice SKILL
-- Web Design SKILL
+- vercel-react-best-practices
+- web-design-guidelines
+- hackathon-guideline
+
+## Sub Agentについて
+
+- apple-style-ui-designer
 
 ## Project Context
 
