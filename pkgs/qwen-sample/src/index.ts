@@ -1,7 +1,9 @@
-import { Agent, MCPServerStdio, OpenAIProvider, run, withTrace } from "@openai/agents";
+import { Agent, MCPServerStdio, OpenAIProvider, run, setOpenAIAPI, withTrace } from "@openai/agents";
 import dotenv from "dotenv";
 
 dotenv.config();
+
+setOpenAIAPI("chat_completions");
 
 /**
  * メイン関数
