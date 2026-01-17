@@ -1,0 +1,32 @@
+{
+  "name": "erc4337-privacy-wallet-contracts",
+  "version": "1.0.0",
+  "description": "Privacy-preserving ERC-4337 wallet contracts for vehicle identity",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "deploy": "hardhat run scripts/deploy.ts",
+    "deploy:testnet": "hardhat run scripts/deploy.ts --network sepolia"
+  },
+  "keywords": [
+    "erc4337",
+    "account-abstraction",
+    "privacy",
+    "vehicle",
+    "zero-knowledge"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "@types/node": "^20.10.0",
+    "hardhat": "^2.19.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "@account-abstraction/contracts": "^0.7.0",
+    "@openzeppelin/contracts": "^5.0.1",
+    "ethers": "^6.9.0"
+  }
+}

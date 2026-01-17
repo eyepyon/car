@@ -1,0 +1,31 @@
+{
+  "name": "circom-project",
+  "version": "1.0.0",
+  "description": "Zero-knowledge proof circuit project using circom",
+  "main": "test.js",
+  "scripts": {
+    "compile": "bash scripts/compile_circuit.sh",
+    "setup": "bash scripts/setup_keys.sh",
+    "test": "node test.js",
+    "build": "npm run compile && npm run setup",
+    "verify": "node scripts/verify_proof.js"
+  },
+  "keywords": [
+    "circom",
+    "zero-knowledge",
+    "zkp",
+    "snark",
+    "groth16"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "circomlib": "^2.0.5",
+    "circomlibjs": "^0.1.7",
+    "snarkjs": "^0.7.0"
+  },
+  "devDependencies": {
+    "chai": "^4.3.7",
+    "mocha": "^10.2.0"
+  }
+}

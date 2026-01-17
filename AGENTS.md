@@ -16,6 +16,7 @@ Kiro-style Spec Driven Development implementation & t-wada san's Test Driven Dev
 - **vercel-react-best-practices**: React/Next.jsコンポーネント作成、パフォーマンス最適化時に使用
 - **web-design-guidelines**: UI/UXレビュー、アクセシビリティチェック、デザイン監査時に使用
 - **hackathon-guideline**: このリポジトリでのアプリ開発時（次世代オートモーティブ生成AIハッカソン提出用）に使用
+- **erc4337-privacy-wallet-dev**: プライバシーを保護しながらERC4337規格準拠のWalletを開発する際に使用
 
 ## Sub Agentについて
 
