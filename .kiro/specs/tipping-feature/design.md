@@ -2,7 +2,9 @@
 
 ## 概要
 
-本設計書は、チップ機能（P2P投げ銭）の技術的な実装方針を定義します。この機能は、ナンバープレート認識機能とウォレットアドレス変換機能を統合し、x402決済プロトコルを使用してBase L2ブロックチェーン上で車両間のP2P決済を実現するシステムを構築します。
+本設計書は、チップ機能（P2P投げ銭）の技術的な実装方針を定義します。この機能は、ナンバープレート認識機能とウォレットアドレス変換機能を統合し、**x402 MCPプロトコル + Next.js Server Components + Qwen AI（OpenAI SDK）**を使用してBase L2ブロックチェーン上で車両間のP2P決済を実現するシステムを構築します。
+
+**アーキテクチャ方針**: Laravel APIは使用せず、すべての投げ銭ロジックをNext.js内で完結させます。x402 MCPサーバーと通信してブロックチェーントランザクションを実行し、Qwen AIを使用した音声処理により安全なハンズフリー操作を提供します。
 
 ### 設計目標
 
@@ -20,56 +22,60 @@
 ```mermaid
 graph TB
     subgraph Frontend["フロントエンド (Next.js PWA)"]
-        TipUI[Tipping UI]
-        AmountSelector[Amount Selector]
-        VoiceHandler[Voice Confirmation Handler]
-        HistoryView[History View]
-        NotificationUI[Notification UI]
+        TipUI[Tipping UI - Client Component]
+        AmountSelector[Amount Selector - Client Component]
+        VoiceHandler[Voice Handler - Client Component]
+        HistoryView[History View - Client Component]
+        NotificationUI[Notification UI - Client Component]
+    end
+
+    subgraph ServerComponents["Next.js Server Components"]
+        TipService[Tipping Service]
+        TransactionExecutor[Transaction Executor]
+        QwenService[Qwen AI Service]
+        NotificationService[Notification Service]
+        HistoryService[History Service]
     end
 
     subgraph Integration["統合レイヤー"]
-        TipService[Tipping Service]
-        LPRecognition[License Plate Recognition]
-        WalletDeriver[Wallet Address Deriver]
-        HazardDetector[Hazard Lamp Detector]
+        LPRecognition[License Plate Recognition - Flask API]
+        WalletDeriver[Wallet Address Deriver - Laravel API]
+        HazardDetector[Hazard Lamp Detector - OBD-II]
     end
 
-    subgraph Backend["バックエンド (Hono/Laravel/Flask)"]
-        TipAPI[Tipping API]
-        FeeCalculator[Fee Calculator]
-        NotificationService[Notification Service]
-        HistoryService[History Service]
-        LaravelAPI[Laravel API - /api/]
-        FlaskAPI[Flask API - /papi/]
+    subgraph MCPLayer["x402 MCP Layer"]
+        MCPClient[x402 MCP Client - Node.js]
+        x402Server[x402 Server - Hono]
     end
 
     subgraph Blockchain["ブロックチェーン (Base Sepolia)"]
-        x402[x402 Protocol]
         SmartAccount[ERC4337 SmartAccount]
         Paymaster[Paymaster]
     end
 
     subgraph External["外部サービス"]
         OBD2[OBD-II Device]
-        SpeechAPI[Web Speech API]
+        QwenAPI[Qwen AI - OpenAI SDK]
         PushService[Push Notification Service]
     end
 
     TipUI --> TipService
-    AmountSelector --> FeeCalculator
-    VoiceHandler --> SpeechAPI
+    AmountSelector --> TipService
+    VoiceHandler --> QwenService
     TipService --> LPRecognition
     TipService --> WalletDeriver
-    TipService --> TipAPI
+    TipService --> TransactionExecutor
+    TransactionExecutor --> MCPClient
+    MCPClient --> x402Server
+    x402Server --> SmartAccount
+    SmartAccount --> Paymaster
+    QwenService --> QwenAPI
+    TransactionExecutor --> NotificationService
+    NotificationService --> PushService
+    HistoryService --> SmartAccount
+    HistoryView --> HistoryService
     HazardDetector --> OBD2
     HazardDetector --> TipUI
-    TipAPI --> x402
-    x402 --> SmartAccount
-    SmartAccount --> Paymaster
-    TipAPI --> NotificationService
-    NotificationService --> PushService
-    TipAPI --> HistoryService
-    HistoryView --> HistoryService
 ```
 
 ### データフロー
@@ -77,55 +83,68 @@ graph TB
 ```mermaid
 sequenceDiagram
     participant User
-    participant TipUI as Tipping UI
-    participant LPR as License Plate Recognition
-    participant WAD as Wallet Address Deriver
+    participant TipUI as Tipping UI (Client)
+    participant LPR as License Plate Recognition (Flask)
+    participant WAD as Wallet Address Deriver (Laravel)
+    participant TipSvc as Tipping Service (Server Component)
     participant Fee as Fee Calculator
-    participant Voice as Voice Handler
-    participant API as Tipping API
-    participant x402 as x402 Protocol
-    participant Notify as Notification Service
+    participant Voice as Qwen AI Service (Server Component)
+    participant MCP as x402 MCP Client
+    participant x402 as x402 Server (Hono)
+    participant BC as Blockchain (Base L2)
+    participant Notify as Notification Service (Server Component)
 
     User->>TipUI: カメラでナンバープレート撮影
-    TipUI->>LPR: 画像認識リクエスト
+    TipUI->>LPR: 画像認識リクエスト (Flask /papi/)
     LPR-->>TipUI: License Plate Data
-    TipUI->>WAD: アドレス導出リクエスト
+    TipUI->>WAD: アドレス導出リクエスト (Laravel /api/)
     WAD-->>TipUI: Wallet Address
 
     User->>TipUI: 金額選択（¥100/¥500/¥1,000/カスタム）
-    TipUI->>Fee: 手数料計算
+    TipUI->>Fee: 手数料計算（Client側）
     Fee-->>TipUI: 送金額 + 手数料 + 合計
 
     alt 音声確認モード
-        TipUI->>Voice: 音声ガイダンス再生
+        TipUI->>Voice: 音声ガイダンス要求 (Server Action)
+        Voice->>Voice: Qwen AI (OpenAI SDK) で音声合成
         Voice-->>User: 「[金額]円を送りますか？」
         User->>Voice: 「はい」/「いいえ」
+        Voice->>Voice: Qwen AI (OpenAI SDK) で音声認識
         Voice-->>TipUI: 確認結果
     else 手動確認モード
         User->>TipUI: 送金ボタンクリック
     end
 
-    TipUI->>API: 送金リクエスト
-    API->>x402: トランザクション作成
-    x402-->>API: Transaction Hash
-    API->>Notify: 受信者に通知
-    Notify-->>User: プッシュ通知
-    API-->>TipUI: 成功レスポンス
+    TipUI->>TipSvc: 送金リクエスト (Server Action)
+    TipSvc->>MCP: x402 MCP経由でトランザクション作成
+    MCP->>x402: /tip エンドポイント呼び出し
+    x402->>BC: ERC4337トランザクション実行
+    BC-->>x402: Transaction Hash
+    x402-->>MCP: Transaction Hash
+    MCP-->>TipSvc: Transaction Hash
+    TipSvc->>Notify: 受信者に通知 (Server Component)
+    Notify-->>User: プッシュ通知 (PWA)
+    TipSvc-->>TipUI: 成功レスポンス
 ```
 
 ## コンポーネントとインターフェース
 
 ### フロントエンドコンポーネント
 
-#### TippingService
+#### TippingService (Server Component)
 
-投げ銭機能のメインサービス。
+投げ銭機能のメインサービス。Next.js Server Actionsとして実装。
 
 ```typescript
-// pkgs/frontend/lib/tipping/tipping-service.ts
+// pkgs/frontend/app/actions/tipping.ts
+'use server';
+
+import { x402MCPClient } from '@/lib/x402/mcp-client';
+import { recognizeLicensePlate } from '@/lib/api/flask';
+import { deriveWalletAddress } from '@/lib/api/laravel';
 
 interface TippingServiceConfig {
-  apiBaseUrl: string;
+  x402ServerUrl: string;
   maxDailyLimit: number;      // デフォルト: 50000 (¥50,000)
   minTransactionInterval: number; // デフォルト: 30000 (30秒)
 }
@@ -161,14 +180,73 @@ type TipErrorCode =
   | 'TRANSACTION_TIMEOUT'
   | 'USER_CANCELLED';
 
-class TippingService {
-  constructor(config: TippingServiceConfig);
+/**
+ * Server Action: ナンバープレートから受信者情報を取得
+ */
+export async function recognizeRecipient(image: string): Promise<RecipientInfo> {
+  const plateData = await recognizeLicensePlate(image);
+  const walletAddress = await deriveWalletAddress(plateData);
+  return {
+    plateData,
+    plateMasked: maskLicensePlate(plateData),
+    walletAddress,
+    isRegistered: !!walletAddress,
+  };
+}
 
-  async recognizeRecipient(image: string): Promise<RecipientInfo>;
-  async sendTip(request: TipRequest): Promise<TipResult>;
-  async getHistory(filter?: HistoryFilter): Promise<TipHistory[]>;
-  getDailySpent(): number;
-  canSendTip(): boolean;
+/**
+ * Server Action: x402 MCP経由で投げ銭を送信
+ */
+export async function sendTip(request: TipRequest): Promise<TipResult> {
+  try {
+    // レート制限チェック（Server-side validation）
+    if (!canSendTip()) {
+      throw new Error('RATE_LIMITED');
+    }
+
+    // x402 MCP Client経由でトランザクション実行
+    const txHash = await x402MCPClient.sendTip({
+      recipientAddress: request.recipientAddress,
+      amount: request.amount,
+      fee: request.fee,
+    });
+
+    // 通知送信（Server Component）
+    await sendNotification({
+      recipientAddress: request.recipientAddress,
+      amount: request.amount,
+      senderPlateMasked: maskLicensePlate(request.recipientPlate),
+      transactionHash: txHash,
+    });
+
+    return {
+      success: true,
+      transactionHash: txHash,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: parseError(error),
+    };
+  }
+}
+
+/**
+ * Server Action: 投げ銭履歴を取得（ブロックチェーン + ローカル）
+ */
+export async function getHistory(
+  address: `0x${string}`,
+  filter?: HistoryFilter
+): Promise<TipHistory[]> {
+  // viem/wagmiでブロックチェーンイベントログを取得
+  const blockchainHistory = await fetchBlockchainHistory(address, filter);
+  // IndexedDBから暗号化された履歴を読み込み（Client側でマージ）
+  return blockchainHistory;
+}
+
+function canSendTip(): boolean {
+  // 日次上限・間隔チェック（Server-side）
+  return true; // 実装省略
 }
 ```
 
@@ -199,12 +277,15 @@ const FEE_RATE = 0.02;        // 2%
 const MIN_FEE = 1;            // 最小手数料¥1
 ```
 
-#### VoiceConfirmationHandler
+#### VoiceConfirmationHandler (Client Component)
 
-音声確認処理コンポーネント。
+音声確認処理コンポーネント。Qwen AI Serviceを呼び出す。
 
 ```typescript
-// pkgs/frontend/lib/tipping/voice-confirmation.ts
+// pkgs/frontend/components/tipping/VoiceConfirmationHandler.tsx
+'use client';
+
+import { requestVoiceConfirmation } from '@/app/actions/qwen-voice';
 
 interface VoiceConfirmationConfig {
   timeout: number;            // デフォルト: 10000 (10秒)
@@ -221,13 +302,189 @@ interface VoiceConfirmationResult {
 const CONFIRM_PHRASES = ['はい', '送る', 'OK', 'オーケー', '送って'];
 const CANCEL_PHRASES = ['いいえ', 'キャンセル', 'やめる', '止める'];
 
-class VoiceConfirmationHandler {
-  constructor(config: VoiceConfirmationConfig);
+/**
+ * Client Component: 音声確認UIとServer Actionの橋渡し
+ */
+export function VoiceConfirmationHandler({ config }: { config: VoiceConfirmationConfig }) {
+  async function handleConfirmation(amount: number): Promise<VoiceConfirmationResult> {
+    // Server Action経由でQwen AIを呼び出し
+    return await requestVoiceConfirmation(amount, config.timeout);
+  }
 
-  async requestConfirmation(amount: number): Promise<VoiceConfirmationResult>;
-  speak(text: string): Promise<void>;
-  startListening(): void;
-  stopListening(): void;
+  return { handleConfirmation };
+}
+```
+
+#### x402_MCP_Client (Server Component)
+
+x402 MCPサーバーと通信してブロックチェーントランザクションを実行。
+
+```typescript
+// pkgs/frontend/lib/x402/mcp-client.ts
+import { Client } from '@modelcontextprotocol/sdk/client/index.js';
+import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
+
+interface TipTransactionRequest {
+  recipientAddress: `0x${string}`;
+  amount: number;             // 円
+  fee: number;                // 円
+}
+
+interface TipTransactionResponse {
+  transactionHash: `0x${string}`;
+  blockNumber?: number;
+  status: 'pending' | 'confirmed' | 'failed';
+}
+
+class X402MCPClient {
+  private client: Client;
+  private transport: StdioClientTransport;
+
+  constructor(serverCommand: string, serverArgs: string[]) {
+    this.transport = new StdioClientTransport({
+      command: serverCommand,
+      args: serverArgs,
+    });
+    this.client = new Client({
+      name: 'tipping-client',
+      version: '1.0.0',
+    }, {
+      capabilities: {},
+    });
+  }
+
+  async connect(): Promise<void> {
+    await this.client.connect(this.transport);
+  }
+
+  async disconnect(): Promise<void> {
+    await this.client.close();
+  }
+
+  /**
+   * x402 MCPサーバーの /tip エンドポイントを呼び出し
+   */
+  async sendTip(request: TipTransactionRequest): Promise<`0x${string}`> {
+    const response = await this.client.callTool({
+      name: 'send_tip',
+      arguments: {
+        recipient: request.recipientAddress,
+        amount: request.amount.toString(),
+        fee: request.fee.toString(),
+      },
+    });
+
+    if (!response.content || response.content.length === 0) {
+      throw new Error('No response from x402 server');
+    }
+
+    const result = JSON.parse(response.content[0].text) as TipTransactionResponse;
+    return result.transactionHash;
+  }
+
+  /**
+   * トランザクションステータスを確認
+   */
+  async getTransactionStatus(txHash: `0x${string}`): Promise<TipTransactionResponse> {
+    const response = await this.client.callTool({
+      name: 'get_transaction_status',
+      arguments: { txHash },
+    });
+
+    return JSON.parse(response.content[0].text) as TipTransactionResponse;
+  }
+}
+
+export const x402MCPClient = new X402MCPClient(
+  'node',
+  ['pkgs/x402server/dist/index.js']
+);
+```
+
+#### Qwen_AI_Service (Server Component)
+
+Qwen AIをOpenAI SDK経由で呼び出して音声認識・音声合成を実行。
+
+```typescript
+// pkgs/frontend/app/actions/qwen-voice.ts
+'use server';
+
+import OpenAI from 'openai';
+
+const qwen = new OpenAI({
+  apiKey: process.env.DASHSCOPE_API_KEY,
+  baseURL: 'https://dashscope.aliyuncs.com/compatible-mode/v1',
+});
+
+interface VoiceConfirmationRequest {
+  amount: number;
+  timeout: number;
+}
+
+interface VoiceConfirmationResult {
+  confirmed: boolean;
+  cancelled: boolean;
+  timedOut: boolean;
+  transcript?: string;
+}
+
+const CONFIRM_PHRASES = ['はい', '送る', 'OK', 'オーケー', '送って'];
+const CANCEL_PHRASES = ['いいえ', 'キャンセル', 'やめる', '止める'];
+
+/**
+ * Server Action: Qwen AIで音声確認を実行
+ */
+export async function requestVoiceConfirmation(
+  amount: number,
+  timeout: number = 10000
+): Promise<VoiceConfirmationResult> {
+  try {
+    // 音声ガイダンス生成（Qwen AI Text-to-Speech）
+    const guidance = `前方の車両に${amount}円を送りますか？`;
+    const audioBuffer = await synthesizeSpeech(guidance);
+
+    // ユーザーに音声を再生（Client側で実行）
+    // ここではServer Actionなので、音声データを返してClient側で再生
+
+    // 音声認識（Qwen AI Speech-to-Text）
+    const transcript = await recognizeSpeech(timeout);
+
+    // 確認・キャンセル判定
+    if (CONFIRM_PHRASES.some(phrase => transcript.includes(phrase))) {
+      return { confirmed: true, cancelled: false, timedOut: false, transcript };
+    } else if (CANCEL_PHRASES.some(phrase => transcript.includes(phrase))) {
+      return { confirmed: false, cancelled: true, timedOut: false, transcript };
+    } else {
+      return { confirmed: false, cancelled: false, timedOut: false, transcript };
+    }
+  } catch (error) {
+    if (error.message === 'TIMEOUT') {
+      return { confirmed: false, cancelled: false, timedOut: true };
+    }
+    throw error;
+  }
+}
+
+/**
+ * Qwen AI Text-to-Speech（OpenAI SDK経由）
+ */
+async function synthesizeSpeech(text: string): Promise<Buffer> {
+  const response = await qwen.audio.speech.create({
+    model: 'qwen-audio-turbo',
+    voice: 'nova',
+    input: text,
+  });
+
+  return Buffer.from(await response.arrayBuffer());
+}
+
+/**
+ * Qwen AI Speech-to-Text（OpenAI SDK経由、Streaming API使用）
+ */
+async function recognizeSpeech(timeout: number): Promise<string> {
+  // 実装はクライアント側で音声入力を収集し、Server Actionに送信
+  // ここでは簡略化
+  return ''; // 実装省略
 }
 ```
 
@@ -260,55 +517,132 @@ class HazardLampDetector {
 }
 ```
 
-### バックエンドAPI
+### x402 Server (Hono) エンドポイント
 
-#### Tipping API Endpoints
+#### Tipping Endpoint
 
 ```typescript
 // pkgs/x402server/src/routes/tipping.ts
 
-// POST /api/tipping/send
-interface SendTipRequest {
-  senderAddress: `0x${string}`;
+import { Hono } from 'hono';
+import { viem } from 'viem';
+import { baseSepolia } from 'viem/chains';
+
+const app = new Hono();
+
+// POST /tip - 投げ銭トランザクションを実行
+interface TipRequest {
   recipientAddress: `0x${string}`;
-  amount: number;             // 円
-  fee: number;                // 円
-  senderPlateHash: string;    // プライバシー保護用ハッシュ
-  recipientPlateHash: string;
-  message?: string;
+  amount: string;             // Wei単位（USDC）
+  fee: string;                // Wei単位（USDC）
 }
 
-interface SendTipResponse {
-  success: boolean;
-  transactionHash?: `0x${string}`;
-  error?: {
-    code: string;
-    message: string;
-  };
+interface TipResponse {
+  transactionHash: `0x${string}`;
+  status: 'pending' | 'confirmed';
 }
 
-// GET /api/tipping/history
-interface HistoryQuery {
-  address: `0x${string}`;
-  type?: 'sent' | 'received' | 'all';
-  startDate?: string;
-  endDate?: string;
-  limit?: number;
-  offset?: number;
-}
+app.post('/tip', async (c) => {
+  const { recipientAddress, amount, fee } = await c.req.json<TipRequest>();
 
-interface HistoryResponse {
-  tips: TipHistoryItem[];
-  total: number;
-  hasMore: boolean;
-}
+  // ERC4337 SmartAccount経由でトランザクション実行
+  const txHash = await sendTipTransaction({
+    recipient: recipientAddress,
+    amount: BigInt(amount),
+    fee: BigInt(fee),
+  });
 
-// POST /api/tipping/notify
-interface NotifyRequest {
+  return c.json<TipResponse>({
+    transactionHash: txHash,
+    status: 'pending',
+  });
+});
+
+// GET /tip/status/:txHash - トランザクションステータスを取得
+app.get('/tip/status/:txHash', async (c) => {
+  const txHash = c.req.param('txHash') as `0x${string}`;
+  
+  const receipt = await publicClient.getTransactionReceipt({ hash: txHash });
+  
+  return c.json({
+    transactionHash: txHash,
+    status: receipt.status === 'success' ? 'confirmed' : 'failed',
+    blockNumber: receipt.blockNumber,
+  });
+});
+
+export default app;
+```
+
+### Next.js Server Actions
+
+投げ銭機能のビジネスロジックは Next.js Server Actions で実装します（Laravel API は使用しません）。
+
+```typescript
+// pkgs/frontend/app/actions/notification.ts
+'use server';
+
+interface NotificationRequest {
   recipientAddress: `0x${string}`;
   amount: number;
   senderPlateMasked: string;  // 例: 品川330あ****
   transactionHash: `0x${string}`;
+}
+
+/**
+ * Server Action: PWAプッシュ通知を送信
+ */
+export async function sendNotification(request: NotificationRequest): Promise<void> {
+  // PWA Push APIを使用して通知送信
+  const payload = {
+    title: '投げ銭を受け取りました',
+    body: `${request.senderPlateMasked} から ¥${request.amount} を受け取りました`,
+    data: {
+      transactionHash: request.transactionHash,
+      explorerUrl: `https://sepolia.basescan.org/tx/${request.transactionHash}`,
+    },
+  };
+
+  await sendPushNotification(request.recipientAddress, payload);
+}
+```
+
+```typescript
+// pkgs/frontend/app/actions/history.ts
+'use server';
+
+import { createPublicClient, http } from 'viem';
+import { baseSepolia } from 'viem/chains';
+
+/**
+ * Server Action: viem/wagmiでブロックチェーンイベントログから履歴を取得
+ */
+export async function fetchBlockchainHistory(
+  address: `0x${string}`,
+  filter?: HistoryFilter
+): Promise<TipHistory[]> {
+  const publicClient = createPublicClient({
+    chain: baseSepolia,
+    transport: http(),
+  });
+
+  // SmartAccountコントラクトのイベントログを取得
+  const logs = await publicClient.getLogs({
+    address: SMART_ACCOUNT_ADDRESS,
+    event: parseAbiItem('event TipSent(address indexed sender, address indexed recipient, uint256 amount)'),
+    fromBlock: 'earliest',
+    toBlock: 'latest',
+  });
+
+  return logs.map(log => ({
+    id: log.transactionHash,
+    type: log.args.sender === address ? 'sent' : 'received',
+    transactionHash: log.transactionHash,
+    counterpartyPlateMasked: '品川330あ****', // プライバシー保護のためマスク
+    amount: Number(log.args.amount) / 1e18, // Wei → JPY変換
+    timestamp: Date.now(), // ブロックタイムスタンプから取得
+    explorerUrl: `https://sepolia.basescan.org/tx/${log.transactionHash}`,
+  }));
 }
 ```
 

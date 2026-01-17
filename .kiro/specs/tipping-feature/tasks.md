@@ -2,7 +2,9 @@
 
 ## 概要
 
-本実装計画は、ナンバープレート認識とウォレットアドレス変換機能を統合し、x402決済プロトコルを使用したP2P投げ銭機能を実装します。フロントエンド（Next.js PWA）とバックエンド（Hono）の両方で実装を行います。
+本実装計画は、ナンバープレート認識とウォレットアドレス変換機能を統合し、**x402 MCPプロトコル + Next.js Server Components + Qwen AI（OpenAI SDK）**を使用したP2P投げ銭機能を実装します。
+
+**実装方針**: Laravel APIは使用せず、投げ銭機能のすべてのロジックをNext.js内で完結させます。x402 MCPサーバーと通信してブロックチェーントランザクションを実行し、Qwen AIを使用した音声処理により安全なハンズフリー操作を提供します。
 
 ## タスク
 
@@ -55,59 +57,73 @@
     - エラー表示のテスト
     - _Requirements: 2.1, 2.2, 2.5_
 
-- [ ] 5. 投げ銭サービスの実装
-  - [ ] 5.1 TippingServiceクラスを実装する
-    - ナンバープレート認識との統合
-    - ウォレットアドレス変換との統合
+- [ ] 5. 投げ銭サービスの実装（Next.js Server Actions）
+  - [ ] 5.1 TippingService Server Actionsを実装する
+    - ナンバープレート認識との統合（Flask API呼び出し）
+    - ウォレットアドレス変換との統合（Laravel API呼び出し）
     - 送金先情報の取得
-    - pkgs/frontend/lib/tipping/tipping-service.ts に作成
-    - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5_
-  - [ ]* 5.2 投げ銭フロー統合のプロパティテストを作成する
+    - x402_MCP_Client経由でのトランザクション実行
+    - pkgs/frontend/app/actions/tipping.ts に作成
+    - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 4.1, 4.2_
+  - [ ] 5.2 x402_MCP_Clientを実装する
+    - MCP SDK for Node.jsを使用してx402_Serverと通信
+    - send_tip ツールの呼び出し
+    - get_transaction_status ツールの呼び出し
+    - pkgs/frontend/lib/x402/mcp-client.ts に作成
+    - _Requirements: 4.9_
+  - [ ]* 5.3 投げ銭フロー統合のプロパティテストを作成する
     - **Property 1: 投げ銭フロー統合**
     - **Validates: Requirements 1.1, 1.2, 1.3**
-  - [ ] 5.3 レート制限機能を実装する
+  - [ ] 5.4 レート制限機能を実装する
     - 1日あたりの送金上限（¥50,000）
     - 連続送金の間隔制限（30秒）
-    - ローカルストレージでの状態管理
+    - Server-side validation（Server Actions内）
     - _Requirements: 9.2, 9.3_
-  - [ ]* 5.4 レート制限のプロパティテストを作成する
+  - [ ]* 5.5 レート制限のプロパティテストを作成する
     - **Property 10: レート制限の適用**
     - **Validates: Requirements 9.2, 9.3**
 
 - [ ] 6. チェックポイント - フロントエンド基盤の確認
   - 全てのテストが通ることを確認し、問題があればユーザーに質問する
 
-- [ ] 7. バックエンドAPIの実装
-  - [ ] 7.1 Tipping APIエンドポイントを実装する
-    - POST /api/tipping/send - 投げ銭送信
-    - GET /api/tipping/history - 履歴取得
-    - x402プロトコルとの統合
+- [ ] 7. x402 Server エンドポイントの実装
+  - [ ] 7.1 x402 Server の投げ銭エンドポイントを実装する
+    - POST /tip - 投げ銭トランザクション実行
+    - GET /tip/status/:txHash - トランザクションステータス取得
+    - ERC4337 SmartAccount経由のトランザクション実行
     - pkgs/x402server/src/routes/tipping.ts に作成
-    - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7_
-  - [ ]* 7.2 トランザクション実行のプロパティテストを作成する
+    - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.8_
+  - [ ] 7.2 x402 Server のMCPツールを実装する
+    - send_tip ツール: MCPクライアントから呼び出し可能にする
+    - get_transaction_status ツール: トランザクションステータス取得
+    - pkgs/x402server/src/mcp/tools.ts に作成
+    - _Requirements: 4.9_
+  - [ ]* 7.3 トランザクション実行のプロパティテストを作成する
     - **Property 4: トランザクションハッシュの返却**
     - **Validates: Requirements 4.4**
-  - [ ] 7.3 リトライ機能を実装する
+  - [ ] 7.4 リトライ機能を実装する（Server Actions内）
     - 指数バックオフによるリトライ
     - 最大3回のリトライ
+    - pkgs/frontend/lib/retry.ts に作成
     - _Requirements: 10.6_
-  - [ ]* 7.4 リトライメカニズムのプロパティテストを作成する
+  - [ ]* 7.5 リトライメカニズムのプロパティテストを作成する
     - **Property 12: リトライメカニズム**
     - **Validates: Requirements 10.6**
-  - [ ] 7.5 エラーハンドリングを実装する
+  - [ ] 7.6 エラーハンドリングを実装する（Server Actions内）
     - エラーコード、メッセージ、推奨アクションの構造化
     - エラーログの記録
+    - pkgs/frontend/lib/error-handler.ts に作成
     - _Requirements: 10.1, 10.2, 10.3, 10.4, 10.5_
-  - [ ]* 7.6 エラーレスポンス構造のプロパティテストを作成する
+  - [ ]* 7.7 エラーレスポンス構造のプロパティテストを作成する
     - **Property 11: エラーレスポンス構造**
     - **Validates: Requirements 10.4**
 
-- [ ] 8. 通知サービスの実装
-  - [ ] 8.1 NotificationServiceを実装する
+- [ ] 8. 通知サービスの実装（Next.js Server Component）
+  - [ ] 8.1 NotificationService Server Actionを実装する
     - PWAプッシュ通知の送信
     - 通知内容の構成（金額、マスクされたナンバープレート）
     - アプリ内通知のフォールバック
-    - pkgs/x402server/src/lib/notification-service.ts に作成
+    - pkgs/frontend/app/actions/notification.ts に作成
     - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5_
   - [ ]* 8.2 通知サービスのユニットテストを作成する
     - プッシュ通知送信のテスト
@@ -117,19 +133,25 @@
 - [ ] 9. チェックポイント - バックエンド機能の確認
   - 全てのテストが通ることを確認し、問題があればユーザーに質問する
 
-- [ ] 10. 音声確認機能の実装
-  - [ ] 10.1 VoiceConfirmationHandlerを実装する
-    - Web Speech APIを使用した音声認識
+- [ ] 10. 音声確認機能の実装（Qwen AI Service）
+  - [ ] 10.1 Qwen_AI_Service Server Actionsを実装する
+    - OpenAI SDKを使用したQwen AI統合
+    - Text-to-Speech（音声ガイダンス生成）
+    - Speech-to-Text（音声認識）
+    - Streaming API対応
+    - pkgs/frontend/app/actions/qwen-voice.ts に作成
+    - _Requirements: 7.1, 7.2, 7.3, 7.10_
+  - [ ] 10.2 VoiceConfirmationHandler Client Componentを実装する
+    - Server Actionsとの橋渡し
     - 確認フレーズ（はい、送る、OK）の認識
     - キャンセルフレーズ（いいえ、キャンセル）の認識
-    - 音声ガイダンスの再生
     - 10秒タイムアウト
-    - pkgs/frontend/lib/tipping/voice-confirmation.ts に作成
-    - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7, 7.8_
-  - [ ]* 10.2 音声コマンド認識のプロパティテストを作成する
+    - pkgs/frontend/components/tipping/VoiceConfirmationHandler.tsx に作成
+    - _Requirements: 7.3, 7.4, 7.5, 7.6, 7.7, 7.8_
+  - [ ]* 10.3 音声コマンド認識のプロパティテストを作成する
     - **Property 7: 音声コマンド認識**
     - **Validates: Requirements 7.3, 7.4**
-  - [ ]* 10.3 音声タイムアウトのプロパティテストを作成する
+  - [ ]* 10.4 音声タイムアウトのプロパティテストを作成する
     - **Property 8: 音声タイムアウト動作**
     - **Validates: Requirements 7.7, 7.8**
 
@@ -145,19 +167,24 @@
     - **Property 6: ハザードランプ検知タイミング**
     - **Validates: Requirements 6.2, 6.3**
 
-- [ ] 12. 履歴管理機能の実装
-  - [ ] 12.1 履歴保存・取得機能を実装する
-    - 送信履歴の保存
-    - 受信履歴の保存
-    - 暗号化ローカルストレージ
-    - pkgs/frontend/lib/tipping/history-service.ts に作成
-    - _Requirements: 8.1, 8.2, 8.5, 9.5_
-  - [ ] 12.2 HistoryViewコンポーネントを実装する
+- [ ] 12. 履歴管理機能の実装（viem/wagmi + Server Components）
+  - [ ] 12.1 履歴取得 Server Actionを実装する
+    - viem/wagmiでブロックチェーンイベントログを取得
+    - 送信履歴の取得
+    - 受信履歴の取得
+    - pkgs/frontend/app/actions/history.ts に作成
+    - _Requirements: 8.1, 8.2, 8.5, 8.8_
+  - [ ] 12.2 暗号化ローカルストレージを実装する
+    - IndexedDBへの暗号化保存
+    - ブロックチェーンデータとのマージ
+    - pkgs/frontend/lib/tipping/encrypted-storage.ts に作成
+    - _Requirements: 8.3, 9.5_
+  - [ ] 12.3 HistoryView Client Componentを実装する
     - 履歴一覧表示
-    - フィルタリング（送信/受信、期間）
+    - フィルタリング（送信/受信、期間）- Client Component
     - ブロックエクスプローラーへのリンク
     - pkgs/frontend/components/tipping/HistoryView.tsx に作成
-    - _Requirements: 8.4, 8.5, 8.6_
+    - _Requirements: 8.4, 8.5, 8.6, 8.7_
 
 - [ ] 13. チェックポイント - 補助機能の確認
   - 全てのテストが通ることを確認し、問題があればユーザーに質問する

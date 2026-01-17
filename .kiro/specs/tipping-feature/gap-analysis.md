@@ -6,17 +6,18 @@
 ナンバープレート認識とウォレットアドレス変換機能を統合し、車両間でのP2P決済を実現する投げ銭機能の実装ギャップを分析。
 
 ### 主要な発見
-- **既存資産**: x402決済プロトコル実装、Honoサーバー基盤、Next.js PWA（プッシュ通知対応）
-- **依存機能**: ナンバープレート認識機能、ウォレットアドレス変換機能（いずれも未実装）
-- **主要なギャップ**: Web3統合（wagmi/viem）、OBD-II連携、音声認識・合成、投げ銭UI、履歴管理DBが未実装
-- **実装アプローチ**: 新規コンポーネント作成中心、既存x402の拡張、依存機能の完成待ち
+- **既存資産**: x402決済プロトコル実装、Honoサーバー基盤、Next.js PWA（プッシュ通知対応）、Qwen AI統合サンプル
+- **依存機能**: ナンバープレート認識機能（Flask API）、ウォレットアドレス変換機能（Laravel API）
+- **主要なギャップ**: x402 MCP Client実装、Qwen AI Service（OpenAI SDK）統合、viem/wagmi履歴取得、投げ銭UI、OBD-II連携が未実装
+- **実装アプローチ**: **x402 MCP + Next.js Server Components + Qwen AI（OpenAI SDK）**を使用し、Laravel APIは使用しない
 
-### 推奨事項
-設計フェーズで以下を重点的に検討：
-1. 依存機能の実装順序（ナンバープレート認識 → ウォレット変換 → チップ）
-2. Web3統合アーキテクチャ（wagmi設定、トランザクション署名フロー）
-3. OBD-II連携実現可能性（市販デバイス対応、代替案）
-4. 音声認識実装方針（Web Speech API vs クラウドAPI）
+### アーキテクチャ決定事項（2026-01-17更新）
+以下の実装方針が確定：
+1. **トランザクション実行**: x402 MCP Client経由でx402 Serverの `/tip` エンドポイントを呼び出し
+2. **音声確認**: Qwen AI（OpenAI SDK）を使用した音声認識・音声合成（Web Speech API不使用）
+3. **履歴管理**: viem/wagmiでブロックチェーンイベントログを取得（Laravel API不使用）
+4. **通知送信**: Next.js Server Component経由でPWAプッシュ通知送信（Laravel API不使用）
+5. **ビジネスロジック**: すべてNext.js内で完結（Laravel APIは投げ銭機能では使用しない）
 
 ---
 
@@ -207,35 +208,40 @@ Response:
 
 **複雑度シグナル**: 低（簡単な計算処理）
 
-#### 要件4: x402プロトコルによるトランザクション実行
+#### 要件4: x402 MCPによるトランザクション実行
 
 **必要な機能**:
-- x402プロトコルでのトランザクション作成
+- x402 MCP Client実装（MCP SDK for Node.js）
+- x402 Serverの `/tip` エンドポイント実装
 - Base Sepoliaネットワーク送金
 - ERC4337 SmartAccount対応
 - Paymaster統合（ガスレス取引）
 
 **既存資産**:
 - ✅ x402決済プロトコル実装（x402server）
+- ✅ Honoサーバー基盤
 - ✅ Base Sepolia設定（contract）
+- ✅ Next.js Server Components/Actions
 
 **ギャップ**:
-- ❌ Web3統合（wagmi/viem）
-  - ウォレット接続
-  - トランザクション署名
-  - SmartAccount操作
-- ❌ P2P投げ銭用のx402拡張
-  - 現在: サーバーへの支払い（B2C）
-  - 必要: ユーザー間送金（P2P）
-- ❌ トランザクション実行UI（確認画面、進捗表示）
+- ❌ **x402 MCP Client実装**
+  - MCP SDK for Node.jsを使用してx402_Serverと通信
+  - send_tip ツールの呼び出し
+  - トランザクションステータス取得
+- ❌ **x402 Serverの投げ銭エンドポイント**
+  - `/tip` エンドポイント（POST）
+  - `/tip/status/:txHash` エンドポイント（GET）
+  - ERC4337 SmartAccount経由のトランザクション実行
+  - MCP ツール実装（send_tip, get_transaction_status）
+- ❌ **Next.js Server Action統合**
+  - Server Action経由でx402 MCP Clientを呼び出し
+  - トランザクション実行UI（確認画面、進捗表示）
 - ❌ ERC4337 SmartAccount（**依存**: wallet-address-conversion）
 - ❌ Paymaster実装
 
-**複雑度シグナル**: 高（Web3統合、ERC4337、x402の応用）
+**複雑度シグナル**: 高（MCP統合、ERC4337、x402拡張）
 
-**研究必要**: 
-- x402はP2P決済に対応可能か？（現状はAPI課金モデル）
-- 代替: 標準的なERC20 transferの方がシンプル？
+**アーキテクチャ決定**: x402 MCPを使用してブロックチェーントランザクションを実行する（標準的なERC20 transferは使用しない）
 
 #### 要件5: 投げ銭受信通知
 
@@ -290,48 +296,67 @@ Response:
 - Web Bluetooth API対応ブラウザ
 - 代替案: 手動トリガーのみでMVP実現
 
-#### 要件7: 音声確認によるハンズフリー操作
+#### 要件7: Qwen AIによる音声確認ハンズフリー操作
 
 **必要な機能**:
-- 音声ガイダンス再生
-- 日本語音声認識
+- Qwen AI Text-to-Speech（音声ガイダンス生成）
+- Qwen AI Speech-to-Text（音声認識）
+- OpenAI SDK経由でのQwen AI呼び出し
+- Streaming API対応
 - 「はい」「いいえ」判定
 - タイムアウト処理（10秒）
 
 **既存資産**:
-- ❌ なし
+- ✅ Qwen AI統合サンプル（`pkgs/qwen-sample/src/sample2.ts`）
+- ✅ OpenAI SDK使用パターン
+- ✅ Next.js Server Components/Actions
 
 **ギャップ**:
-- ❌ 音声認識（Web Speech API or クラウドAPI）
-- ❌ 音声合成（Web Speech API or クラウドAPI）
-- ❌ Voice_Confirmation_Handler 実装
-- ❌ 音声コマンド辞書（「はい」「送る」「OK」等）
+- ❌ **Qwen AI Service実装（Server Action）**
+  - OpenAI SDKを使用したQwen AI統合
+  - Text-to-Speech（`qwen.audio.speech.create()`）
+  - Speech-to-Text（Streaming API対応）
+  - `pkgs/frontend/app/actions/qwen-voice.ts`
+- ❌ **VoiceConfirmationHandler Client Component**
+  - Server Actionsとの橋渡し
+  - 確認フレーズ判定（「はい」「送る」「OK」）
+  - キャンセルフレーズ判定（「いいえ」「キャンセル」）
+  - `pkgs/frontend/components/tipping/VoiceConfirmationHandler.tsx`
 
-**複雑度シグナル**: 中（Web Speech APIは標準、精度チューニングが課題）
+**複雑度シグナル**: 中（Qwen AI統合、Streaming API、Server Components連携）
 
-**研究必要**:
-- Web Speech API vs Google Cloud Speech-to-Text
-- ブラウザ対応状況（Chrome, Safari）
+**アーキテクチャ決定**: Qwen AI（OpenAI SDK）を使用する（Web Speech API不使用）
 
-#### 要件8: 投げ銭履歴管理
+#### 要件8: 投げ銭履歴管理（viem/wagmi + Next.js Server Components）
 
 **必要な機能**:
-- 送受信履歴保存
+- ブロックチェーンイベントログから履歴取得
+- ローカルストレージ（IndexedDB）への暗号化保存
 - 履歴表示（時系列）
 - フィルタリング（送信/受信、期間）
 - ブロックエクスプローラーリンク
 
 **既存資産**:
-- ❌ なし
+- ✅ viem/wagmi（Web3ライブラリ）
+- ✅ Next.js Server Components/Actions
+- ✅ IndexedDB（ブラウザストレージ）
 
 **ギャップ**:
-- ❌ データベース（MySQL）
-  - テーブル設計（tip_transactions）
-- ❌ Laravel API（`/api/tips/history`）
-- ❌ 履歴取得API
-- ❌ 履歴表示UI
+- ❌ **履歴取得Server Action実装**
+  - viem/wagmiでブロックチェーンイベントログを取得
+  - SmartAccountコントラクトのTipSentイベントを監視
+  - `pkgs/frontend/app/actions/history.ts`
+- ❌ **暗号化ローカルストレージ実装**
+  - IndexedDBへのAES-GCM暗号化保存
+  - ブロックチェーンデータとのマージ
+  - `pkgs/frontend/lib/tipping/encrypted-storage.ts`
+- ❌ **履歴表示Client Component**
+  - フィルタリング機能（Client Component）
+  - `pkgs/frontend/components/tipping/HistoryView.tsx`
 
-**複雑度シグナル**: 低〜中（標準的なCRUD）
+**複雑度シグナル**: 中（ブロックチェーンイベント取得、暗号化、データマージ）
+
+**アーキテクチャ決定**: viem/wagmi + Next.js Server Componentsを使用する（Laravel API不使用）
 
 #### 要件9: セキュリティとプライバシー
 
@@ -381,97 +406,39 @@ Response:
 
 ## 4. 実装アプローチオプション
 
-### オプションA: 既存コンポーネント拡張
+### オプションA: x402 MCP統合アプローチ（採用済み）
 
-**適用範囲**: x402決済プロトコルの拡張のみ
+**適用範囲**: x402 MCP + Next.js Server Components + Qwen AI
 
-**拡張対象ファイル**:
-- `pkgs/x402server/src/index.ts` → P2P投げ銭エンドポイント追加
+**実装内容**:
+- **x402 Server拡張**: `/tip` エンドポイント + MCP ツール実装
+- **x402 MCP Client**: MCP SDK for Node.jsを使用してx402 Serverと通信
+- **Next.js Server Actions**: x402 MCP Client経由でトランザクション実行
+- **Qwen AI Service**: OpenAI SDK経由でQwen AI統合
+- **viem/wagmi**: ブロックチェーンイベントログから履歴取得
 
-**内容**:
-- `/tip` エンドポイント追加
-- 手数料計算・分配ロジック
-- トランザクション履歴保存
-
-**互換性評価**:
-- ⚠️ x402は本来API課金用、P2P決済への適用は非標準的
-- ⚠️ x402ミドルウェアの大幅改造が必要な可能性
+**新規ファイル**:
+- `pkgs/x402server/src/routes/tipping.ts` - x402投げ銭エンドポイント
+- `pkgs/x402server/src/mcp/tools.ts` - MCP ツール（send_tip, get_transaction_status）
+- `pkgs/frontend/lib/x402/mcp-client.ts` - x402 MCP Client
+- `pkgs/frontend/app/actions/tipping.ts` - 投げ銭Server Actions
+- `pkgs/frontend/app/actions/qwen-voice.ts` - Qwen AI Service
+- `pkgs/frontend/app/actions/history.ts` - 履歴取得Server Action
 
 **複雑度と保守性**:
-- **認知負荷**: 中〜高（x402の内部理解必要）
-- **単一責任**: やや曖昧（API課金とP2P決済の混在）
+- **認知負荷**: 高（MCP統合、Server Components、Qwen AI）
+- **単一責任**: 明確（投げ銭機能はNext.js内で完結）
 
 **トレードオフ**:
-- ✅ 既存インフラ再利用
-- ❌ x402の適用範囲外の可能性
-- ❌ 保守性低下リスク
+- ✅ Laravel API不要（シンプルな構成）
+- ✅ 既存x402インフラ活用
+- ✅ Qwen AI既存サンプルコード活用
+- ❌ MCP統合の学習曲線
+- ❌ Server Components/Actionsの複雑性
 
-**推奨度**: 低（x402はAPI課金特化、P2P決済には標準的なERC20 transfer推奨）
+**推奨度**: 高（採用決定済み）
 
-### オプションB: 新規コンポーネント作成（推奨）
-
-**適用範囲**: 投げ銭機能全体
-
-**新規作成の根拠**:
-1. **投げ銭UI**: フロントエンドに完全新規機能
-2. **Web3統合**: wagmi/viemの導入が必須
-3. **トランザクション実行**: ERC20 transferで実装（x402不使用）
-4. **通知システム**: 完全新規
-5. **OBD-II連携**: 完全新規（ハードウェア連携）
-6. **音声認識**: 完全新規
-
-**新規パッケージ/ファイル**:
-```
-pkgs/frontend/
-  ├── components/
-  │   ├── TippingUI.tsx              # 投げ銭メイン画面
-  │   ├── AmountSelector.tsx         # 金額選択
-  │   ├── TippingConfirmation.tsx    # 確認画面
-  │   └── TipHistory.tsx             # 履歴表示
-  ├── lib/
-  │   ├── web3.ts                    # wagmi設定
-  │   ├── tipping.ts                 # 投げ銭ロジック
-  │   ├── fee-calculator.ts          # 手数料計算
-  │   ├── voice-handler.ts           # 音声認識・合成
-  │   ├── obd2.ts                    # OBD-II連携（オプション）
-  │   └── notification.ts            # プッシュ通知
-  └── app/
-      └── tip/page.tsx               # 投げ銭ページ
-
-laravel/                             # 新規ディレクトリ
-  ├── app/
-  │   ├── Http/Controllers/
-  │   │   └── TipController.php      # 投げ銭API
-  │   └── Models/
-  │       └── TipTransaction.php     # 履歴モデル
-  ├── database/migrations/
-  │   └── create_tip_transactions_table.php
-  └── routes/api.php
-
-pkgs/contract/                       # ERC20コントラクト（既存でもOK）
-  └── contracts/
-      └── TippingManager.sol         # 手数料管理（オプション）
-```
-
-**統合ポイント**:
-- **Frontend ←→ Laravel**: REST API（履歴保存・取得）
-- **Frontend ←→ Base L2**: wagmi/viem経由のERC20 transfer
-- **Frontend ←→ OBD-II**: Web Bluetooth API
-- **Laravel ←→ Web Push**: 通知サーバー
-
-**責任境界**:
-- **Frontend**: UI、Web3操作、音声処理、OBD-II連携
-- **Laravel**: 履歴管理、通知配信、認証
-- **Base L2**: トランザクション実行
-
-**トレードオフ**:
-- ✅ 責任分離明確
-- ✅ 標準的なERC20 transfer使用（シンプル）
-- ✅ 独立テスト可能
-- ❌ 初期開発コスト高
-- ❌ x402資産を活用できない
-
-### オプションC: ハイブリッドアプローチ（推奨）
+### オプションB: 段階的実装アプローチ（x402 MCP採用）
 
 **戦略**:
 1. **Phase 1 - 基本投げ銭UI**: 依存機能の完成待ち、UIプロトタイプ作成

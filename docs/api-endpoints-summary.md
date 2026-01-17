@@ -44,44 +44,52 @@
 
 #### 3. 投げ銭機能
 
-| # | エンドポイント | メソッド | 機能 | 関連機能 | 優先度 |
+**⚠️ アーキテクチャ変更**: 投げ銭機能は **Laravel API を使用せず**、**x402 MCP + Next.js Server Components + Qwen AI（OpenAI SDK）** で実装します。
+
+**x402 Server (Hono) エンドポイント**:
+
+| # | エンドポイント | メソッド | 機能 | 実装場所 | 優先度 |
 |---|--------------|---------|------|---------|--------|
-| 11 | `/api/tips/send` | POST | 投げ銭送信記録 | tipping-feature | 🟡中 |
-| 12 | `/api/tips/history` | GET | 投げ銭履歴取得（送信/受信） | tipping-feature | 🟡中 |
-| 13 | `/api/tips/{id}` | GET | 投げ銭詳細取得 | tipping-feature | 🟢低 |
-| 14 | `/api/tips/stats` | GET | 投げ銭統計（月間送信額等） | tipping-feature | 🟢低 |
+| 11 | `/tip` | POST | 投げ銭トランザクション実行 | pkgs/x402server | 🔴高 |
+| 12 | `/tip/status/:txHash` | GET | トランザクションステータス取得 | pkgs/x402server | 🟡中 |
+
+**Next.js Server Actions** (Laravel API の代替):
+- `sendTip()` - x402 MCP Client 経由でトランザクション実行
+- `fetchBlockchainHistory()` - viem/wagmi でブロックチェーンイベントログから履歴取得
+- `sendNotification()` - PWA プッシュ通知送信
+- `requestVoiceConfirmation()` - Qwen AI (OpenAI SDK) で音声確認
 
 #### 4. 車両価値トークン化・ローン機能
 
 | # | エンドポイント | メソッド | 機能 | 関連機能 | 優先度 |
 |---|--------------|---------|------|---------|--------|
-| 15 | `/api/vehicles/register` | POST | 車両情報登録 | vehicle-value-tokenization | 🟡中 |
-| 16 | `/api/vehicles/{id}` | GET | 車両情報取得 | vehicle-value-tokenization | 🟡中 |
-| 17 | `/api/vehicles/{id}/appraisal` | GET | 査定結果取得 | vehicle-value-tokenization | 🟡中 |
-| 18 | `/api/vehicles/{id}/appraisal` | POST | 査定結果保存（Flask結果を保存） | vehicle-value-tokenization | 🟡中 |
-| 19 | `/api/loans/status` | GET | ローン状態取得（残高、借入額等） | vehicle-value-tokenization | 🟡中 |
-| 20 | `/api/loans/history` | GET | 借入・返済履歴 | vehicle-value-tokenization | 🟡中 |
-| 21 | `/api/loans/borrow` | POST | 手動借入記録 | vehicle-value-tokenization | 🟡中 |
-| 22 | `/api/loans/repay` | POST | 手動返済記録 | vehicle-value-tokenization | 🟡中 |
+| 13 | `/api/vehicles/register` | POST | 車両情報登録 | vehicle-value-tokenization | 🟡中 |
+| 14 | `/api/vehicles/{id}` | GET | 車両情報取得 | vehicle-value-tokenization | 🟡中 |
+| 15 | `/api/vehicles/{id}/appraisal` | GET | 査定結果取得 | vehicle-value-tokenization | 🟡中 |
+| 16 | `/api/vehicles/{id}/appraisal` | POST | 査定結果保存（Flask結果を保存） | vehicle-value-tokenization | 🟡中 |
+| 17 | `/api/loans/status` | GET | ローン状態取得（残高、借入額等） | vehicle-value-tokenization | 🟡中 |
+| 18 | `/api/loans/history` | GET | 借入・返済履歴 | vehicle-value-tokenization | 🟡中 |
+| 19 | `/api/loans/borrow` | POST | 手動借入記録 | vehicle-value-tokenization | 🟡中 |
+| 20 | `/api/loans/repay` | POST | 手動返済記録 | vehicle-value-tokenization | 🟡中 |
 
 #### 5. 通知機能
 
 | # | エンドポイント | メソッド | 機能 | 関連機能 | 優先度 |
 |---|--------------|---------|------|---------|--------|
-| 23 | `/api/notifications/subscribe` | POST | プッシュ通知購読登録 | tipping-feature, vehicle-value-tokenization | 🟡中 |
-| 24 | `/api/notifications/unsubscribe` | POST | プッシュ通知購読解除 | tipping-feature, vehicle-value-tokenization | 🟢低 |
-| 25 | `/api/notifications` | GET | 通知一覧取得 | tipping-feature, vehicle-value-tokenization | 🟡中 |
-| 26 | `/api/notifications/{id}/read` | PUT | 通知既読マーク | tipping-feature, vehicle-value-tokenization | 🟢低 |
+| 21 | `/api/notifications/subscribe` | POST | プッシュ通知購読登録 | tipping-feature, vehicle-value-tokenization | 🟡中 |
+| 22 | `/api/notifications/unsubscribe` | POST | プッシュ通知購読解除 | tipping-feature, vehicle-value-tokenization | 🟢低 |
+| 23 | `/api/notifications` | GET | 通知一覧取得 | tipping-feature, vehicle-value-tokenization | 🟡中 |
+| 24 | `/api/notifications/{id}/read` | PUT | 通知既読マーク | tipping-feature, vehicle-value-tokenization | 🟢低 |
 
 #### 6. その他・共通機能
 
 | # | エンドポイント | メソッド | 機能 | 優先度 |
 |---|--------------|---------|------|--------|
-| 27 | `/api/transactions/history` | GET | 全トランザクション履歴 | 🟡中 |
-| 28 | `/api/settings` | GET | ユーザー設定取得 | 🟢低 |
-| 29 | `/api/settings` | PUT | ユーザー設定更新 | 🟢低 |
+| 25 | `/api/transactions/history` | GET | 全トランザクション履歴 | 🟡中 |
+| 26 | `/api/settings` | GET | ユーザー設定取得 | 🟢低 |
+| 27 | `/api/settings` | PUT | ユーザー設定更新 | 🟢低 |
 
-**Laravel API合計**: **26エンドポイント**
+**Laravel API合計**: **22エンドポイント**
 
 ---
 
@@ -90,8 +98,10 @@
 | API種別 | エンドポイント数 | 主な役割 |
 |---------|-----------------|---------|
 | **Flask API** | 3 | AI推論、画像処理、車両査定 |
-| **Laravel API** | 26 | ビジネスロジック、CRUD、認証、履歴管理 |
-| **合計** | **29エンドポイント** | - |
+| **Laravel API** | 22 | ビジネスロジック、CRUD、認証、履歴管理 |
+| **x402 Server (Hono)** | 2 | 投げ銭トランザクション実行（x402 MCP経由） |
+| **Next.js Server Actions** | - | 投げ銭ビジネスロジック、通知、履歴取得（Laravel代替） |
+| **合計** | **27エンドポイント** | - |
 
 ---
 
@@ -120,14 +130,16 @@
 
 ## 📊 機能別エンドポイント数
 
-| 機能 | Flask | Laravel | 合計 |
-|------|-------|---------|------|
-| **wallet-address-conversion** | 0 | 4 | 4 |
-| **license-plate-recognition** | 2 | 0 | 2 |
-| **tipping-feature** | 0 | 4 | 4 |
-| **vehicle-value-tokenization** | 1 | 8 | 9 |
-| **共通（認証・通知・設定）** | 0 | 10 | 10 |
-| **合計** | **3** | **26** | **29** |
+| 機能 | Flask | Laravel | x402 Server | Next.js Server Actions | 合計 |
+|------|-------|---------|-------------|------------------------|------|
+| **wallet-address-conversion** | 0 | 4 | 0 | 0 | 4 |
+| **license-plate-recognition** | 2 | 0 | 0 | 0 | 2 |
+| **tipping-feature** | 0 | 0 | 2 | 4 (sendTip, fetchHistory, sendNotification, voiceConfirmation) | 6 |
+| **vehicle-value-tokenization** | 1 | 8 | 0 | 0 | 9 |
+| **共通（認証・通知・設定）** | 0 | 10 | 0 | 0 | 10 |
+| **合計** | **3** | **22** | **2** | **4** | **31** |
+
+**注**: Next.js Server Actions はエンドポイントとしてカウントせず、参考として記載。実質的なバックエンドエンドポイント数は **27**（Flask 3 + Laravel 22 + x402 2）。
 
 ---
 
@@ -148,11 +160,19 @@
 
 ---
 
-### Phase 2: 投げ銭・通知（10エンドポイント）
+### Phase 2: 投げ銭・通知（8エンドポイント）
+
+**x402 Server (Hono)**:
+6. `/tip` - 投げ銭トランザクション実行
+7. `/tip/status/:txHash` - トランザクションステータス取得
+
+**Next.js Server Actions**:
+- `sendTip()` - x402 MCP経由でトランザクション実行
+- `fetchBlockchainHistory()` - viem/wagmiでブロックチェーン履歴取得
+- `sendNotification()` - PWAプッシュ通知送信
+- `requestVoiceConfirmation()` - Qwen AI音声確認
 
 **Laravel**:
-6. `/api/tips/send` - 投げ銭送信
-7. `/api/tips/history` - 投げ銭履歴
 8. `/api/notifications/subscribe` - 通知購読
 9. `/api/notifications` - 通知一覧
 10. `/api/transactions/history` - トランザクション履歴
@@ -160,7 +180,7 @@
 **Flask**:
 11. `/papi/validate-image` - 画像品質検証（オプション）
 
-**理由**: ユーザー価値が高い機能
+**理由**: ユーザー価値が高い機能、x402 MCP + Next.js Server Componentsで実装
 
 ---
 
@@ -172,12 +192,12 @@
 **Laravel**:
 13. `/api/vehicles/register` - 車両情報登録
 14. `/api/vehicles/{id}` - 車両情報取得
-15. `/api/vehicles/{id}/appraisal` (GET/POST) - 査定結果
-16. `/api/loans/status` - ローン状態
-17. `/api/loans/history` - 借入・返済履歴
-18. `/api/loans/borrow` - 手動借入
-19. `/api/loans/repay` - 手動返済
-20. `/api/plates/validate-rental` - レンタカー判定
+15-16. `/api/vehicles/{id}/appraisal` (GET/POST) - 査定結果
+17. `/api/loans/status` - ローン状態
+18. `/api/loans/history` - 借入・返済履歴
+19. `/api/loans/borrow` - 手動借入
+20. `/api/loans/repay` - 手動返済
+(追加) `/api/plates/validate-rental` - レンタカー判定
 
 **理由**: 複雑な機能、車両査定API調査完了後に実装
 
@@ -198,7 +218,7 @@
 - PIL/OpenCV（画像処理）
 - Redis（キャッシュ）
 
-### Laravel API (26エンドポイント)
+### Laravel API (22エンドポイント)
 
 **特徴**:
 - ビジネスロジック中心
@@ -210,6 +230,20 @@
 - MySQL 8.0+
 - Laravel Sanctum（API認証）
 - Laravel Queue（非同期処理）
+
+### x402 Server (Hono) + Next.js Server Actions
+
+**特徴**:
+- 投げ銭機能専用（Laravel API不使用）
+- x402 MCP経由でブロックチェーントランザクション実行
+- Qwen AI (OpenAI SDK) による音声確認
+
+**技術スタック**:
+- Hono（x402 Server）
+- MCP SDK for Node.js（x402_MCP_Client）
+- Next.js 14 Server Components/Actions
+- viem/wagmi（ブロックチェーン履歴取得）
+- OpenAI SDK（Qwen AI統合）
 
 ---
 
@@ -254,21 +288,33 @@ Authorization: Bearer {token}
 - `/papi/validate-image`: 0.5-1週（画像処理アルゴリズム）
 - `/papi/appraise-vehicle`: 0.5-1週（外部API統合 or AI実装）
 
-### Laravel API (26エンドポイント): 5-7週
+### Laravel API (22エンドポイント): 4-6週
 
 **Phase 1（基盤）**: 2-3週
 - 認証: 0.5週
 - ナンバープレート管理: 1.5-2週
 
-**Phase 2（投げ銭・通知）**: 1.5-2週
-- 投げ銭API: 0.5-1週
-- 通知API: 1週
+**Phase 2（通知）**: 0.5-1週
+- 通知API: 0.5-1週
 
 **Phase 3（車両・ローン）**: 1.5-2週
 - 車両管理: 0.5週
 - ローン管理: 1-1.5週
 
-### 合計: 7-10週（バックエンド開発者1名）
+### x402 Server + Next.js Server Actions (投げ銭機能): 2-3週
+
+**x402 Server (Hono)**: 1-1.5週
+- `/tip` エンドポイント実装
+- ERC4337統合
+- MCP ツール実装
+
+**Next.js Server Actions**: 1-1.5週
+- x402_MCP_Client実装
+- Qwen AI Service実装（OpenAI SDK）
+- 履歴取得（viem/wagmi）
+- 通知送信
+
+### 合計: 6-9週（バックエンド開発者1名）
 
 ---
 

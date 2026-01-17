@@ -2,21 +2,26 @@
 
 ## はじめに
 
-本ドキュメントは、ナンバープレート連動ウォレットシステムにおける「チップ機能（P2P投げ銭）」の要件を定義します。この機能は、ナンバープレート認識とウォレットアドレス変換機能を統合し、車両間でのP2P決済を実現するコア機能です。x402決済プロトコルを使用してBase L2ブロックチェーン上でトランザクションを実行します。
+本ドキュメントは、ナンバープレート連動ウォレットシステムにおける「チップ機能（P2P投げ銭）」の要件を定義します。この機能は、ナンバープレート認識とウォレットアドレス変換機能を統合し、車両間でのP2P決済を実現するコア機能です。
+
+**実装方針**: x402 MCPプロトコルを使用し、Next.js Server Component + Qwen AI（OpenAI SDK）でBase L2ブロックチェーン上のトランザクションを実行します。Laravel APIは使用せず、すべてNext.js内で完結します。
 
 ## 用語集
 
-- **Tipping_Service**: 投げ銭トランザクションの作成・送信を管理するサービス
-- **Tip_Amount_Selector**: ユーザーが投げ銭金額を選択するUIコンポーネント
-- **Transaction_Executor**: x402プロトコルを使用してブロックチェーントランザクションを実行するコンポーネント
-- **Notification_Service**: 投げ銭の受信者に通知を送信するサービス
-- **Hazard_Lamp_Detector**: OBD-II経由でハザードランプの点灯を検知するコンポーネント
-- **Voice_Confirmation_Handler**: 音声による投げ銭確認を処理するコンポーネント
-- **Fee_Calculator**: 2%の手数料を計算するコンポーネント
-- **License_Plate_Recognition_Service**: ナンバープレート認識機能（既存）
-- **Wallet_Address_Deriver**: ウォレットアドレス変換機能（既存）
+- **Tipping_Service**: 投げ銭トランザクションの作成・送信を管理するNext.js Server Componentサービス
+- **x402_MCP_Client**: x402 MCPプロトコルを使用してブロックチェーントランザクションを実行するクライアント（MCPサーバーとの通信）
+- **x402_Server**: x402決済エンドポイントを提供するHonoサーバー（投げ銭用エンドポイント追加）
+- **Tip_Amount_Selector**: ユーザーが投げ銭金額を選択するUIコンポーネント（Client Component）
+- **Transaction_Executor**: x402 MCP経由でブロックチェーントランザクションを実行するServer Component
+- **Notification_Service**: 投げ銭の受信者に通知を送信するServer Component
+- **Hazard_Lamp_Detector**: OBD-II経由でハザードランプの点灯を検知するClient Component
+- **Voice_Confirmation_Handler**: Qwen AI（OpenAI SDK）を使用して音声による投げ銭確認を処理するServer Component
+- **Qwen_AI_Service**: OpenAI SDKを使用したQwen AI統合サービス（音声認識・音声合成）
+- **Fee_Calculator**: 2%の手数料を計算するユーティリティ関数
+- **License_Plate_Recognition_Service**: ナンバープレート認識機能（既存、Flask API）
+- **Wallet_Address_Deriver**: ウォレットアドレス変換機能（既存、Laravel API）
 - **Tip_Transaction**: 投げ銭トランザクションのデータ構造
-- **Tip_History**: 投げ銭履歴のデータ構造
+- **Tip_History**: 投げ銭履歴のデータ構造（ローカルストレージ + ブロックチェーンイベントログ）
 
 ## 要件
 
@@ -57,19 +62,21 @@
 4. THE Fee_Calculator SHALL 手数料の最小値を¥1とする
 5. WHEN トランザクションが実行される THEN Fee_Calculator SHALL 手数料をプラットフォームウォレットに送金する
 
-### 要件 4: x402プロトコルによるトランザクション実行
+### 要件 4: x402 MCPによるトランザクション実行
 
 **ユーザーストーリー:** ユーザーとして、安全かつ高速にブロックチェーン上で投げ銭を送金したい。これにより、信頼性の高い決済を実現できる。
 
 #### 受け入れ基準
 
-1. WHEN ユーザーが送金を確認する THEN Transaction_Executor SHALL x402プロトコルを使用してトランザクションを作成する
-2. THE Transaction_Executor SHALL Base Sepoliaネットワーク上でトランザクションを実行する
-3. THE Transaction_Executor SHALL ERC4337 SmartAccountからの送金をサポートする
-4. WHEN トランザクションが送信される THEN Transaction_Executor SHALL トランザクションハッシュを返す
-5. WHEN トランザクションが確認される THEN Transaction_Executor SHALL 成功メッセージとトランザクション詳細を表示する
-6. IF トランザクションが失敗する THEN Transaction_Executor SHALL エラーコードと詳細メッセージを表示する
-7. THE Transaction_Executor SHALL ガスレス取引（Paymaster経由）をサポートする
+1. WHEN ユーザーが送金を確認する THEN Transaction_Executor SHALL Next.js Server Componentからx402_MCP_Clientを呼び出してトランザクションを作成する
+2. THE Transaction_Executor SHALL x402_Serverの投げ銭エンドポイント（`/tip`）にリクエストを送信する
+3. THE x402_Server SHALL Base Sepoliaネットワーク上でトランザクションを実行する
+4. THE Transaction_Executor SHALL ERC4337 SmartAccountからの送金をサポートする
+5. WHEN トランザクションが送信される THEN Transaction_Executor SHALL トランザクションハッシュをクライアントに返す
+6. WHEN トランザクションが確認される THEN Transaction_Executor SHALL 成功メッセージとトランザクション詳細を表示する
+7. IF トランザクションが失敗する THEN Transaction_Executor SHALL エラーコードと詳細メッセージを表示する
+8. THE Transaction_Executor SHALL ガスレス取引（Paymaster経由）をサポートする
+9. THE x402_MCP_Client SHALL MCP SDK for Node.jsを使用してx402_Serverと通信する
 
 ### 要件 5: 投げ銭受信通知
 
@@ -97,33 +104,37 @@
 5. IF OBD-IIデバイスが未接続 THEN Hazard_Lamp_Detector SHALL 手動での投げ銭開始のみを許可する
 6. THE Hazard_Lamp_Detector SHALL ハザードランプ検知機能のON/OFF設定を提供する
 
-### 要件 7: 音声確認によるハンズフリー操作
+### 要件 7: Qwen AIによる音声確認ハンズフリー操作
 
 **ユーザーストーリー:** ユーザーとして、運転中に音声で投げ銭を確認・送信したい。これにより、安全に運転しながら操作できる。
 
 #### 受け入れ基準
 
-1. WHEN 投げ銭画面が表示される THEN Voice_Confirmation_Handler SHALL 音声ガイダンスを再生する
-2. THE Voice_Confirmation_Handler SHALL 「前方の車両に[金額]円を送りますか？」と音声で確認する
-3. WHEN ユーザーが「はい」「送る」「OK」と発話する THEN Voice_Confirmation_Handler SHALL 投げ銭を実行する
-4. WHEN ユーザーが「いいえ」「キャンセル」と発話する THEN Voice_Confirmation_Handler SHALL 投げ銭をキャンセルする
-5. THE Voice_Confirmation_Handler SHALL 日本語音声認識をサポートする
-6. IF 音声が認識できない THEN Voice_Confirmation_Handler SHALL 「もう一度お話しください」と再度確認する
-7. THE Voice_Confirmation_Handler SHALL 音声確認のタイムアウトを10秒とする
-8. WHEN タイムアウトする THEN Voice_Confirmation_Handler SHALL 自動的にキャンセルする
+1. WHEN 投げ銭画面が表示される THEN Voice_Confirmation_Handler SHALL Qwen_AI_Service（OpenAI SDK経由）を使用して音声ガイダンスを再生する
+2. THE Voice_Confirmation_Handler SHALL 「前方の車両に[金額]円を送りますか？」と音声で確認する（Qwen AI音声合成）
+3. THE Voice_Confirmation_Handler SHALL Next.js Server Componentからx402_MCP_Client経由でQwen AIを呼び出す
+4. WHEN ユーザーが「はい」「送る」「OK」と発話する THEN Voice_Confirmation_Handler SHALL Qwen AI音声認識で判定し、投げ銭を実行する
+5. WHEN ユーザーが「いいえ」「キャンセル」と発話する THEN Voice_Confirmation_Handler SHALL Qwen AI音声認識で判定し、投げ銭をキャンセルする
+6. THE Voice_Confirmation_Handler SHALL 日本語音声認識・音声合成をサポートする（Qwen AI）
+7. IF 音声が認識できない THEN Voice_Confirmation_Handler SHALL Qwen AIに再度確認させ「もう一度お話しください」と再生する
+8. THE Voice_Confirmation_Handler SHALL 音声確認のタイムアウトを10秒とする
+9. WHEN タイムアウトする THEN Voice_Confirmation_Handler SHALL 自動的にキャンセルする
+10. THE Qwen_AI_Service SHALL OpenAI SDKのStreaming APIを使用してリアルタイム音声処理を実現する
 
-### 要件 8: 投げ銭履歴管理
+### 要件 8: 投げ銭履歴管理（Next.js Server Component実装）
 
 **ユーザーストーリー:** ユーザーとして、送受信した投げ銭の履歴を確認したい。これにより、過去の取引を振り返ることができる。
 
 #### 受け入れ基準
 
-1. THE Tipping_Service SHALL 送信した投げ銭の履歴を保存する
-2. THE Tipping_Service SHALL 受信した投げ銭の履歴を保存する
-3. THE Tipping_Service SHALL 履歴に日時、金額、相手のナンバープレート（部分マスク）、トランザクションハッシュを含める
-4. WHEN ユーザーが履歴画面を開く THEN Tipping_Service SHALL 最新の履歴から時系列で表示する
-5. THE Tipping_Service SHALL 履歴のフィルタリング（送信/受信、期間）を提供する
-6. THE Tipping_Service SHALL トランザクションハッシュからブロックエクスプローラーへのリンクを提供する
+1. THE Tipping_Service SHALL Next.js Server Componentで送信した投げ銭の履歴を管理する
+2. THE Tipping_Service SHALL ブロックチェーンイベントログから受信した投げ銭の履歴を取得する
+3. THE Tipping_Service SHALL 履歴をローカルストレージ（ブラウザIndexedDB）に暗号化して保存する
+4. THE Tipping_Service SHALL 履歴に日時、金額、相手のナンバープレート（部分マスク）、トランザクションハッシュを含める
+5. WHEN ユーザーが履歴画面を開く THEN Tipping_Service SHALL Server Componentでブロックチェーンイベントとローカルデータを統合し、最新の履歴から時系列で表示する
+6. THE Tipping_Service SHALL 履歴のフィルタリング（送信/受信、期間）をClient Componentで提供する
+7. THE Tipping_Service SHALL トランザクションハッシュからBasescan（Base L2エクスプローラー）へのリンクを提供する
+8. THE Tipping_Service SHALL Server Componentでviem/wagmiを使用してブロックチェーンイベントログを取得する
 
 ### 要件 9: セキュリティとプライバシー
 
