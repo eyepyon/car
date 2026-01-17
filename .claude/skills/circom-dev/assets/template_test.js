@@ -18,7 +18,11 @@ async function testCircuit() {
   // Configuration
   const circuitName = "your_circuit_name"; // TODO: Update circuit name
   const buildDir = path.join(__dirname, "../build");
-  const wasmPath = path.join(buildDir, `${circuitName}_js`, `${circuitName}.wasm`);
+  const wasmPath = path.join(
+    buildDir,
+    `${circuitName}_js`,
+    `${circuitName}.wasm`,
+  );
   const zkeyPath = path.join(buildDir, "zkey", `${circuitName}.zkey`);
   const vkeyPath = path.join(buildDir, "zkey", "verification_key.json");
 
@@ -35,7 +39,7 @@ async function testCircuit() {
     const { proof, publicSignals } = await snarkjs.groth16.fullProve(
       input,
       wasmPath,
-      zkeyPath
+      zkeyPath,
     );
     console.log("✓ Proof generated successfully");
     console.log("Public signals:", publicSignals);
@@ -43,11 +47,11 @@ async function testCircuit() {
     // Optional: Save proof and public signals
     fs.writeFileSync(
       path.join(buildDir, "proof.json"),
-      JSON.stringify(proof, null, 2)
+      JSON.stringify(proof, null, 2),
     );
     fs.writeFileSync(
       path.join(buildDir, "public.json"),
-      JSON.stringify(publicSignals, null, 2)
+      JSON.stringify(publicSignals, null, 2),
     );
 
     // Step 3: Verify proof

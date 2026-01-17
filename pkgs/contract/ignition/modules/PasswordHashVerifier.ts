@@ -3,13 +3,16 @@
 
 import { buildModule } from "@nomicfoundation/hardhat-ignition/modules";
 
-const PasswordHashVerifierModule = buildModule("PasswordHashVerifierModule", (m) => {
-  // First deploy the PasswordHashVerifier contract
-  const passwordHashVerifier = m.contract("PasswordHashVerifier", []);
+const PasswordHashVerifierModule = buildModule(
+  "PasswordHashVerifierModule",
+  (m) => {
+    // First deploy the PasswordHashVerifier contract
+    const passwordHashVerifier = m.contract("PasswordHashVerifier", []);
 
-  return {
-    passwordHashVerifier,
-  };
-});
+    return {
+      passwordHashVerifier,
+    };
+  },
+);
 
 export default PasswordHashVerifierModule;

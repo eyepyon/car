@@ -60,7 +60,10 @@ async function verifyProof(proofFile, publicFile, vkeyFile) {
     const publicSignals = JSON.parse(fs.readFileSync(publicFile, "utf8"));
     const vKey = JSON.parse(fs.readFileSync(vkeyFile, "utf8"));
 
-    console.log(`${colors.yellow}Public signals:${colors.reset}`, publicSignals);
+    console.log(
+      `${colors.yellow}Public signals:${colors.reset}`,
+      publicSignals,
+    );
     console.log("");
 
     // Verify proof
@@ -69,7 +72,9 @@ async function verifyProof(proofFile, publicFile, vkeyFile) {
 
     console.log("");
     if (isValid) {
-      console.log(`${colors.green}✓ Proof verification SUCCESSFUL${colors.reset}`);
+      console.log(
+        `${colors.green}✓ Proof verification SUCCESSFUL${colors.reset}`,
+      );
       console.log("The proof is valid and correctly proves the statement.");
       return true;
     } else {

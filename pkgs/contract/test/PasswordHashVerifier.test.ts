@@ -66,10 +66,13 @@ describe("PasswordHashVerifier", () => {
    */
   async function deployPasswordHashVerifierFixture() {
     // PasswordHashVerifierをデプロイ
-    const verifier = await hre.viem.deployContract("PasswordHashVerifier" as "PasswordHashVerifier", []);
+    const verifier = await hre.viem.deployContract(
+      "PasswordHashVerifier" as "PasswordHashVerifier",
+      [],
+    );
 
     return {
-      verifier
+      verifier,
     };
   }
 
