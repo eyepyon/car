@@ -13,7 +13,7 @@ import type {
   RecognitionError,
   RecognizeRequest,
   RecognizeResponse,
-} from '@/types/license-plate';
+} from "@/types/license-plate";
 
 // ============================================================================
 // 定数
@@ -23,7 +23,7 @@ import type {
  * デフォルトのAPIベースURL
  */
 const DEFAULT_API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001';
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3001";
 
 /**
  * デフォルトのタイムアウト（ミリ秒）
@@ -63,7 +63,7 @@ export interface RecognizeOptions {
   /**
    * 認識モード
    */
-  mode: 'single' | 'realtime';
+  mode: "single" | "realtime";
 
   /**
    * AbortSignal（キャンセル用）
@@ -79,10 +79,10 @@ export class LicensePlateApiError extends Error {
     message: string,
     public readonly code: string,
     public readonly statusCode?: number,
-    public readonly suggestion?: string
+    public readonly suggestion?: string,
   ) {
     super(message);
-    this.name = 'LicensePlateApiError';
+    this.name = "LicensePlateApiError";
   }
 }
 
@@ -116,7 +116,7 @@ export class LicensePlateApiClient {
     this.baseUrl = config.baseUrl ?? DEFAULT_API_BASE_URL;
     this.timeout = config.timeout ?? DEFAULT_TIMEOUT;
     this.headers = {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       ...config.headers,
     };
   }
@@ -132,7 +132,7 @@ export class LicensePlateApiClient {
    */
   async recognize(
     image: string,
-    options: RecognizeOptions
+    options: RecognizeOptions,
   ): Promise<RecognizeResponse> {
     const { mode, signal } = options;
 
@@ -156,11 +156,11 @@ export class LicensePlateApiClient {
       const response = await fetch(
         `${this.baseUrl}/api/license-plate/recognize`,
         {
-          method: 'POST',
+          method: "POST",
           headers: this.headers,
           body: JSON.stringify(requestBody),
           signal: combinedSignal,
-        }
+        },
       );
 
       clearTimeout(timeoutId);
@@ -171,9 +171,9 @@ export class LicensePlateApiClient {
       if (!response.ok && !data.error) {
         throw new LicensePlateApiError(
           `HTTP error: ${response.status}`,
-          'API_CONNECTION_FAILED',
+          "API_CONNECTION_FAILED",
           response.status,
-          'しばらく待ってから再試行してください'
+          "しばらく待ってから再試行してください",
         );
       }
 
@@ -186,38 +186,38 @@ export class LicensePlateApiClient {
       }
 
       // AbortErrorの場合
-      if (error instanceof Error && error.name === 'AbortError') {
+      if (error instanceof Error && error.name === "AbortError") {
         // 外部シグナルによるキャンセルかタイムアウトかを判定
         if (signal?.aborted) {
           throw new LicensePlateApiError(
-            'リクエストがキャンセルされました',
-            'REQUEST_CANCELLED'
+            "リクエストがキャンセルされました",
+            "REQUEST_CANCELLED",
           );
         }
         throw new LicensePlateApiError(
-          '認識処理がタイムアウトしました',
-          'TIMEOUT',
+          "認識処理がタイムアウトしました",
+          "TIMEOUT",
           undefined,
-          'ネットワーク接続を確認してください'
+          "ネットワーク接続を確認してください",
         );
       }
 
       // ネットワークエラー
-      if (error instanceof TypeError && error.message.includes('fetch')) {
+      if (error instanceof TypeError && error.message.includes("fetch")) {
         throw new LicensePlateApiError(
-          'サービスに接続できません',
-          'API_CONNECTION_FAILED',
+          "サービスに接続できません",
+          "API_CONNECTION_FAILED",
           undefined,
-          'ネットワーク接続を確認してください'
+          "ネットワーク接続を確認してください",
         );
       }
 
       // その他のエラー
       throw new LicensePlateApiError(
-        error instanceof Error ? error.message : 'Unknown error',
-        'API_CONNECTION_FAILED',
+        error instanceof Error ? error.message : "Unknown error",
+        "API_CONNECTION_FAILED",
         undefined,
-        'しばらく待ってから再試行してください'
+        "しばらく待ってから再試行してください",
       );
     }
   }
@@ -230,7 +230,7 @@ export class LicensePlateApiClient {
   async healthCheck(): Promise<boolean> {
     try {
       const response = await fetch(`${this.baseUrl}/health`, {
-        method: 'GET',
+        method: "GET",
         signal: AbortSignal.timeout(5000),
       });
       return response.ok;
@@ -251,7 +251,7 @@ export class LicensePlateApiClient {
         return controller.signal;
       }
 
-      signal.addEventListener('abort', () => {
+      signal.addEventListener("abort", () => {
         controller.abort(signal.reason);
       });
     }
@@ -273,7 +273,7 @@ let defaultClient: LicensePlateApiClient | null = null;
  * @returns APIクライアント
  */
 export function getLicensePlateApiClient(
-  config?: LicensePlateApiClientConfig
+  config?: LicensePlateApiClientConfig,
 ): LicensePlateApiClient {
   if (!defaultClient) {
     defaultClient = new LicensePlateApiClient(config);
@@ -302,14 +302,14 @@ export function imageFileToBase64(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => {
-      if (typeof reader.result === 'string') {
+      if (typeof reader.result === "string") {
         resolve(reader.result);
       } else {
-        reject(new Error('Failed to read file as base64'));
+        reject(new Error("Failed to read file as base64"));
       }
     };
     reader.onerror = () => {
-      reject(new Error('Failed to read file'));
+      reject(new Error("Failed to read file"));
     };
     reader.readAsDataURL(file);
   });
@@ -325,14 +325,14 @@ export function blobToBase64(blob: Blob): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => {
-      if (typeof reader.result === 'string') {
+      if (typeof reader.result === "string") {
         resolve(reader.result);
       } else {
-        reject(new Error('Failed to read blob as base64'));
+        reject(new Error("Failed to read blob as base64"));
       }
     };
     reader.onerror = () => {
-      reject(new Error('Failed to read blob'));
+      reject(new Error("Failed to read blob"));
     };
     reader.readAsDataURL(blob);
   });

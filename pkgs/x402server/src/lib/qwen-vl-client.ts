@@ -16,11 +16,11 @@
  * ナンバープレートの種類
  */
 export type PlateType =
-  | 'REGULAR' // 普通自動車（白地に緑文字）
-  | 'LIGHT' // 軽自動車（黄色地に黒文字）
-  | 'COMMERCIAL' // 事業用（緑地に白文字）
-  | 'RENTAL' // レンタカー（わ、れナンバー）
-  | 'DIPLOMATIC'; // 外交官（青地に白文字）
+  | "REGULAR" // 普通自動車（白地に緑文字）
+  | "LIGHT" // 軽自動車（黄色地に黒文字）
+  | "COMMERCIAL" // 事業用（緑地に白文字）
+  | "RENTAL" // レンタカー（わ、れナンバー）
+  | "DIPLOMATIC"; // 外交官（青地に白文字）
 
 /**
  * ナンバープレート認識結果データ
@@ -57,7 +57,7 @@ export interface QwenVLConfig {
   /** DashScope APIキー */
   apiKey: string;
   /** 使用するモデル */
-  model: 'qwen-vl-plus' | 'qwen-vl-max';
+  model: "qwen-vl-plus" | "qwen-vl-max";
   /** タイムアウト時間（ミリ秒） */
   timeout: number;
   /** 最大リトライ回数 */
@@ -136,7 +136,7 @@ export const DEFAULT_TIMEOUT = 5000; // 5秒
  * DashScope APIエンドポイント
  */
 const DASHSCOPE_API_URL =
-  'https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation';
+  "https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation";
 
 /**
  * ナンバープレート認識用プロンプト
@@ -170,15 +170,15 @@ export class QwenVLError extends Error {
   constructor(
     message: string,
     public readonly code:
-      | 'API_CONNECTION_FAILED'
-      | 'TIMEOUT'
-      | 'INVALID_RESPONSE'
-      | 'NO_PLATE_DETECTED'
-      | 'PARSE_ERROR',
-    public readonly retryable: boolean = false
+      | "API_CONNECTION_FAILED"
+      | "TIMEOUT"
+      | "INVALID_RESPONSE"
+      | "NO_PLATE_DETECTED"
+      | "PARSE_ERROR",
+    public readonly retryable: boolean = false,
   ) {
     super(message);
-    this.name = 'QwenVLError';
+    this.name = "QwenVLError";
   }
 }
 
@@ -203,12 +203,17 @@ export function sleep(ms: number): Promise<void> {
  *
  * @see Requirements 6.2
  */
-export async function withTimeout<T>(promise: Promise<T>, timeoutMs: number): Promise<T> {
+export async function withTimeout<T>(
+  promise: Promise<T>,
+  timeoutMs: number,
+): Promise<T> {
   let timeoutId: ReturnType<typeof setTimeout>;
 
   const timeoutPromise = new Promise<never>((_, reject) => {
     timeoutId = setTimeout(() => {
-      reject(new QwenVLError('認識処理がタイムアウトしました', 'TIMEOUT', true));
+      reject(
+        new QwenVLError("認識処理がタイムアウトしました", "TIMEOUT", true),
+      );
     }, timeoutMs);
   });
 
@@ -235,7 +240,7 @@ export async function withTimeout<T>(promise: Promise<T>, timeoutMs: number): Pr
  */
 export async function withRetry<T>(
   fn: () => Promise<T>,
-  config: RetryConfig = DEFAULT_RETRY_CONFIG
+  config: RetryConfig = DEFAULT_RETRY_CONFIG,
 ): Promise<T> {
   let lastError: Error | undefined;
   let delay = config.initialDelay;
@@ -265,9 +270,9 @@ export async function withRetry<T>(
   }
 
   throw new QwenVLError(
-    lastError?.message || 'サービスに接続できません',
-    'API_CONNECTION_FAILED',
-    false
+    lastError?.message || "サービスに接続できません",
+    "API_CONNECTION_FAILED",
+    false,
   );
 }
 
@@ -280,20 +285,29 @@ export async function withRetry<T>(
  *
  * @see Requirements 5.1-5.5
  */
-export function determinePlateType(hiragana: string, rawPlateType?: string): PlateType {
+export function determinePlateType(
+  hiragana: string,
+  rawPlateType?: string,
+): PlateType {
   // レンタカー判定（わ、れナンバー）
-  if (hiragana === 'わ' || hiragana === 'れ') {
-    return 'RENTAL';
+  if (hiragana === "わ" || hiragana === "れ") {
+    return "RENTAL";
   }
 
   // AIが返したプレートタイプを検証
-  const validPlateTypes: PlateType[] = ['REGULAR', 'LIGHT', 'COMMERCIAL', 'RENTAL', 'DIPLOMATIC'];
+  const validPlateTypes: PlateType[] = [
+    "REGULAR",
+    "LIGHT",
+    "COMMERCIAL",
+    "RENTAL",
+    "DIPLOMATIC",
+  ];
   if (rawPlateType && validPlateTypes.includes(rawPlateType as PlateType)) {
     return rawPlateType as PlateType;
   }
 
   // デフォルトは普通自動車
-  return 'REGULAR';
+  return "REGULAR";
 }
 
 /**
@@ -323,7 +337,9 @@ export function parseQwenResponse(rawText: string): ParsedQwenResponse | null {
  * @param parsed - パースされたQwenレスポンス
  * @returns LicensePlateData または null
  */
-export function convertToLicensePlateData(parsed: ParsedQwenResponse): LicensePlateData | null {
+export function convertToLicensePlateData(
+  parsed: ParsedQwenResponse,
+): LicensePlateData | null {
   if (!parsed.detected) {
     return null;
   }
@@ -385,7 +401,10 @@ export class QwenVLClient {
   private readonly config: QwenVLConfig;
   private readonly retryConfig: RetryConfig;
 
-  constructor(config: QwenVLConfig, retryConfig: RetryConfig = DEFAULT_RETRY_CONFIG) {
+  constructor(
+    config: QwenVLConfig,
+    retryConfig: RetryConfig = DEFAULT_RETRY_CONFIG,
+  ) {
     this.config = config;
     this.retryConfig = retryConfig;
   }
@@ -405,7 +424,7 @@ export class QwenVLClient {
     try {
       const result = await withRetry(
         () => withTimeout(this.callDashScopeAPI(image), this.config.timeout),
-        this.retryConfig
+        this.retryConfig,
       );
 
       const processingTime = Date.now() - startTime;
@@ -422,9 +441,9 @@ export class QwenVLClient {
       }
 
       throw new QwenVLError(
-        (error as Error).message || 'サービスに接続できません',
-        'API_CONNECTION_FAILED',
-        false
+        (error as Error).message || "サービスに接続できません",
+        "API_CONNECTION_FAILED",
+        false,
       );
     }
   }
@@ -436,10 +455,10 @@ export class QwenVLClient {
    * @returns 認識結果（処理時間を除く）
    */
   private async callDashScopeAPI(
-    image: string
-  ): Promise<Omit<QwenRecognitionResult, 'processingTime'>> {
+    image: string,
+  ): Promise<Omit<QwenRecognitionResult, "processingTime">> {
     // 画像データの形式を整える
-    const imageUrl = image.startsWith('data:')
+    const imageUrl = image.startsWith("data:")
       ? image
       : `data:image/jpeg;base64,${image}`;
 
@@ -448,7 +467,7 @@ export class QwenVLClient {
       input: {
         messages: [
           {
-            role: 'user',
+            role: "user",
             content: [
               {
                 image: imageUrl,
@@ -461,16 +480,16 @@ export class QwenVLClient {
         ],
       },
       parameters: {
-        result_format: 'message',
+        result_format: "message",
       },
     };
 
     let response: Response;
     try {
       response = await fetch(DASHSCOPE_API_URL, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Authorization: `Bearer ${this.config.apiKey}`,
         },
         body: JSON.stringify(requestBody),
@@ -478,17 +497,17 @@ export class QwenVLClient {
     } catch (error) {
       throw new QwenVLError(
         `API接続エラー: ${(error as Error).message}`,
-        'API_CONNECTION_FAILED',
-        true
+        "API_CONNECTION_FAILED",
+        true,
       );
     }
 
     if (!response.ok) {
-      const errorText = await response.text().catch(() => 'Unknown error');
+      const errorText = await response.text().catch(() => "Unknown error");
       throw new QwenVLError(
         `API エラー (${response.status}): ${errorText}`,
-        'API_CONNECTION_FAILED',
-        response.status >= 500 // 5xxエラーはリトライ可能
+        "API_CONNECTION_FAILED",
+        response.status >= 500, // 5xxエラーはリトライ可能
       );
     }
 
@@ -496,22 +515,30 @@ export class QwenVLClient {
     try {
       data = (await response.json()) as DashScopeResponse;
     } catch {
-      throw new QwenVLError('APIレスポンスのパースに失敗しました', 'INVALID_RESPONSE', false);
+      throw new QwenVLError(
+        "APIレスポンスのパースに失敗しました",
+        "INVALID_RESPONSE",
+        false,
+      );
     }
 
     // レスポンスからテキストを抽出
     const rawText =
-      data.output?.choices?.[0]?.message?.content?.[0]?.text || '';
+      data.output?.choices?.[0]?.message?.content?.[0]?.text || "";
 
     if (!rawText) {
-      throw new QwenVLError('AIからの応答が空です', 'INVALID_RESPONSE', true);
+      throw new QwenVLError("AIからの応答が空です", "INVALID_RESPONSE", true);
     }
 
     // レスポンスをパース
     const parsed = parseQwenResponse(rawText);
 
     if (!parsed) {
-      throw new QwenVLError('AIの応答をパースできませんでした', 'PARSE_ERROR', false);
+      throw new QwenVLError(
+        "AIの応答をパースできませんでした",
+        "PARSE_ERROR",
+        false,
+      );
     }
 
     // LicensePlateDataに変換
@@ -538,12 +565,15 @@ export class QwenVLClient {
 export function createQwenVLClientFromEnv(): QwenVLClient {
   const apiKey = process.env.DASHSCOPE_API_KEY;
   if (!apiKey) {
-    throw new Error('DASHSCOPE_API_KEY environment variable is not set');
+    throw new Error("DASHSCOPE_API_KEY environment variable is not set");
   }
 
-  const model = (process.env.QWEN_MODEL as 'qwen-vl-plus' | 'qwen-vl-max') || 'qwen-vl-plus';
+  const model =
+    (process.env.QWEN_MODEL as "qwen-vl-plus" | "qwen-vl-max") ||
+    "qwen-vl-plus";
   const timeout = Number(process.env.QWEN_TIMEOUT) || DEFAULT_TIMEOUT;
-  const maxRetries = Number(process.env.QWEN_MAX_RETRIES) || DEFAULT_RETRY_CONFIG.maxRetries;
+  const maxRetries =
+    Number(process.env.QWEN_MAX_RETRIES) || DEFAULT_RETRY_CONFIG.maxRetries;
 
   return new QwenVLClient({
     apiKey,

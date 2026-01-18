@@ -21,11 +21,11 @@
  * @see Requirements 5.1-5.5
  */
 export type PlateType =
-  | 'REGULAR' // 普通自動車（白地に緑文字）
-  | 'LIGHT' // 軽自動車（黄色地に黒文字）
-  | 'COMMERCIAL' // 事業用（緑地に白文字）
-  | 'RENTAL' // レンタカー（わ、れナンバー）
-  | 'DIPLOMATIC'; // 外交官（青地に白文字）
+  | "REGULAR" // 普通自動車（白地に緑文字）
+  | "LIGHT" // 軽自動車（黄色地に黒文字）
+  | "COMMERCIAL" // 事業用（緑地に白文字）
+  | "RENTAL" // レンタカー（わ、れナンバー）
+  | "DIPLOMATIC"; // 外交官（青地に白文字）
 
 // ============================================================================
 // 認識結果データ構造
@@ -119,12 +119,12 @@ export interface LicensePlateData {
  * @see Requirements 6.1-6.5
  */
 export type RecognitionErrorCode =
-  | 'NO_PLATE_DETECTED' // ナンバープレートが検出されない
-  | 'PARTIAL_RECOGNITION' // 部分的な認識のみ成功
-  | 'API_CONNECTION_FAILED' // AI APIへの接続失敗
-  | 'TIMEOUT' // 認識処理タイムアウト
-  | 'RATE_LIMITED' // レート制限超過
-  | 'INVALID_IMAGE'; // 無効な画像形式
+  | "NO_PLATE_DETECTED" // ナンバープレートが検出されない
+  | "PARTIAL_RECOGNITION" // 部分的な認識のみ成功
+  | "API_CONNECTION_FAILED" // AI APIへの接続失敗
+  | "TIMEOUT" // 認識処理タイムアウト
+  | "RATE_LIMITED" // レート制限超過
+  | "INVALID_IMAGE"; // 無効な画像形式
 
 /**
  * 認識エラー
@@ -183,9 +183,9 @@ export interface RecognitionError {
  * @see Requirements 1.2, 1.3
  */
 export type CaptureErrorCode =
-  | 'PERMISSION_DENIED' // カメラ権限なし
-  | 'DEVICE_NOT_FOUND' // カメラデバイスなし
-  | 'CAPTURE_FAILED'; // キャプチャ失敗
+  | "PERMISSION_DENIED" // カメラ権限なし
+  | "DEVICE_NOT_FOUND" // カメラデバイスなし
+  | "CAPTURE_FAILED"; // キャプチャ失敗
 
 /**
  * キャプチャエラー
@@ -252,11 +252,11 @@ export interface CapturedImage {
  * @see Requirements 2.1-2.4
  */
 export type ValidationErrorCode =
-  | 'BLUR' // ぼやけ
-  | 'ANGLE' // 角度が急すぎる
-  | 'LIGHTING_DARK' // 暗すぎる
-  | 'LIGHTING_BRIGHT' // 明るすぎる
-  | 'RESOLUTION'; // 解像度不足
+  | "BLUR" // ぼやけ
+  | "ANGLE" // 角度が急すぎる
+  | "LIGHTING_DARK" // 暗すぎる
+  | "LIGHTING_BRIGHT" // 明るすぎる
+  | "RESOLUTION"; // 解像度不足
 
 /**
  * 画像検証エラー
@@ -326,7 +326,7 @@ export interface RecognizeRequest {
    * - single: シングルショット認識
    * - realtime: リアルタイム認識
    */
-  mode: 'single' | 'realtime';
+  mode: "single" | "realtime";
 }
 
 /**
@@ -381,7 +381,10 @@ export interface RecognizeResponse {
  * ```
  */
 export function generateFullText(
-  data: Pick<LicensePlateData, 'region' | 'classificationNumber' | 'hiragana' | 'serialNumber'>
+  data: Pick<
+    LicensePlateData,
+    "region" | "classificationNumber" | "hiragana" | "serialNumber"
+  >,
 ): string {
   return `${data.region}${data.classificationNumber}${data.hiragana}${data.serialNumber}`;
 }
@@ -405,7 +408,7 @@ export function generateFullText(
  * ```
  */
 export function createLicensePlateData(
-  params: Omit<LicensePlateData, 'fullText' | 'recognizedAt'>
+  params: Omit<LicensePlateData, "fullText" | "recognizedAt">,
 ): LicensePlateData {
   return {
     ...params,
@@ -430,22 +433,24 @@ export function isValidConfidence(confidence: number): boolean {
  * @param data - チェック対象のデータ
  * @returns 全フィールドが存在する場合true
  */
-export function isCompleteLicensePlateData(data: unknown): data is LicensePlateData {
-  if (typeof data !== 'object' || data === null) {
+export function isCompleteLicensePlateData(
+  data: unknown,
+): data is LicensePlateData {
+  if (typeof data !== "object" || data === null) {
     return false;
   }
 
   const obj = data as Record<string, unknown>;
 
   return (
-    typeof obj.region === 'string' &&
-    typeof obj.classificationNumber === 'string' &&
-    typeof obj.hiragana === 'string' &&
-    typeof obj.serialNumber === 'string' &&
-    typeof obj.fullText === 'string' &&
-    typeof obj.confidence === 'number' &&
-    typeof obj.plateType === 'string' &&
-    typeof obj.recognizedAt === 'number'
+    typeof obj.region === "string" &&
+    typeof obj.classificationNumber === "string" &&
+    typeof obj.hiragana === "string" &&
+    typeof obj.serialNumber === "string" &&
+    typeof obj.fullText === "string" &&
+    typeof obj.confidence === "number" &&
+    typeof obj.plateType === "string" &&
+    typeof obj.recognizedAt === "number"
   );
 }
 
@@ -472,28 +477,28 @@ export const RECOGNITION_ERROR_MESSAGES: Record<
   { message: string; suggestion: string }
 > = {
   NO_PLATE_DETECTED: {
-    message: 'ナンバープレートが検出されませんでした',
-    suggestion: 'カメラをナンバープレートに向けてください',
+    message: "ナンバープレートが検出されませんでした",
+    suggestion: "カメラをナンバープレートに向けてください",
   },
   PARTIAL_RECOGNITION: {
-    message: '部分的な認識のみ成功しました',
-    suggestion: 'より鮮明な画像で再試行してください',
+    message: "部分的な認識のみ成功しました",
+    suggestion: "より鮮明な画像で再試行してください",
   },
   API_CONNECTION_FAILED: {
-    message: 'サービスに接続できません',
-    suggestion: 'しばらく待ってから再試行してください',
+    message: "サービスに接続できません",
+    suggestion: "しばらく待ってから再試行してください",
   },
   TIMEOUT: {
-    message: '認識処理がタイムアウトしました',
-    suggestion: 'ネットワーク接続を確認してください',
+    message: "認識処理がタイムアウトしました",
+    suggestion: "ネットワーク接続を確認してください",
   },
   RATE_LIMITED: {
-    message: 'リクエスト数が制限を超えました',
-    suggestion: 'しばらく待ってから再試行してください',
+    message: "リクエスト数が制限を超えました",
+    suggestion: "しばらく待ってから再試行してください",
   },
   INVALID_IMAGE: {
-    message: '無効な画像形式です',
-    suggestion: '有効な画像ファイルを使用してください',
+    message: "無効な画像形式です",
+    suggestion: "有効な画像ファイルを使用してください",
   },
 };
 
@@ -501,9 +506,9 @@ export const RECOGNITION_ERROR_MESSAGES: Record<
  * キャプチャエラーメッセージのマッピング
  */
 export const CAPTURE_ERROR_MESSAGES: Record<CaptureErrorCode, string> = {
-  PERMISSION_DENIED: 'カメラへのアクセスが許可されていません',
-  DEVICE_NOT_FOUND: 'カメラデバイスが見つかりません',
-  CAPTURE_FAILED: '画像のキャプチャに失敗しました',
+  PERMISSION_DENIED: "カメラへのアクセスが許可されていません",
+  DEVICE_NOT_FOUND: "カメラデバイスが見つかりません",
+  CAPTURE_FAILED: "画像のキャプチャに失敗しました",
 };
 
 /**
@@ -514,24 +519,24 @@ export const VALIDATION_ERROR_MESSAGES: Record<
   { message: string; suggestion: string }
 > = {
   BLUR: {
-    message: '画像がぼやけています',
-    suggestion: '再撮影してください',
+    message: "画像がぼやけています",
+    suggestion: "再撮影してください",
   },
   ANGLE: {
-    message: '角度が急すぎます',
-    suggestion: '正面から撮影してください',
+    message: "角度が急すぎます",
+    suggestion: "正面から撮影してください",
   },
   LIGHTING_DARK: {
-    message: '画像が暗すぎます',
-    suggestion: '明るい場所で撮影してください',
+    message: "画像が暗すぎます",
+    suggestion: "明るい場所で撮影してください",
   },
   LIGHTING_BRIGHT: {
-    message: '画像が明るすぎます',
-    suggestion: '直射日光を避けて撮影してください',
+    message: "画像が明るすぎます",
+    suggestion: "直射日光を避けて撮影してください",
   },
   RESOLUTION: {
-    message: '解像度が不足しています',
-    suggestion: 'より近くで撮影してください',
+    message: "解像度が不足しています",
+    suggestion: "より近くで撮影してください",
   },
 };
 
@@ -544,7 +549,7 @@ export const VALIDATION_ERROR_MESSAGES: Record<
  */
 export function createRecognitionError(
   code: RecognitionErrorCode,
-  partialData?: Partial<LicensePlateData>
+  partialData?: Partial<LicensePlateData>,
 ): RecognitionError {
   const { message, suggestion } = RECOGNITION_ERROR_MESSAGES[code];
   return {
@@ -574,7 +579,9 @@ export function createCaptureError(code: CaptureErrorCode): CaptureError {
  * @param code - エラーコード
  * @returns ValidationError
  */
-export function createValidationError(code: ValidationErrorCode): ValidationError {
+export function createValidationError(
+  code: ValidationErrorCode,
+): ValidationError {
   const { message, suggestion } = VALIDATION_ERROR_MESSAGES[code];
   return {
     code,

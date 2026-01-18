@@ -9,41 +9,71 @@
  * @see Requirements 7.4
  */
 
-import { describe, it, expect, beforeEach } from 'vitest';
-import * as fc from 'fast-check';
+import { describe, it, expect, beforeEach } from "vitest";
+import * as fc from "fast-check";
 import {
   DuplicateSuppressionManager,
   isSameLicensePlate,
   removeDuplicatePlates,
   DEFAULT_SUPPRESSION_DURATION,
   DEFAULT_MAX_HISTORY_SIZE,
-} from './duplicate-suppression';
-import type { LicensePlateData, PlateType } from '@/types/license-plate';
+} from "./duplicate-suppression";
+import type { LicensePlateData, PlateType } from "@/types/license-plate";
 
 // ============================================================================
 // テストデータ生成用 Arbitrary
 // ============================================================================
 
-const REGIONS = ['品川', '横浜', '名古屋', '大阪', '神戸', '福岡', '札幌', '仙台', '広島', '京都'];
-const HIRAGANA = ['あ', 'い', 'う', 'え', 'お', 'か', 'き', 'く', 'け', 'こ', 'わ', 'れ'];
-const PLATE_TYPES: PlateType[] = ['REGULAR', 'LIGHT', 'COMMERCIAL', 'RENTAL', 'DIPLOMATIC'];
-const DIGITS = '0123456789';
+const REGIONS = [
+  "品川",
+  "横浜",
+  "名古屋",
+  "大阪",
+  "神戸",
+  "福岡",
+  "札幌",
+  "仙台",
+  "広島",
+  "京都",
+];
+const HIRAGANA = [
+  "あ",
+  "い",
+  "う",
+  "え",
+  "お",
+  "か",
+  "き",
+  "く",
+  "け",
+  "こ",
+  "わ",
+  "れ",
+];
+const PLATE_TYPES: PlateType[] = [
+  "REGULAR",
+  "LIGHT",
+  "COMMERCIAL",
+  "RENTAL",
+  "DIPLOMATIC",
+];
+const DIGITS = "0123456789";
 
 /**
  * 分類番号を生成する Arbitrary
  */
 const classificationNumberArbitrary = (): fc.Arbitrary<string> =>
   fc
-    .array(fc.constantFrom(...DIGITS.split('')), { minLength: 3, maxLength: 3 })
-    .map((chars) => chars.join(''));
+    .array(fc.constantFrom(...DIGITS.split("")), { minLength: 3, maxLength: 3 })
+    .map((chars) => chars.join(""));
 
 /**
  * 一連番号を生成する Arbitrary
  */
 const serialNumberArbitrary = (): fc.Arbitrary<string> =>
   fc
-    .array(fc.constantFrom(...DIGITS.split('')), { minLength: 1, maxLength: 4 })
-    .map((chars) => chars.join(''));
+    .array(fc.constantFrom(...DIGITS.split("")), { minLength: 1, maxLength: 4 })
+    .map((chars) => chars.join(""));
 
 /**
  * 有効なLicensePlateDataを生成する Arbitrary
@@ -67,7 +97,9 @@ const licensePlateDataArbitrary = (): fc.Arbitrary<LicensePlateData> =>
 /**
  * 異なるナンバープレートのペアを生成する Arbitrary
  */
-const differentPlatesArbitrary = (): fc.Arbitrary<[LicensePlateData, LicensePlateData]> =>
+const differentPlatesArbitrary = (): fc.Arbitrary<
+  [LicensePlateData, LicensePlateData]
+> =>
   fc
     .tuple(licensePlateDataArbitrary(), licensePlateDataArbitrary())
     .filter(([a, b]) => a.fullText !== b.fullText);
@@ -76,15 +108,14 @@ const differentPlatesArbitrary = (): fc.Arbitrary<[LicensePlateData, LicensePlat
  * 抑制時間内の時間差を生成する Arbitrary
  */
 const withinSuppressionDurationArbitrary = (
-  suppressionDuration: number
-): fc.Arbitrary<number> =>
-  fc.integer({ min: 0, max: suppressionDuration - 1 });
+  suppressionDuration: number,
+): fc.Arbitrary<number> => fc.integer({ min: 0, max: suppressionDuration - 1 });
 
 /**
  * 抑制時間を超えた時間差を生成する Arbitrary
  */
 const beyondSuppressionDurationArbitrary = (
-  suppressionDuration: number
+  suppressionDuration: number,
 ): fc.Arbitrary<number> =>
   fc.integer({ min: suppressionDuration, max: suppressionDuration * 10 });
 
@@ -92,7 +123,7 @@ const beyondSuppressionDurationArbitrary = (
 // Property 9: 重複認識の抑制
 // ============================================================================
 
-describe('Property 9: 重複認識の抑制', () => {
+describe("Property 9: 重複認識の抑制", () => {
   let manager: DuplicateSuppressionManager;
 
   beforeEach(() => {
@@ -104,7 +135,7 @@ describe('Property 9: 重複認識の抑制', () => {
    *
    * 任意のナンバープレートに対して、最初の認識は重複として扱われないこと。
    */
-  it('最初の認識は常に受け入れられる', () => {
+  it("最初の認識は常に受け入れられる", () => {
     fc.assert(
       fc.property(licensePlateDataArbitrary(), (plate) => {
         const manager = new DuplicateSuppressionManager();
@@ -114,7 +145,7 @@ describe('Property 9: 重複認識の抑制', () => {
         expect(result.isDuplicate).toBe(false);
         expect(result.recognitionCount).toBe(1);
       }),
-      { numRuns: 100 }
+      { numRuns: 100 },
     );
   });
 
@@ -123,7 +154,7 @@ describe('Property 9: 重複認識の抑制', () => {
    *
    * 任意の同一ナンバープレートに対して、抑制時間内の連続認識は重複として扱われること。
    */
-  it('抑制時間内の同一ナンバープレートは重複として扱われる', () => {
+  it("抑制時間内の同一ナンバープレートは重複として扱われる", () => {
     fc.assert(
       fc.property(
         licensePlateDataArbitrary(),
@@ -137,12 +168,15 @@ describe('Property 9: 重複認識の抑制', () => {
           expect(firstResult.isDuplicate).toBe(false);
 
           // 抑制時間内の2回目の認識
-          const secondResult = manager.checkAndRecord(plate, baseTime + timeDelta);
+          const secondResult = manager.checkAndRecord(
+            plate,
+            baseTime + timeDelta,
+          );
           expect(secondResult.isDuplicate).toBe(true);
           expect(secondResult.timeSinceLastRecognition).toBe(timeDelta);
-        }
+        },
       ),
-      { numRuns: 100 }
+      { numRuns: 100 },
     );
   });
 
@@ -151,7 +185,7 @@ describe('Property 9: 重複認識の抑制', () => {
    *
    * 任意の同一ナンバープレートに対して、抑制時間を超えた認識は新規として扱われること。
    */
-  it('抑制時間を超えた同一ナンバープレートは新規認識として扱われる', () => {
+  it("抑制時間を超えた同一ナンバープレートは新規認識として扱われる", () => {
     fc.assert(
       fc.property(
         licensePlateDataArbitrary(),
@@ -165,12 +199,15 @@ describe('Property 9: 重複認識の抑制', () => {
           expect(firstResult.isDuplicate).toBe(false);
 
           // 抑制時間を超えた2回目の認識
-          const secondResult = manager.checkAndRecord(plate, baseTime + timeDelta);
+          const secondResult = manager.checkAndRecord(
+            plate,
+            baseTime + timeDelta,
+          );
           expect(secondResult.isDuplicate).toBe(false);
           expect(secondResult.recognitionCount).toBe(2);
-        }
+        },
       ),
-      { numRuns: 100 }
+      { numRuns: 100 },
     );
   });
 
@@ -179,7 +216,7 @@ describe('Property 9: 重複認識の抑制', () => {
    *
    * 任意の異なるナンバープレートに対して、それぞれ独立して認識されること。
    */
-  it('異なるナンバープレートは独立して扱われる', () => {
+  it("異なるナンバープレートは独立して扱われる", () => {
     fc.assert(
       fc.property(differentPlatesArbitrary(), ([plateA, plateB]) => {
         const manager = new DuplicateSuppressionManager();
@@ -193,7 +230,7 @@ describe('Property 9: 重複認識の抑制', () => {
         const resultB = manager.checkAndRecord(plateB, baseTime + 100);
         expect(resultB.isDuplicate).toBe(false);
       }),
-      { numRuns: 100 }
+      { numRuns: 100 },
     );
   });
 
@@ -202,7 +239,7 @@ describe('Property 9: 重複認識の抑制', () => {
    *
    * 任意のナンバープレートに対して、認識回数が正確にカウントされること。
    */
-  it('認識回数は正確にカウントされる', () => {
+  it("認識回数は正確にカウントされる", () => {
     fc.assert(
       fc.property(
         licensePlateDataArbitrary(),
@@ -218,9 +255,9 @@ describe('Property 9: 重複認識の抑制', () => {
             expect(result.recognitionCount).toBe(i + 1);
             currentTime += DEFAULT_SUPPRESSION_DURATION + 1;
           }
-        }
+        },
       ),
-      { numRuns: 50 }
+      { numRuns: 50 },
     );
   });
 
@@ -229,7 +266,7 @@ describe('Property 9: 重複認識の抑制', () => {
    *
    * 任意の数のナンバープレートを認識しても、履歴サイズは最大値を超えないこと。
    */
-  it('履歴サイズは最大値を超えない', () => {
+  it("履歴サイズは最大値を超えない", () => {
     fc.assert(
       fc.property(
         fc.array(licensePlateDataArbitrary(), { minLength: 1, maxLength: 200 }),
@@ -246,9 +283,9 @@ describe('Property 9: 重複認識の抑制', () => {
 
           // 履歴サイズは最大値を超えない
           expect(manager.size).toBeLessThanOrEqual(maxHistorySize);
-        }
+        },
       ),
-      { numRuns: 50 }
+      { numRuns: 50 },
     );
   });
 
@@ -257,7 +294,7 @@ describe('Property 9: 重複認識の抑制', () => {
    *
    * 履歴をクリアした後は、以前認識したナンバープレートも新規として扱われること。
    */
-  it('クリア後は全ての認識が新規として扱われる', () => {
+  it("クリア後は全ての認識が新規として扱われる", () => {
     fc.assert(
       fc.property(licensePlateDataArbitrary(), (plate) => {
         const manager = new DuplicateSuppressionManager();
@@ -275,7 +312,7 @@ describe('Property 9: 重複認識の抑制', () => {
         expect(result.isDuplicate).toBe(false);
         expect(result.recognitionCount).toBe(1);
       }),
-      { numRuns: 100 }
+      { numRuns: 100 },
     );
   });
 
@@ -284,7 +321,7 @@ describe('Property 9: 重複認識の抑制', () => {
    *
    * isDuplicateメソッドは履歴を更新せず、チェックのみを行うこと。
    */
-  it('isDuplicateは履歴を更新しない', () => {
+  it("isDuplicateは履歴を更新しない", () => {
     fc.assert(
       fc.property(licensePlateDataArbitrary(), (plate) => {
         const manager = new DuplicateSuppressionManager();
@@ -299,18 +336,21 @@ describe('Property 9: 重複認識の抑制', () => {
 
         // 抑制時間を超えてもisDuplicateは履歴を更新しないので、
         // checkAndRecordで確認すると新規認識として扱われる
-        const isDup2 = manager.isDuplicate(plate, baseTime + DEFAULT_SUPPRESSION_DURATION + 1);
+        const isDup2 = manager.isDuplicate(
+          plate,
+          baseTime + DEFAULT_SUPPRESSION_DURATION + 1,
+        );
         expect(isDup2).toBe(false);
 
         // checkAndRecordで確認
         const result = manager.checkAndRecord(
           plate,
-          baseTime + DEFAULT_SUPPRESSION_DURATION + 1
+          baseTime + DEFAULT_SUPPRESSION_DURATION + 1,
         );
         expect(result.isDuplicate).toBe(false);
         expect(result.recognitionCount).toBe(2);
       }),
-      { numRuns: 100 }
+      { numRuns: 100 },
     );
   });
 });
@@ -319,8 +359,8 @@ describe('Property 9: 重複認識の抑制', () => {
 // ユーティリティ関数のテスト
 // ============================================================================
 
-describe('isSameLicensePlate', () => {
-  it('同一のfullTextを持つプレートは同一と判定される', () => {
+describe("isSameLicensePlate", () => {
+  it("同一のfullTextを持つプレートは同一と判定される", () => {
     fc.assert(
       fc.property(licensePlateDataArbitrary(), (plate) => {
         // 同じプレートは同一
@@ -330,22 +370,22 @@ describe('isSameLicensePlate', () => {
         const copy = { ...plate };
         expect(isSameLicensePlate(plate, copy)).toBe(true);
       }),
-      { numRuns: 100 }
+      { numRuns: 100 },
     );
   });
 
-  it('異なるfullTextを持つプレートは異なると判定される', () => {
+  it("異なるfullTextを持つプレートは異なると判定される", () => {
     fc.assert(
       fc.property(differentPlatesArbitrary(), ([plateA, plateB]) => {
         expect(isSameLicensePlate(plateA, plateB)).toBe(false);
       }),
-      { numRuns: 100 }
+      { numRuns: 100 },
     );
   });
 });
 
-describe('removeDuplicatePlates', () => {
-  it('重複を除去した配列を返す', () => {
+describe("removeDuplicatePlates", () => {
+  it("重複を除去した配列を返す", () => {
     fc.assert(
       fc.property(
         fc.array(licensePlateDataArbitrary(), { minLength: 0, maxLength: 50 }),
@@ -365,13 +405,13 @@ describe('removeDuplicatePlates', () => {
           for (const plate of plates) {
             expect(resultFullTexts.has(plate.fullText)).toBe(true);
           }
-        }
+        },
       ),
-      { numRuns: 100 }
+      { numRuns: 100 },
     );
   });
 
-  it('空の配列に対しては空の配列を返す', () => {
+  it("空の配列に対しては空の配列を返す", () => {
     const result = removeDuplicatePlates([]);
     expect(result).toEqual([]);
   });
@@ -381,8 +421,8 @@ describe('removeDuplicatePlates', () => {
 // 設定のテスト
 // ============================================================================
 
-describe('DuplicateSuppressionManager 設定', () => {
-  it('カスタム抑制時間が正しく適用される', () => {
+describe("DuplicateSuppressionManager 設定", () => {
+  it("カスタム抑制時間が正しく適用される", () => {
     fc.assert(
       fc.property(
         licensePlateDataArbitrary(),
@@ -399,23 +439,23 @@ describe('DuplicateSuppressionManager 設定', () => {
           // カスタム抑制時間内は重複
           const withinResult = manager.checkAndRecord(
             plate,
-            baseTime + customDuration - 1
+            baseTime + customDuration - 1,
           );
           expect(withinResult.isDuplicate).toBe(true);
 
           // カスタム抑制時間を超えると新規
           const beyondResult = manager.checkAndRecord(
             plate,
-            baseTime + customDuration
+            baseTime + customDuration,
           );
           expect(beyondResult.isDuplicate).toBe(false);
-        }
+        },
       ),
-      { numRuns: 50 }
+      { numRuns: 50 },
     );
   });
 
-  it('設定が正しく取得できる', () => {
+  it("設定が正しく取得できる", () => {
     fc.assert(
       fc.property(
         fc.integer({ min: 1000, max: 30000 }),
@@ -429,9 +469,9 @@ describe('DuplicateSuppressionManager 設定', () => {
           const config = manager.config;
           expect(config.suppressionDuration).toBe(suppressionDuration);
           expect(config.maxHistorySize).toBe(maxHistorySize);
-        }
+        },
       ),
-      { numRuns: 50 }
+      { numRuns: 50 },
     );
   });
 });

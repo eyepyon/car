@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 /**
  * カメラモーダルコンポーネント
@@ -10,17 +10,18 @@
  * @see Requirements 2.1, 2.2, 2.3, 2.4
  */
 
-import { useCallback, useEffect, useState } from 'react';
-import { X } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { CameraCapture } from '@/components/license-plate/CameraCapture';
-import { RecognitionResultDisplay } from '@/components/license-plate/RecognitionResult';
+import { CameraCapture } from "@/components/license-plate/CameraCapture";
+import { RecognitionResultDisplay } from "@/components/license-plate/RecognitionResult";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import type {
   CapturedImage,
   CaptureError,
   LicensePlateData,
   RecognitionError,
-} from '@/types/license-plate';
+} from "@/types/license-plate";
+import { X } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
 
 // ============================================================================
 // 型定義
@@ -35,7 +36,7 @@ export interface CameraModalProps {
   onRecognitionComplete?: (result: LicensePlateData) => void;
 }
 
-type ModalState = 'camera' | 'recognizing' | 'result';
+type ModalState = "camera" | "recognizing" | "result";
 
 // ============================================================================
 // コンポーネント
@@ -58,15 +59,17 @@ export function CameraModal({
   onClose,
   onRecognitionComplete,
 }: CameraModalProps) {
-  const [state, setState] = useState<ModalState>('camera');
-  const [recognitionResult, setRecognitionResult] = useState<LicensePlateData | null>(null);
-  const [recognitionError, setRecognitionError] = useState<RecognitionError | null>(null);
+  const [state, setState] = useState<ModalState>("camera");
+  const [recognitionResult, setRecognitionResult] =
+    useState<LicensePlateData | null>(null);
+  const [recognitionError, setRecognitionError] =
+    useState<RecognitionError | null>(null);
   const [captureError, setCaptureError] = useState<CaptureError | null>(null);
 
   // モーダルが閉じられたときに状態をリセット
   useEffect(() => {
     if (!isOpen) {
-      setState('camera');
+      setState("camera");
       setRecognitionResult(null);
       setRecognitionError(null);
       setCaptureError(null);
@@ -76,64 +79,67 @@ export function CameraModal({
   // ESCキーでモーダルを閉じる
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isOpen) {
+      if (e.key === "Escape" && isOpen) {
         onClose();
       }
     };
 
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, onClose]);
 
   // 背景スクロールを無効化
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = '';
+      document.body.style.overflow = "";
     }
     return () => {
-      document.body.style.overflow = '';
+      document.body.style.overflow = "";
     };
   }, [isOpen]);
 
   /**
    * 画像キャプチャ時の処理
    */
-  const handleCapture = useCallback(async (image: CapturedImage) => {
-    setState('recognizing');
-    setCaptureError(null);
-    setRecognitionError(null);
+  const handleCapture = useCallback(
+    async (image: CapturedImage) => {
+      setState("recognizing");
+      setCaptureError(null);
+      setRecognitionError(null);
 
-    try {
-      // TODO: 実際のAPI呼び出しに置き換える
-      // 現在はモック認識結果を返す
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      try {
+        // TODO: 実際のAPI呼び出しに置き換える
+        // 現在はモック認識結果を返す
+        await new Promise((resolve) => setTimeout(resolve, 1500));
 
-      const mockResult: LicensePlateData = {
-        region: '品川',
-        classificationNumber: '302',
-        hiragana: 'ほ',
-        serialNumber: '3184',
-        fullText: '品川302ほ3184',
-        confidence: 95,
-        plateType: 'REGULAR',
-        recognizedAt: Date.now(),
-      };
+        const mockResult: LicensePlateData = {
+          region: "品川",
+          classificationNumber: "302",
+          hiragana: "ほ",
+          serialNumber: "3184",
+          fullText: "品川302ほ3184",
+          confidence: 95,
+          plateType: "REGULAR",
+          recognizedAt: Date.now(),
+        };
 
-      setRecognitionResult(mockResult);
-      setState('result');
-      onRecognitionComplete?.(mockResult);
-    } catch (error) {
-      console.error('Recognition error:', error);
-      setRecognitionError({
-        code: 'API_CONNECTION_FAILED',
-        message: 'サービスに接続できません',
-        suggestion: 'しばらく待ってから再試行してください',
-      });
-      setState('result');
-    }
-  }, [onRecognitionComplete]);
+        setRecognitionResult(mockResult);
+        setState("result");
+        onRecognitionComplete?.(mockResult);
+      } catch (error) {
+        console.error("Recognition error:", error);
+        setRecognitionError({
+          code: "API_CONNECTION_FAILED",
+          message: "サービスに接続できません",
+          suggestion: "しばらく待ってから再試行してください",
+        });
+        setState("result");
+      }
+    },
+    [onRecognitionComplete],
+  );
 
   /**
    * キャプチャエラー時の処理
@@ -146,7 +152,7 @@ export function CameraModal({
    * 再試行
    */
   const handleRetry = useCallback(() => {
-    setState('camera');
+    setState("camera");
     setRecognitionResult(null);
     setRecognitionError(null);
     setCaptureError(null);
@@ -158,11 +164,7 @@ export function CameraModal({
 
   return (
     <div
-      className={cn(
-        'fixed inset-0 z-50',
-        'flex flex-col',
-        'bg-black'
-      )}
+      className={cn("fixed inset-0 z-50", "flex flex-col", "bg-black")}
       role="dialog"
       aria-modal="true"
       aria-label="カメラモーダル"
@@ -176,12 +178,12 @@ export function CameraModal({
           type="button"
           onClick={onClose}
           className={cn(
-            'flex items-center justify-center',
-            'w-10 h-10 rounded-full',
-            'text-white',
-            'hover:bg-white/20',
-            'transition-colors duration-200',
-            'focus:outline-none focus-visible:ring-2 focus-visible:ring-white'
+            "flex items-center justify-center",
+            "w-10 h-10 rounded-full",
+            "text-white",
+            "hover:bg-white/20",
+            "transition-colors duration-200",
+            "focus:outline-none focus-visible:ring-2 focus-visible:ring-white",
           )}
           aria-label="閉じる"
         >
@@ -191,7 +193,7 @@ export function CameraModal({
 
       {/* コンテンツ */}
       <div className="flex-1 flex flex-col items-center justify-center p-4 overflow-auto">
-        {state === 'camera' && (
+        {state === "camera" && (
           <div className="w-full max-w-2xl">
             <CameraCapture
               mode="single"
@@ -206,14 +208,14 @@ export function CameraModal({
           </div>
         )}
 
-        {state === 'recognizing' && (
+        {state === "recognizing" && (
           <div className="flex flex-col items-center gap-4">
             <div className="h-12 w-12 animate-spin rounded-full border-4 border-white border-t-transparent" />
             <p className="text-white text-lg">認識中...</p>
           </div>
         )}
 
-        {state === 'result' && (
+        {state === "result" && (
           <div className="w-full max-w-md">
             <RecognitionResultDisplay
               result={recognitionResult}
@@ -222,32 +224,22 @@ export function CameraModal({
               onRetry={handleRetry}
             />
             <div className="mt-6 flex gap-3">
-              <button
+              <Button
                 type="button"
+                variant="secondary"
                 onClick={handleRetry}
-                className={cn(
-                  'flex-1 py-3 px-4 rounded-lg',
-                  'bg-gray-700 text-white',
-                  'hover:bg-gray-600',
-                  'transition-colors duration-200',
-                  'focus:outline-none focus-visible:ring-2 focus-visible:ring-white'
-                )}
+                className="flex-1 py-6 text-base"
               >
                 再撮影
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
+                variant="default"
                 onClick={onClose}
-                className={cn(
-                  'flex-1 py-3 px-4 rounded-lg',
-                  'bg-blue-600 text-white',
-                  'hover:bg-blue-500',
-                  'transition-colors duration-200',
-                  'focus:outline-none focus-visible:ring-2 focus-visible:ring-white'
-                )}
+                className="flex-1 py-6 text-base"
               >
                 完了
-              </button>
+              </Button>
             </div>
           </div>
         )}

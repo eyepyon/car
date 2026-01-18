@@ -9,7 +9,7 @@
  * @see Property 12: キャッシュの一貫性
  */
 
-import type { LicensePlateData } from './qwen-vl-client';
+import type { LicensePlateData } from "./qwen-vl-client";
 
 // ============================================================================
 // 型定義
@@ -78,12 +78,15 @@ export const DEFAULT_CACHE_CONFIG: CacheConfig = {
  */
 export async function computeHash(data: string): Promise<string> {
   // Node.js環境
-  if (typeof globalThis.crypto?.subtle !== 'undefined') {
+  if (typeof globalThis.crypto?.subtle !== "undefined") {
     const encoder = new TextEncoder();
     const dataBuffer = encoder.encode(data);
-    const hashBuffer = await globalThis.crypto.subtle.digest('SHA-256', dataBuffer);
+    const hashBuffer = await globalThis.crypto.subtle.digest(
+      "SHA-256",
+      dataBuffer,
+    );
     const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
+    return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
   }
 
   // フォールバック: 簡易ハッシュ（本番環境では使用しない）
@@ -93,7 +96,7 @@ export async function computeHash(data: string): Promise<string> {
     hash = (hash << 5) - hash + char;
     hash = hash & hash; // Convert to 32bit integer
   }
-  return Math.abs(hash).toString(16).padStart(8, '0');
+  return Math.abs(hash).toString(16).padStart(8, "0");
 }
 
 /**
@@ -104,7 +107,7 @@ export async function computeHash(data: string): Promise<string> {
  */
 export async function generateCacheKey(imageData: string): Promise<string> {
   // data:image/...;base64, プレフィックスを除去
-  const base64Data = imageData.replace(/^data:image\/[^;]+;base64,/, '');
+  const base64Data = imageData.replace(/^data:image\/[^;]+;base64,/, "");
   return computeHash(base64Data);
 }
 

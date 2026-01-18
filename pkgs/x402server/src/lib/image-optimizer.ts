@@ -95,10 +95,10 @@ export const LICENSE_PLATE_OPTIMIZER_CONFIG: ImageOptimizerConfig = {
  */
 export function calculateBase64Size(base64: string): number {
   // data:image/...;base64, プレフィックスを除去
-  const base64Data = base64.replace(/^data:image\/[^;]+;base64,/, '');
+  const base64Data = base64.replace(/^data:image\/[^;]+;base64,/, "");
 
   // Base64のパディングを考慮してサイズを計算
-  const padding = (base64Data.match(/=+$/) || [''])[0].length;
+  const padding = (base64Data.match(/=+$/) || [""])[0].length;
   return Math.floor((base64Data.length * 3) / 4) - padding;
 }
 
@@ -110,7 +110,7 @@ export function calculateBase64Size(base64: string): number {
  */
 export function extractMimeType(base64: string): string {
   const match = base64.match(/^data:(image\/[^;]+);base64,/);
-  return match ? match[1] : 'image/jpeg';
+  return match ? match[1] : "image/jpeg";
 }
 
 /**
@@ -120,7 +120,7 @@ export function extractMimeType(base64: string): string {
  * @returns 正規化されたデータURL
  */
 export function normalizeDataUrl(data: string): string {
-  if (data.startsWith('data:')) {
+  if (data.startsWith("data:")) {
     return data;
   }
   return `data:image/jpeg;base64,${data}`;
@@ -133,7 +133,7 @@ export function normalizeDataUrl(data: string): string {
  * @returns Base64文字列
  */
 export function extractBase64(dataUrl: string): string {
-  return dataUrl.replace(/^data:image\/[^;]+;base64,/, '');
+  return dataUrl.replace(/^data:image\/[^;]+;base64,/, "");
 }
 
 /**
@@ -149,7 +149,7 @@ export function calculateResizedDimensions(
   width: number,
   height: number,
   maxWidth: number,
-  maxHeight: number
+  maxHeight: number,
 ): { width: number; height: number } {
   // 既に制限内の場合はそのまま返す
   if (width <= maxWidth && height <= maxHeight) {
@@ -191,7 +191,7 @@ export function calculateResizedDimensions(
 export function estimateOptimalQuality(
   currentSize: number,
   targetSize: number,
-  currentQuality: number
+  currentQuality: number,
 ): number {
   if (currentSize <= targetSize) {
     return currentQuality;
@@ -354,7 +354,9 @@ export function createLicensePlateOptimizer(): ImageOptimizer {
  * @param config - 部分的な設定
  * @returns ImageOptimizer インスタンス
  */
-export function createOptimizer(config: Partial<ImageOptimizerConfig> = {}): ImageOptimizer {
+export function createOptimizer(
+  config: Partial<ImageOptimizerConfig> = {},
+): ImageOptimizer {
   return new ImageOptimizer({
     ...DEFAULT_OPTIMIZER_CONFIG,
     ...config,

@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 /**
  * ナンバープレート認識デモコンポーネント
@@ -10,12 +10,12 @@
  * @see Requirements 1.1, 2.1, 3.1, 3.4
  */
 
-import { useState, useCallback } from 'react';
-import { CameraCapture } from './CameraCapture';
-import { RecognitionResultDisplay } from './RecognitionResult';
-import { useLicensePlateRecognition } from '@/lib/license-plate';
-import type { CapturedImage, CaptureError } from '@/types/license-plate';
-import { cn } from '@/lib/utils';
+import { useState, useCallback } from "react";
+import { CameraCapture } from "./CameraCapture";
+import { RecognitionResultDisplay } from "./RecognitionResult";
+import { useLicensePlateRecognition } from "@/lib/license-plate";
+import type { CapturedImage, CaptureError } from "@/types/license-plate";
+import { cn } from "@/lib/utils";
 
 // ============================================================================
 // 型定義
@@ -44,7 +44,7 @@ export function LicensePlateRecognitionDemo({
   className,
 }: LicensePlateRecognitionDemoProps) {
   // 認識モード
-  const [mode, setMode] = useState<'single' | 'realtime'>('single');
+  const [mode, setMode] = useState<"single" | "realtime">("single");
 
   // リアルタイムモードの有効/無効
   const [realtimeEnabled, setRealtimeEnabled] = useState(true);
@@ -65,13 +65,13 @@ export function LicensePlateRecognitionDemo({
   } = useLicensePlateRecognition({
     mode,
     onSuccess: (data) => {
-      console.log('[Demo] 認識成功:', data);
+      console.log("[Demo] 認識成功:", data);
     },
     onError: (err) => {
-      console.error('[Demo] エラー:', err);
+      console.error("[Demo] エラー:", err);
     },
     onDuplicate: (data) => {
-      console.log('[Demo] 重複認識を抑制:', data.fullText);
+      console.log("[Demo] 重複認識を抑制:", data.fullText);
     },
   });
 
@@ -83,7 +83,7 @@ export function LicensePlateRecognitionDemo({
       setCameraError(null);
       recognizeImage(image);
     },
-    [recognizeImage]
+    [recognizeImage],
   );
 
   /**
@@ -91,19 +91,19 @@ export function LicensePlateRecognitionDemo({
    */
   const handleCameraError = useCallback((err: CaptureError) => {
     setCameraError(err);
-    console.error('[Demo] カメラエラー:', err);
+    console.error("[Demo] カメラエラー:", err);
   }, []);
 
   /**
    * モード切り替え
    */
   const handleModeChange = useCallback(
-    (newMode: 'single' | 'realtime') => {
+    (newMode: "single" | "realtime") => {
       setMode(newMode);
       reset();
       clearDuplicateHistory();
     },
-    [reset, clearDuplicateHistory]
+    [reset, clearDuplicateHistory],
   );
 
   /**
@@ -115,7 +115,7 @@ export function LicensePlateRecognitionDemo({
   }, [reset]);
 
   return (
-    <div className={cn('flex flex-col gap-6', className)}>
+    <div className={cn("flex flex-col gap-6", className)}>
       {/* ヘッダー */}
       <div className="flex flex-col gap-2">
         <h1 className="text-2xl font-bold text-gray-900">
@@ -132,24 +132,24 @@ export function LicensePlateRecognitionDemo({
         <div className="flex gap-2">
           <button
             type="button"
-            onClick={() => handleModeChange('single')}
+            onClick={() => handleModeChange("single")}
             className={cn(
-              'rounded-lg px-4 py-2 text-sm font-medium transition-colors',
-              mode === 'single'
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              "rounded-lg px-4 py-2 text-sm font-medium transition-colors",
+              mode === "single"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200",
             )}
           >
             シングルショット
           </button>
           <button
             type="button"
-            onClick={() => handleModeChange('realtime')}
+            onClick={() => handleModeChange("realtime")}
             className={cn(
-              'rounded-lg px-4 py-2 text-sm font-medium transition-colors',
-              mode === 'realtime'
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              "rounded-lg px-4 py-2 text-sm font-medium transition-colors",
+              mode === "realtime"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200",
             )}
           >
             リアルタイム
@@ -157,7 +157,7 @@ export function LicensePlateRecognitionDemo({
         </div>
 
         {/* リアルタイムモードのトグル */}
-        {mode === 'realtime' && (
+        {mode === "realtime" && (
           <label className="flex items-center gap-2">
             <input
               type="checkbox"
@@ -229,7 +229,7 @@ export function LicensePlateRecognitionDemo({
               <dd className="font-mono text-gray-900">{mode}</dd>
               <dt className="text-gray-500">処理時間:</dt>
               <dd className="font-mono text-gray-900">
-                {processingTime !== null ? `${processingTime}ms` : '-'}
+                {processingTime !== null ? `${processingTime}ms` : "-"}
               </dd>
             </dl>
           </div>
@@ -241,14 +241,16 @@ export function LicensePlateRecognitionDemo({
         <h3 className="mb-2 text-sm font-medium text-gray-700">使い方</h3>
         <ul className="list-inside list-disc space-y-1 text-sm text-gray-600">
           <li>
-            <strong>シングルショット:</strong>{' '}
+            <strong>シングルショット:</strong>{" "}
             キャプチャボタンをクリックして撮影
           </li>
           <li>
-            <strong>リアルタイム:</strong>{' '}
+            <strong>リアルタイム:</strong>{" "}
             自動的に500ms間隔で認識（同一ナンバーは5秒間抑制）
           </li>
-          <li>カメラをナンバープレートに向けて、鮮明に映るようにしてください</li>
+          <li>
+            カメラをナンバープレートに向けて、鮮明に映るようにしてください
+          </li>
         </ul>
       </div>
     </div>

@@ -8,18 +8,21 @@
  * @see Requirements 3.1, 3.4
  */
 
-import { Hono } from 'hono';
-import { zValidator } from '@hono/zod-validator';
-import { z } from 'zod';
-import type { Context } from 'hono';
-import { rateLimiter, type RateLimitConfig } from '../middleware/rate-limiter';
+import { Hono } from "hono";
+import { zValidator } from "@hono/zod-validator";
+import { z } from "zod";
+import type { Context } from "hono";
+import { rateLimiter, type RateLimitConfig } from "../middleware/rate-limiter";
 import {
   QwenVLClient,
   QwenVLError,
   createQwenVLClientFromEnv,
   type QwenVLConfig,
-} from '../lib/qwen-vl-client';
-import { RecognitionLogger, recognitionLogger } from '../lib/recognition-logger';
+} from "../lib/qwen-vl-client";
+import {
+  RecognitionLogger,
+  recognitionLogger,
+} from "../lib/recognition-logger";
 
 // ============================================================================
 // 型定義
@@ -29,22 +32,22 @@ import { RecognitionLogger, recognitionLogger } from '../lib/recognition-logger'
  * ナンバープレートの種類
  */
 export type PlateType =
-  | 'REGULAR' // 普通自動車（白地に緑文字）
-  | 'LIGHT' // 軽自動車（黄色地に黒文字）
-  | 'COMMERCIAL' // 事業用（緑地に白文字）
-  | 'RENTAL' // レンタカー（わ、れナンバー）
-  | 'DIPLOMATIC'; // 外交官（青地に白文字）
+  | "REGULAR" // 普通自動車（白地に緑文字）
+  | "LIGHT" // 軽自動車（黄色地に黒文字）
+  | "COMMERCIAL" // 事業用（緑地に白文字）
+  | "RENTAL" // レンタカー（わ、れナンバー）
+  | "DIPLOMATIC"; // 外交官（青地に白文字）
 
 /**
  * 認識エラーコード
  */
 export type RecognitionErrorCode =
-  | 'NO_PLATE_DETECTED'
-  | 'PARTIAL_RECOGNITION'
-  | 'API_CONNECTION_FAILED'
-  | 'TIMEOUT'
-  | 'RATE_LIMITED'
-  | 'INVALID_IMAGE';
+  | "NO_PLATE_DETECTED"
+  | "PARTIAL_RECOGNITION"
+  | "API_CONNECTION_FAILED"
+  | "TIMEOUT"
+  | "RATE_LIMITED"
+  | "INVALID_IMAGE";
 
 /**
  * ナンバープレート認識結果データ
@@ -89,28 +92,28 @@ export const RECOGNITION_ERROR_MESSAGES: Record<
   { message: string; suggestion: string }
 > = {
   NO_PLATE_DETECTED: {
-    message: 'ナンバープレートが検出されませんでした',
-    suggestion: 'カメラをナンバープレートに向けてください',
+    message: "ナンバープレートが検出されませんでした",
+    suggestion: "カメラをナンバープレートに向けてください",
   },
   PARTIAL_RECOGNITION: {
-    message: '部分的な認識のみ成功しました',
-    suggestion: 'より鮮明な画像で再試行してください',
+    message: "部分的な認識のみ成功しました",
+    suggestion: "より鮮明な画像で再試行してください",
   },
   API_CONNECTION_FAILED: {
-    message: 'サービスに接続できません',
-    suggestion: 'しばらく待ってから再試行してください',
+    message: "サービスに接続できません",
+    suggestion: "しばらく待ってから再試行してください",
   },
   TIMEOUT: {
-    message: '認識処理がタイムアウトしました',
-    suggestion: 'ネットワーク接続を確認してください',
+    message: "認識処理がタイムアウトしました",
+    suggestion: "ネットワーク接続を確認してください",
   },
   RATE_LIMITED: {
-    message: 'リクエスト数が制限を超えました',
-    suggestion: 'しばらく待ってから再試行してください',
+    message: "リクエスト数が制限を超えました",
+    suggestion: "しばらく待ってから再試行してください",
   },
   INVALID_IMAGE: {
-    message: '無効な画像形式です',
-    suggestion: '有効な画像ファイルを使用してください',
+    message: "無効な画像形式です",
+    suggestion: "有効な画像ファイルを使用してください",
   },
 };
 
@@ -119,7 +122,7 @@ export const RECOGNITION_ERROR_MESSAGES: Record<
  */
 export function createRecognitionError(
   code: RecognitionErrorCode,
-  partialData?: Partial<LicensePlateData>
+  partialData?: Partial<LicensePlateData>,
 ): RecognitionError {
   const { message, suggestion } = RECOGNITION_ERROR_MESSAGES[code];
   return {
@@ -140,17 +143,23 @@ export function createRecognitionError(
 export const recognizeRequestSchema = z.object({
   image: z
     .string()
-    .min(1, { message: '画像データは必須です' })
+    .min(1, { message: "画像データは必須です" })
     .refine(
       (val) => {
         // Base64形式のチェック（data:image/...;base64, プレフィックス付きまたはなし）
-        const base64Regex = /^(?:data:image\/[a-zA-Z+]+;base64,)?[A-Za-z0-9+/]+=*$/;
-        return base64Regex.test(val.replace(/\s/g, ''));
+        const base64Regex =
+          /^(?:data:image\/[a-zA-Z+]+;base64,)?[A-Za-z0-9+/]+=*$/;
+        return base64Regex.test(val.replace(/\s/g, ""));
       },
-      { message: '無効な画像形式です。Base64エンコードされた画像を送信してください' }
+      {
+        message:
+          "無効な画像形式です。Base64エンコードされた画像を送信してください",
+      },
     ),
-  mode: z.enum(['single', 'realtime'], {
-    errorMap: () => ({ message: 'モードは "single" または "realtime" を指定してください' }),
+  mode: z.enum(["single", "realtime"], {
+    errorMap: () => ({
+      message: 'モードは "single" または "realtime" を指定してください',
+    }),
   }),
 });
 
@@ -186,14 +195,17 @@ export function createLicensePlateRouter(config?: {
     try {
       qwenClient = config?.qwenClient ?? createQwenVLClientFromEnv();
     } catch (error) {
-      console.warn('[LicensePlate] Qwen-VL client initialization failed, using mock:', error);
+      console.warn(
+        "[LicensePlate] Qwen-VL client initialization failed, using mock:",
+        error,
+      );
     }
   }
 
   // ロガーの初期化
   const logger = config?.logger ?? recognitionLogger;
 
-  app.use('/*', rateLimiter(rateLimitConfig));
+  app.use("/*", rateLimiter(rateLimitConfig));
 
   /**
    * POST /recognize
@@ -202,27 +214,30 @@ export function createLicensePlateRouter(config?: {
    * @see Requirements 3.1, 3.4
    */
   app.post(
-    '/recognize',
-    zValidator('json', recognizeRequestSchema, (result, c) => {
+    "/recognize",
+    zValidator("json", recognizeRequestSchema, (result, c) => {
       if (!result.success) {
-        const errors = result.error.errors.map((e) => e.message).join(', ');
+        const errors = result.error.errors.map((e) => e.message).join(", ");
         return c.json<RecognizeResponse>(
           {
             success: false,
             error: {
-              code: 'INVALID_IMAGE',
+              code: "INVALID_IMAGE",
               message: errors,
-              suggestion: '有効な画像ファイルを使用してください',
+              suggestion: "有効な画像ファイルを使用してください",
             },
             processingTime: 0,
           },
-          400
+          400,
         );
       }
     }),
     async (c: Context) => {
       const startTime = Date.now();
-      const clientIp = c.req.header('x-forwarded-for') || c.req.header('x-real-ip') || 'unknown';
+      const clientIp =
+        c.req.header("x-forwarded-for") ||
+        c.req.header("x-real-ip") ||
+        "unknown";
 
       try {
         const body = await c.req.json<RecognizeRequest>();
@@ -231,12 +246,12 @@ export function createLicensePlateRouter(config?: {
         // 画像データの基本検証
         if (!image || image.length === 0) {
           const processingTime = Date.now() - startTime;
-          const imageHash = RecognitionLogger.hashImage(image || '');
+          const imageHash = RecognitionLogger.hashImage(image || "");
 
           logger.logError({
             imageHash,
             processingTime,
-            errorCode: 'INVALID_IMAGE',
+            errorCode: "INVALID_IMAGE",
             mode,
             clientIp,
           });
@@ -244,10 +259,10 @@ export function createLicensePlateRouter(config?: {
           return c.json<RecognizeResponse>(
             {
               success: false,
-              error: createRecognitionError('INVALID_IMAGE'),
+              error: createRecognitionError("INVALID_IMAGE"),
               processingTime,
             },
-            400
+            400,
           );
         }
 
@@ -279,7 +294,7 @@ export function createLicensePlateRouter(config?: {
               logger.logError({
                 imageHash,
                 processingTime,
-                errorCode: 'NO_PLATE_DETECTED',
+                errorCode: "NO_PLATE_DETECTED",
                 mode,
                 clientIp,
               });
@@ -287,10 +302,10 @@ export function createLicensePlateRouter(config?: {
               return c.json<RecognizeResponse>(
                 {
                   success: false,
-                  error: createRecognitionError('NO_PLATE_DETECTED'),
+                  error: createRecognitionError("NO_PLATE_DETECTED"),
                   processingTime,
                 },
-                400
+                400,
               );
             }
           } catch (error) {
@@ -315,7 +330,7 @@ export function createLicensePlateRouter(config?: {
                   error: createRecognitionError(errorCode),
                   processingTime,
                 },
-                errorCode === 'TIMEOUT' ? 504 : 500
+                errorCode === "TIMEOUT" ? 504 : 500,
               );
             }
 
@@ -325,13 +340,13 @@ export function createLicensePlateRouter(config?: {
 
         // モック認識結果（Qwen-VLクライアントが利用不可の場合）
         const mockResult: LicensePlateData = {
-          region: '品川',
-          classificationNumber: '330',
-          hiragana: 'あ',
-          serialNumber: '1234',
-          fullText: '品川330あ1234',
+          region: "品川",
+          classificationNumber: "330",
+          hiragana: "あ",
+          serialNumber: "1234",
+          fullText: "品川330あ1234",
           confidence: 98,
-          plateType: 'REGULAR',
+          plateType: "REGULAR",
           recognizedAt: Date.now(),
         };
 
@@ -354,27 +369,28 @@ export function createLicensePlateRouter(config?: {
         const processingTime = Date.now() - startTime;
 
         // エラーログ記録
-        console.error('[LicensePlate] Recognition error:', error);
+        console.error("[LicensePlate] Recognition error:", error);
 
         logger.logError({
-          imageHash: 'unknown',
+          imageHash: "unknown",
           processingTime,
-          errorCode: 'API_CONNECTION_FAILED',
-          mode: 'single',
+          errorCode: "API_CONNECTION_FAILED",
+          mode: "single",
           clientIp,
-          errorMessage: error instanceof Error ? error.message : 'Unknown error',
+          errorMessage:
+            error instanceof Error ? error.message : "Unknown error",
         });
 
         return c.json<RecognizeResponse>(
           {
             success: false,
-            error: createRecognitionError('API_CONNECTION_FAILED'),
+            error: createRecognitionError("API_CONNECTION_FAILED"),
             processingTime,
           },
-          500
+          500,
         );
       }
-    }
+    },
   );
 
   return app;
@@ -384,19 +400,24 @@ export function createLicensePlateRouter(config?: {
  * QwenVLErrorのコードをRecognitionErrorCodeにマッピングする
  */
 function mapQwenErrorCode(
-  qwenCode: 'API_CONNECTION_FAILED' | 'TIMEOUT' | 'INVALID_RESPONSE' | 'NO_PLATE_DETECTED' | 'PARSE_ERROR'
+  qwenCode:
+    | "API_CONNECTION_FAILED"
+    | "TIMEOUT"
+    | "INVALID_RESPONSE"
+    | "NO_PLATE_DETECTED"
+    | "PARSE_ERROR",
 ): RecognitionErrorCode {
   switch (qwenCode) {
-    case 'TIMEOUT':
-      return 'TIMEOUT';
-    case 'NO_PLATE_DETECTED':
-      return 'NO_PLATE_DETECTED';
-    case 'INVALID_RESPONSE':
-    case 'PARSE_ERROR':
-      return 'PARTIAL_RECOGNITION';
-    case 'API_CONNECTION_FAILED':
+    case "TIMEOUT":
+      return "TIMEOUT";
+    case "NO_PLATE_DETECTED":
+      return "NO_PLATE_DETECTED";
+    case "INVALID_RESPONSE":
+    case "PARSE_ERROR":
+      return "PARTIAL_RECOGNITION";
+    case "API_CONNECTION_FAILED":
     default:
-      return 'API_CONNECTION_FAILED';
+      return "API_CONNECTION_FAILED";
   }
 }
 

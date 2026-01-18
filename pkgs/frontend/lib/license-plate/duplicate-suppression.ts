@@ -9,7 +9,7 @@
  * @see Property 9: 重複認識の抑制
  */
 
-import type { LicensePlateData } from '@/types/license-plate';
+import type { LicensePlateData } from "@/types/license-plate";
 
 // ============================================================================
 // 定数
@@ -127,7 +127,8 @@ export class DuplicateSuppressionManager {
    */
   constructor(config: DuplicateSuppressionConfig = {}) {
     this.history = new Map();
-    this.suppressionDuration = config.suppressionDuration ?? DEFAULT_SUPPRESSION_DURATION;
+    this.suppressionDuration =
+      config.suppressionDuration ?? DEFAULT_SUPPRESSION_DURATION;
     this.maxHistorySize = config.maxHistorySize ?? DEFAULT_MAX_HISTORY_SIZE;
   }
 
@@ -142,13 +143,14 @@ export class DuplicateSuppressionManager {
    */
   checkAndRecord(
     data: LicensePlateData,
-    currentTime: number = Date.now()
+    currentTime: number = Date.now(),
   ): DuplicateCheckResult {
     const key = this.generateKey(data);
     const existingEntry = this.history.get(key);
 
     if (existingEntry) {
-      const timeSinceLastRecognition = currentTime - existingEntry.lastRecognizedAt;
+      const timeSinceLastRecognition =
+        currentTime - existingEntry.lastRecognizedAt;
 
       if (timeSinceLastRecognition < this.suppressionDuration) {
         // 重複として扱う（履歴は更新しない）
@@ -189,7 +191,10 @@ export class DuplicateSuppressionManager {
    * @param currentTime - 現在時刻
    * @returns 重複の場合true
    */
-  isDuplicate(data: LicensePlateData, currentTime: number = Date.now()): boolean {
+  isDuplicate(
+    data: LicensePlateData,
+    currentTime: number = Date.now(),
+  ): boolean {
     const key = this.generateKey(data);
     const existingEntry = this.history.get(key);
 
@@ -197,7 +202,8 @@ export class DuplicateSuppressionManager {
       return false;
     }
 
-    const timeSinceLastRecognition = currentTime - existingEntry.lastRecognizedAt;
+    const timeSinceLastRecognition =
+      currentTime - existingEntry.lastRecognizedAt;
     return timeSinceLastRecognition < this.suppressionDuration;
   }
 
@@ -294,7 +300,7 @@ export class DuplicateSuppressionManager {
  * @returns DuplicateSuppressionManager インスタンス
  */
 export function createDuplicateSuppressionManager(
-  config?: DuplicateSuppressionConfig
+  config?: DuplicateSuppressionConfig,
 ): DuplicateSuppressionManager {
   return new DuplicateSuppressionManager(config);
 }
@@ -308,7 +314,7 @@ export function createDuplicateSuppressionManager(
  */
 export function isSameLicensePlate(
   a: LicensePlateData,
-  b: LicensePlateData
+  b: LicensePlateData,
 ): boolean {
   return a.fullText === b.fullText;
 }
@@ -320,7 +326,7 @@ export function isSameLicensePlate(
  * @returns 重複を除去した配列
  */
 export function removeDuplicatePlates(
-  plates: LicensePlateData[]
+  plates: LicensePlateData[],
 ): LicensePlateData[] {
   const seen = new Set<string>();
   return plates.filter((plate) => {

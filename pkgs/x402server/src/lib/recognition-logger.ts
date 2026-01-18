@@ -8,8 +8,8 @@
  * @see Requirements 6.4
  */
 
-import { createHash } from 'crypto';
-import type { RecognitionErrorCode } from '../routes/license-plate';
+import { createHash } from "crypto";
+import type { RecognitionErrorCode } from "../routes/license-plate";
 
 // ============================================================================
 // 型定義
@@ -34,7 +34,7 @@ export interface RecognitionLog {
   /** 認識信頼度（成功時のみ） */
   confidence?: number;
   /** 認識モード */
-  mode: 'single' | 'realtime';
+  mode: "single" | "realtime";
   /** リクエスト元IP（オプション） */
   clientIp?: string;
 }
@@ -109,7 +109,7 @@ export class RecognitionLogger {
    * @returns SHA-256ハッシュ
    */
   static hashImage(imageData: string): string {
-    return createHash('sha256').update(imageData).digest('hex');
+    return createHash("sha256").update(imageData).digest("hex");
   }
 
   /**
@@ -129,7 +129,7 @@ export class RecognitionLogger {
     imageHash: string;
     processingTime: number;
     confidence: number;
-    mode: 'single' | 'realtime';
+    mode: "single" | "realtime";
     clientIp?: string;
   }): RecognitionLog {
     const log: RecognitionLog = {
@@ -144,7 +144,7 @@ export class RecognitionLogger {
     };
 
     this.addLog(log);
-    this.logToConsole('SUCCESS', log);
+    this.logToConsole("SUCCESS", log);
 
     return log;
   }
@@ -159,7 +159,7 @@ export class RecognitionLogger {
     imageHash: string;
     processingTime: number;
     errorCode: RecognitionErrorCode;
-    mode: 'single' | 'realtime';
+    mode: "single" | "realtime";
     clientIp?: string;
     errorMessage?: string;
   }): RecognitionLog {
@@ -175,7 +175,7 @@ export class RecognitionLogger {
     };
 
     this.addLog(log);
-    this.logToConsole('ERROR', log, params.errorMessage);
+    this.logToConsole("ERROR", log, params.errorMessage);
 
     return log;
   }
@@ -196,23 +196,23 @@ export class RecognitionLogger {
    * コンソールにログを出力する
    */
   private logToConsole(
-    level: 'SUCCESS' | 'ERROR',
+    level: "SUCCESS" | "ERROR",
     log: RecognitionLog,
-    errorMessage?: string
+    errorMessage?: string,
   ): void {
     const timestamp = new Date(log.timestamp).toISOString();
     const prefix = `[LicensePlate][${level}]`;
 
-    if (level === 'SUCCESS') {
+    if (level === "SUCCESS") {
       console.log(
         `${prefix} ${timestamp} - ID: ${log.id}, Mode: ${log.mode}, ` +
-          `ProcessingTime: ${log.processingTime}ms, Confidence: ${log.confidence}%`
+          `ProcessingTime: ${log.processingTime}ms, Confidence: ${log.confidence}%`,
       );
     } else {
       console.error(
         `${prefix} ${timestamp} - ID: ${log.id}, Mode: ${log.mode}, ` +
           `ProcessingTime: ${log.processingTime}ms, ErrorCode: ${log.errorCode}` +
-          (errorMessage ? `, Message: ${errorMessage}` : '')
+          (errorMessage ? `, Message: ${errorMessage}` : ""),
       );
     }
   }
@@ -234,7 +234,7 @@ export class RecognitionLogger {
 
     const totalProcessingTime = filteredLogs.reduce(
       (sum, log) => sum + log.processingTime,
-      0
+      0,
     );
 
     const errorCounts: Record<string, number> = {};
@@ -274,11 +274,9 @@ export class RecognitionLogger {
    */
   getLogsByErrorCode(
     errorCode: RecognitionErrorCode,
-    count = 100
+    count = 100,
   ): RecognitionLog[] {
-    return this.logs
-      .filter((log) => log.errorCode === errorCode)
-      .slice(-count);
+    return this.logs.filter((log) => log.errorCode === errorCode).slice(-count);
   }
 
   /**

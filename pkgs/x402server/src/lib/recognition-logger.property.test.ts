@@ -9,16 +9,14 @@
  * **Validates: Requirements 6.3, 6.4**
  */
 
-import { describe, it, expect, beforeEach } from 'vitest';
-import * as fc from 'fast-check';
-import {
-  RecognitionLogger,
-} from './recognition-logger';
+import { describe, it, expect, beforeEach } from "vitest";
+import * as fc from "fast-check";
+import { RecognitionLogger } from "./recognition-logger";
 import {
   createRecognitionError,
   RECOGNITION_ERROR_MESSAGES,
   type RecognitionErrorCode,
-} from '../routes/license-plate';
+} from "../routes/license-plate";
 
 // ============================================================================
 // テストデータ生成（Arbitraries）
@@ -27,26 +25,26 @@ import {
 /**
  * 16進数文字を生成するための定数
  */
-const HEX_CHARS = '0123456789abcdef';
+const HEX_CHARS = "0123456789abcdef";
 
 /**
  * 有効な認識エラーコードを生成
  */
 const recognitionErrorCodeArbitrary = (): fc.Arbitrary<RecognitionErrorCode> =>
   fc.constantFrom(
-    'NO_PLATE_DETECTED',
-    'PARTIAL_RECOGNITION',
-    'API_CONNECTION_FAILED',
-    'TIMEOUT',
-    'RATE_LIMITED',
-    'INVALID_IMAGE'
+    "NO_PLATE_DETECTED",
+    "PARTIAL_RECOGNITION",
+    "API_CONNECTION_FAILED",
+    "TIMEOUT",
+    "RATE_LIMITED",
+    "INVALID_IMAGE",
   );
 
 /**
  * 有効な認識モードを生成
  */
-const recognitionModeArbitrary = (): fc.Arbitrary<'single' | 'realtime'> =>
-  fc.constantFrom('single', 'realtime');
+const recognitionModeArbitrary = (): fc.Arbitrary<"single" | "realtime"> =>
+  fc.constantFrom("single", "realtime");
 
 /**
  * 有効な処理時間を生成
@@ -64,16 +62,18 @@ const confidenceArbitrary = (): fc.Arbitrary<number> =>
  * 有効な画像ハッシュを生成（64文字の16進数文字列）
  */
 const imageHashArbitrary = (): fc.Arbitrary<string> =>
-  fc.array(
-    fc.constantFrom(...HEX_CHARS.split('')),
-    { minLength: 64, maxLength: 64 }
-  ).map(chars => chars.join(''));
+  fc
+    .array(fc.constantFrom(...HEX_CHARS.split("")), {
+      minLength: 64,
+      maxLength: 64,
+    })
+    .map((chars) => chars.join(""));
 
 // ============================================================================
 // プロパティテスト
 // ============================================================================
 
-describe('Recognition Logger Property Tests', () => {
+describe("Recognition Logger Property Tests", () => {
   let logger: RecognitionLogger;
 
   beforeEach(() => {
@@ -85,48 +85,42 @@ describe('Recognition Logger Property Tests', () => {
    *
    * **Validates: Requirements 6.3, 6.4**
    */
-  describe('Property 7: エラーレスポンスの構造', () => {
-    it('任意のエラーコードに対して、RecognitionErrorは必須フィールドを全て含む', () => {
+  describe("Property 7: エラーレスポンスの構造", () => {
+    it("任意のエラーコードに対して、RecognitionErrorは必須フィールドを全て含む", () => {
       fc.assert(
-        fc.property(
-          recognitionErrorCodeArbitrary(),
-          (errorCode) => {
-            const error = createRecognitionError(errorCode);
+        fc.property(recognitionErrorCodeArbitrary(), (errorCode) => {
+          const error = createRecognitionError(errorCode);
 
-            return (
-              typeof error.code === 'string' &&
-              error.code === errorCode &&
-              typeof error.message === 'string' &&
-              error.message.length > 0 &&
-              typeof error.suggestion === 'string' &&
-              error.suggestion.length > 0
-            );
-          }
-        ),
-        { numRuns: 100 }
+          return (
+            typeof error.code === "string" &&
+            error.code === errorCode &&
+            typeof error.message === "string" &&
+            error.message.length > 0 &&
+            typeof error.suggestion === "string" &&
+            error.suggestion.length > 0
+          );
+        }),
+        { numRuns: 100 },
       );
     });
 
-    it('任意のエラーコードに対して、エラーメッセージは日本語で提供される', () => {
+    it("任意のエラーコードに対して、エラーメッセージは日本語で提供される", () => {
       fc.assert(
-        fc.property(
-          recognitionErrorCodeArbitrary(),
-          (errorCode) => {
-            const error = createRecognitionError(errorCode);
+        fc.property(recognitionErrorCodeArbitrary(), (errorCode) => {
+          const error = createRecognitionError(errorCode);
 
-            // 日本語文字が含まれているかチェック
-            const hasJapanese = /[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF]/.test(
-              error.message + error.suggestion
-            );
+          // 日本語文字が含まれているかチェック
+          const hasJapanese = /[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF]/.test(
+            error.message + error.suggestion,
+          );
 
-            return hasJapanese;
-          }
-        ),
-        { numRuns: 100 }
+          return hasJapanese;
+        }),
+        { numRuns: 100 },
       );
     });
 
-    it('任意のエラーに対して、エラーログが記録される', () => {
+    it("任意のエラーに対して、エラーログが記録される", () => {
       fc.assert(
         fc.property(
           imageHashArbitrary(),
@@ -152,13 +146,13 @@ describe('Recognition Logger Property Tests', () => {
               recentLogs[0].success === false &&
               recentLogs[0].errorCode === errorCode
             );
-          }
+          },
         ),
-        { numRuns: 100 }
+        { numRuns: 100 },
       );
     });
 
-    it('任意の成功に対して、成功ログが記録される', () => {
+    it("任意の成功に対して、成功ログが記録される", () => {
       fc.assert(
         fc.property(
           imageHashArbitrary(),
@@ -184,20 +178,20 @@ describe('Recognition Logger Property Tests', () => {
               recentLogs[0].success === true &&
               recentLogs[0].confidence === confidence
             );
-          }
+          },
         ),
-        { numRuns: 100 }
+        { numRuns: 100 },
       );
     });
 
-    it('全てのエラーコードに対応するメッセージが定義されている', () => {
+    it("全てのエラーコードに対応するメッセージが定義されている", () => {
       const allErrorCodes: RecognitionErrorCode[] = [
-        'NO_PLATE_DETECTED',
-        'PARTIAL_RECOGNITION',
-        'API_CONNECTION_FAILED',
-        'TIMEOUT',
-        'RATE_LIMITED',
-        'INVALID_IMAGE',
+        "NO_PLATE_DETECTED",
+        "PARTIAL_RECOGNITION",
+        "API_CONNECTION_FAILED",
+        "TIMEOUT",
+        "RATE_LIMITED",
+        "INVALID_IMAGE",
       ];
 
       for (const code of allErrorCodes) {
@@ -212,8 +206,8 @@ describe('Recognition Logger Property Tests', () => {
   /**
    * ログ統計のプロパティテスト
    */
-  describe('ログ統計', () => {
-    it('統計情報は常に有効な値を返す', () => {
+  describe("ログ統計", () => {
+    it("統計情報は常に有効な値を返す", () => {
       fc.assert(
         fc.property(
           fc.array(
@@ -224,7 +218,7 @@ describe('Recognition Logger Property Tests', () => {
               errorCode: recognitionErrorCodeArbitrary(),
               mode: recognitionModeArbitrary(),
             }),
-            { minLength: 0, maxLength: 50 }
+            { minLength: 0, maxLength: 50 },
           ),
           (logEntries) => {
             const testLogger = new RecognitionLogger();
@@ -232,14 +226,14 @@ describe('Recognition Logger Property Tests', () => {
             for (const entry of logEntries) {
               if (entry.success) {
                 testLogger.logSuccess({
-                  imageHash: 'test',
+                  imageHash: "test",
                   processingTime: entry.processingTime,
                   confidence: entry.confidence,
                   mode: entry.mode,
                 });
               } else {
                 testLogger.logError({
-                  imageHash: 'test',
+                  imageHash: "test",
                   processingTime: entry.processingTime,
                   errorCode: entry.errorCode,
                   mode: entry.mode,
@@ -258,13 +252,13 @@ describe('Recognition Logger Property Tests', () => {
               stats.successRate <= 100 &&
               stats.averageProcessingTime >= 0
             );
-          }
+          },
         ),
-        { numRuns: 100 }
+        { numRuns: 100 },
       );
     });
 
-    it('成功率は正しく計算される', () => {
+    it("成功率は正しく計算される", () => {
       fc.assert(
         fc.property(
           fc.integer({ min: 0, max: 50 }),
@@ -274,19 +268,19 @@ describe('Recognition Logger Property Tests', () => {
 
             for (let i = 0; i < successCount; i++) {
               testLogger.logSuccess({
-                imageHash: 'test',
+                imageHash: "test",
                 processingTime: 100,
                 confidence: 90,
-                mode: 'single',
+                mode: "single",
               });
             }
 
             for (let i = 0; i < failureCount; i++) {
               testLogger.logError({
-                imageHash: 'test',
+                imageHash: "test",
                 processingTime: 100,
-                errorCode: 'TIMEOUT',
-                mode: 'single',
+                errorCode: "TIMEOUT",
+                mode: "single",
               });
             }
 
@@ -295,9 +289,9 @@ describe('Recognition Logger Property Tests', () => {
             const expectedRate = total > 0 ? (successCount / total) * 100 : 0;
 
             return Math.abs(stats.successRate - expectedRate) < 0.001;
-          }
+          },
         ),
-        { numRuns: 100 }
+        { numRuns: 100 },
       );
     });
   });
@@ -305,8 +299,8 @@ describe('Recognition Logger Property Tests', () => {
   /**
    * 画像ハッシュのプロパティテスト
    */
-  describe('画像ハッシュ', () => {
-    it('同じ画像データは常に同じハッシュを生成する', () => {
+  describe("画像ハッシュ", () => {
+    it("同じ画像データは常に同じハッシュを生成する", () => {
       fc.assert(
         fc.property(
           fc.string({ minLength: 1, maxLength: 1000 }),
@@ -315,13 +309,13 @@ describe('Recognition Logger Property Tests', () => {
             const hash2 = RecognitionLogger.hashImage(imageData);
 
             return hash1 === hash2;
-          }
+          },
         ),
-        { numRuns: 100 }
+        { numRuns: 100 },
       );
     });
 
-    it('異なる画像データは異なるハッシュを生成する（高確率）', () => {
+    it("異なる画像データは異なるハッシュを生成する（高確率）", () => {
       fc.assert(
         fc.property(
           fc.string({ minLength: 1, maxLength: 1000 }),
@@ -335,26 +329,23 @@ describe('Recognition Logger Property Tests', () => {
             const hash2 = RecognitionLogger.hashImage(imageData2);
 
             return hash1 !== hash2;
-          }
+          },
         ),
-        { numRuns: 100 }
+        { numRuns: 100 },
       );
     });
 
-    it('ハッシュは64文字の16進数文字列である', () => {
+    it("ハッシュは64文字の16進数文字列である", () => {
       fc.assert(
         fc.property(
           fc.string({ minLength: 0, maxLength: 1000 }),
           (imageData) => {
             const hash = RecognitionLogger.hashImage(imageData);
 
-            return (
-              hash.length === 64 &&
-              /^[0-9a-f]+$/.test(hash)
-            );
-          }
+            return hash.length === 64 && /^[0-9a-f]+$/.test(hash);
+          },
         ),
-        { numRuns: 100 }
+        { numRuns: 100 },
       );
     });
   });
@@ -362,53 +353,47 @@ describe('Recognition Logger Property Tests', () => {
   /**
    * ログ管理のプロパティテスト
    */
-  describe('ログ管理', () => {
-    it('ログ数は最大値を超えない', () => {
+  describe("ログ管理", () => {
+    it("ログ数は最大値を超えない", () => {
       const maxLogs = 100;
       const testLogger = new RecognitionLogger(maxLogs);
 
       fc.assert(
-        fc.property(
-          fc.integer({ min: 1, max: 200 }),
-          (logCount) => {
-            for (let i = 0; i < logCount; i++) {
-              testLogger.logSuccess({
-                imageHash: `test${i}`,
-                processingTime: 100,
-                confidence: 90,
-                mode: 'single',
-              });
-            }
-
-            return testLogger.getLogCount() <= maxLogs;
+        fc.property(fc.integer({ min: 1, max: 200 }), (logCount) => {
+          for (let i = 0; i < logCount; i++) {
+            testLogger.logSuccess({
+              imageHash: `test${i}`,
+              processingTime: 100,
+              confidence: 90,
+              mode: "single",
+            });
           }
-        ),
-        { numRuns: 10 }
+
+          return testLogger.getLogCount() <= maxLogs;
+        }),
+        { numRuns: 10 },
       );
     });
 
-    it('クリア後はログ数が0になる', () => {
+    it("クリア後はログ数が0になる", () => {
       fc.assert(
-        fc.property(
-          fc.integer({ min: 1, max: 50 }),
-          (logCount) => {
-            const testLogger = new RecognitionLogger();
+        fc.property(fc.integer({ min: 1, max: 50 }), (logCount) => {
+          const testLogger = new RecognitionLogger();
 
-            for (let i = 0; i < logCount; i++) {
-              testLogger.logSuccess({
-                imageHash: `test${i}`,
-                processingTime: 100,
-                confidence: 90,
-                mode: 'single',
-              });
-            }
-
-            testLogger.clear();
-
-            return testLogger.getLogCount() === 0;
+          for (let i = 0; i < logCount; i++) {
+            testLogger.logSuccess({
+              imageHash: `test${i}`,
+              processingTime: 100,
+              confidence: 90,
+              mode: "single",
+            });
           }
-        ),
-        { numRuns: 100 }
+
+          testLogger.clear();
+
+          return testLogger.getLogCount() === 0;
+        }),
+        { numRuns: 100 },
       );
     });
   });

@@ -12,8 +12,8 @@
  * @see Requirements 2.1-2.5
  */
 
-import { describe, it, expect } from 'vitest';
-import * as fc from 'fast-check';
+import { describe, it, expect } from "vitest";
+import * as fc from "fast-check";
 import {
   validateImageWithMetrics,
   validateImageSync,
@@ -25,8 +25,8 @@ import {
   ALL_VALIDATION_ERROR_CODES,
   isValidValidationErrorCode,
   type ImageQualityMetrics,
-} from './image-validator';
-import type { CapturedImage, ValidationErrorCode } from '@/types/license-plate';
+} from "./image-validator";
+import type { CapturedImage, ValidationErrorCode } from "@/types/license-plate";
 
 // ============================================================================
 // Arbitraries（テストデータ生成器）
@@ -67,24 +67,25 @@ const imageQualityMetricsArbitrary = (): fc.Arbitrary<ImageQualityMetrics> =>
 /**
  * 有効な画像品質メトリクスを生成するArbitrary
  */
-const validImageQualityMetricsArbitrary = (): fc.Arbitrary<ImageQualityMetrics> =>
-  fc.record({
-    laplacianVariance: fc.double({
-      min: VALIDATION_THRESHOLDS.BLUR_THRESHOLD,
-      max: 10000,
-      noNaN: true,
-    }),
-    estimatedAngle: fc.double({
-      min: 0,
-      max: VALIDATION_THRESHOLDS.MAX_ANGLE,
-      noNaN: true,
-    }),
-    averageBrightness: fc.double({
-      min: VALIDATION_THRESHOLDS.DARK_THRESHOLD,
-      max: VALIDATION_THRESHOLDS.BRIGHT_THRESHOLD,
-      noNaN: true,
-    }),
-  });
+const validImageQualityMetricsArbitrary =
+  (): fc.Arbitrary<ImageQualityMetrics> =>
+    fc.record({
+      laplacianVariance: fc.double({
+        min: VALIDATION_THRESHOLDS.BLUR_THRESHOLD,
+        max: 10000,
+        noNaN: true,
+      }),
+      estimatedAngle: fc.double({
+        min: 0,
+        max: VALIDATION_THRESHOLDS.MAX_ANGLE,
+        noNaN: true,
+      }),
+      averageBrightness: fc.double({
+        min: VALIDATION_THRESHOLDS.DARK_THRESHOLD,
+        max: VALIDATION_THRESHOLDS.BRIGHT_THRESHOLD,
+        noNaN: true,
+      }),
+    });
 
 /**
  * ぼやけた画像のメトリクスを生成するArbitrary
@@ -178,14 +179,14 @@ const brightMetricsArbitrary = (): fc.Arbitrary<ImageQualityMetrics> =>
 // Property 2: 画像検証の完全性
 // ============================================================================
 
-describe('Property 2: 画像検証の完全性', () => {
+describe("Property 2: 画像検証の完全性", () => {
   /**
    * **Validates: Requirements 2.1, 2.5**
    *
    * 任意のキャプチャされた画像に対して、Image_Validatorは必ず
    * ぼやけ、角度、照明の3つの品質チェックを実行し、ValidationResultを返すこと。
    */
-  it('任意の画像とメトリクスに対してValidationResultを返す', () => {
+  it("任意の画像とメトリクスに対してValidationResultを返す", () => {
     fc.assert(
       fc.property(
         anyCapturedImageArbitrary(),
@@ -194,19 +195,19 @@ describe('Property 2: 画像検証の完全性', () => {
           const result = validateImageWithMetrics(image, metrics);
 
           // ValidationResultの構造を検証
-          expect(result).toHaveProperty('isValid');
-          expect(result).toHaveProperty('errors');
-          expect(typeof result.isValid).toBe('boolean');
+          expect(result).toHaveProperty("isValid");
+          expect(result).toHaveProperty("errors");
+          expect(typeof result.isValid).toBe("boolean");
           expect(Array.isArray(result.errors)).toBe(true);
 
           return true;
-        }
+        },
       ),
-      { numRuns: 100 }
+      { numRuns: 100 },
     );
   });
 
-  it('全ての品質チェック（解像度、ぼやけ、角度、照明）が実行される', () => {
+  it("全ての品質チェック（解像度、ぼやけ、角度、照明）が実行される", () => {
     fc.assert(
       fc.property(
         anyCapturedImageArbitrary(),
@@ -230,13 +231,13 @@ describe('Property 2: 画像検証の完全性', () => {
           }
 
           return true;
-        }
+        },
       ),
-      { numRuns: 100 }
+      { numRuns: 100 },
     );
   });
 
-  it('有効な画像とメトリクスに対してisValid=trueを返す', () => {
+  it("有効な画像とメトリクスに対してisValid=trueを返す", () => {
     fc.assert(
       fc.property(
         validCapturedImageArbitrary(),
@@ -248,25 +249,25 @@ describe('Property 2: 画像検証の完全性', () => {
           expect(result.errors).toHaveLength(0);
 
           return true;
-        }
+        },
       ),
-      { numRuns: 100 }
+      { numRuns: 100 },
     );
   });
 
-  it('validateImageSyncは常にValidationResultを返す', () => {
+  it("validateImageSyncは常にValidationResultを返す", () => {
     fc.assert(
       fc.property(anyCapturedImageArbitrary(), (image) => {
         const result = validateImageSync(image);
 
-        expect(result).toHaveProperty('isValid');
-        expect(result).toHaveProperty('errors');
-        expect(typeof result.isValid).toBe('boolean');
+        expect(result).toHaveProperty("isValid");
+        expect(result).toHaveProperty("errors");
+        expect(typeof result.isValid).toBe("boolean");
         expect(Array.isArray(result.errors)).toBe(true);
 
         return true;
       }),
-      { numRuns: 100 }
+      { numRuns: 100 },
     );
   });
 });
@@ -275,14 +276,14 @@ describe('Property 2: 画像検証の完全性', () => {
 // Property 3: 画像品質エラーの適切性
 // ============================================================================
 
-describe('Property 3: 画像品質エラーの適切性', () => {
+describe("Property 3: 画像品質エラーの適切性", () => {
   /**
    * **Validates: Requirements 2.2, 2.3, 2.4**
    *
    * 任意の品質基準を満たさない画像に対して、Image_Validatorは適切なエラーコード
    * （BLUR、ANGLE、LIGHTING_DARK、LIGHTING_BRIGHT）と日本語のエラーメッセージを返すこと。
    */
-  it('ぼやけた画像に対してBLURエラーを返す', () => {
+  it("ぼやけた画像に対してBLURエラーを返す", () => {
     fc.assert(
       fc.property(
         validCapturedImageArbitrary(),
@@ -292,19 +293,19 @@ describe('Property 3: 画像品質エラーの適切性', () => {
 
           expect(result.isValid).toBe(false);
 
-          const blurError = result.errors.find((e) => e.code === 'BLUR');
+          const blurError = result.errors.find((e) => e.code === "BLUR");
           expect(blurError).toBeDefined();
-          expect(blurError?.message).toBe('画像がぼやけています');
-          expect(blurError?.suggestion).toBe('再撮影してください');
+          expect(blurError?.message).toBe("画像がぼやけています");
+          expect(blurError?.suggestion).toBe("再撮影してください");
 
           return true;
-        }
+        },
       ),
-      { numRuns: 100 }
+      { numRuns: 100 },
     );
   });
 
-  it('角度が急すぎる画像に対してANGLEエラーを返す', () => {
+  it("角度が急すぎる画像に対してANGLEエラーを返す", () => {
     fc.assert(
       fc.property(
         validCapturedImageArbitrary(),
@@ -314,19 +315,19 @@ describe('Property 3: 画像品質エラーの適切性', () => {
 
           expect(result.isValid).toBe(false);
 
-          const angleError = result.errors.find((e) => e.code === 'ANGLE');
+          const angleError = result.errors.find((e) => e.code === "ANGLE");
           expect(angleError).toBeDefined();
-          expect(angleError?.message).toBe('角度が急すぎます');
-          expect(angleError?.suggestion).toBe('正面から撮影してください');
+          expect(angleError?.message).toBe("角度が急すぎます");
+          expect(angleError?.suggestion).toBe("正面から撮影してください");
 
           return true;
-        }
+        },
       ),
-      { numRuns: 100 }
+      { numRuns: 100 },
     );
   });
 
-  it('暗すぎる画像に対してLIGHTING_DARKエラーを返す', () => {
+  it("暗すぎる画像に対してLIGHTING_DARKエラーを返す", () => {
     fc.assert(
       fc.property(
         validCapturedImageArbitrary(),
@@ -336,19 +337,21 @@ describe('Property 3: 画像品質エラーの適切性', () => {
 
           expect(result.isValid).toBe(false);
 
-          const darkError = result.errors.find((e) => e.code === 'LIGHTING_DARK');
+          const darkError = result.errors.find(
+            (e) => e.code === "LIGHTING_DARK",
+          );
           expect(darkError).toBeDefined();
-          expect(darkError?.message).toBe('画像が暗すぎます');
-          expect(darkError?.suggestion).toBe('明るい場所で撮影してください');
+          expect(darkError?.message).toBe("画像が暗すぎます");
+          expect(darkError?.suggestion).toBe("明るい場所で撮影してください");
 
           return true;
-        }
+        },
       ),
-      { numRuns: 100 }
+      { numRuns: 100 },
     );
   });
 
-  it('明るすぎる画像に対してLIGHTING_BRIGHTエラーを返す', () => {
+  it("明るすぎる画像に対してLIGHTING_BRIGHTエラーを返す", () => {
     fc.assert(
       fc.property(
         validCapturedImageArbitrary(),
@@ -358,24 +361,31 @@ describe('Property 3: 画像品質エラーの適切性', () => {
 
           expect(result.isValid).toBe(false);
 
-          const brightError = result.errors.find((e) => e.code === 'LIGHTING_BRIGHT');
+          const brightError = result.errors.find(
+            (e) => e.code === "LIGHTING_BRIGHT",
+          );
           expect(brightError).toBeDefined();
-          expect(brightError?.message).toBe('画像が明るすぎます');
-          expect(brightError?.suggestion).toBe('直射日光を避けて撮影してください');
+          expect(brightError?.message).toBe("画像が明るすぎます");
+          expect(brightError?.suggestion).toBe(
+            "直射日光を避けて撮影してください",
+          );
 
           return true;
-        }
+        },
       ),
-      { numRuns: 100 }
+      { numRuns: 100 },
     );
   });
 
-  it('解像度が不足している画像に対してRESOLUTIONエラーを返す', () => {
+  it("解像度が不足している画像に対してRESOLUTIONエラーを返す", () => {
     const lowResolutionImageArbitrary = (): fc.Arbitrary<CapturedImage> =>
       fc.record({
         base64: fc.base64String({ minLength: 100, maxLength: 1000 }),
         width: fc.integer({ min: 1, max: VALIDATION_THRESHOLDS.MIN_WIDTH - 1 }),
-        height: fc.integer({ min: 1, max: VALIDATION_THRESHOLDS.MIN_HEIGHT - 1 }),
+        height: fc.integer({
+          min: 1,
+          max: VALIDATION_THRESHOLDS.MIN_HEIGHT - 1,
+        }),
         timestamp: fc.integer({ min: 0, max: Date.now() + 1000000 }),
       });
 
@@ -388,19 +398,23 @@ describe('Property 3: 画像品質エラーの適切性', () => {
 
           expect(result.isValid).toBe(false);
 
-          const resolutionError = result.errors.find((e) => e.code === 'RESOLUTION');
+          const resolutionError = result.errors.find(
+            (e) => e.code === "RESOLUTION",
+          );
           expect(resolutionError).toBeDefined();
-          expect(resolutionError?.message).toBe('解像度が不足しています');
-          expect(resolutionError?.suggestion).toBe('より近くで撮影してください');
+          expect(resolutionError?.message).toBe("解像度が不足しています");
+          expect(resolutionError?.suggestion).toBe(
+            "より近くで撮影してください",
+          );
 
           return true;
-        }
+        },
       ),
-      { numRuns: 100 }
+      { numRuns: 100 },
     );
   });
 
-  it('全てのエラーは日本語のメッセージと提案を含む', () => {
+  it("全てのエラーは日本語のメッセージと提案を含む", () => {
     fc.assert(
       fc.property(
         anyCapturedImageArbitrary(),
@@ -424,9 +438,9 @@ describe('Property 3: 画像品質エラーの適切性', () => {
           }
 
           return true;
-        }
+        },
       ),
-      { numRuns: 100 }
+      { numRuns: 100 },
     );
   });
 });
@@ -435,25 +449,31 @@ describe('Property 3: 画像品質エラーの適切性', () => {
 // 個別検証関数のプロパティテスト
 // ============================================================================
 
-describe('個別検証関数のプロパティ', () => {
-  describe('validateResolution', () => {
-    it('最小解像度以上の画像はnullを返す', () => {
+describe("個別検証関数のプロパティ", () => {
+  describe("validateResolution", () => {
+    it("最小解像度以上の画像はnullを返す", () => {
       fc.assert(
         fc.property(validCapturedImageArbitrary(), (image) => {
           const result = validateResolution(image);
           expect(result).toBeNull();
           return true;
         }),
-        { numRuns: 100 }
+        { numRuns: 100 },
       );
     });
 
-    it('最小解像度未満の画像はRESOLUTIONエラーを返す', () => {
+    it("最小解像度未満の画像はRESOLUTIONエラーを返す", () => {
       const lowResImageArbitrary = (): fc.Arbitrary<CapturedImage> =>
         fc.record({
           base64: fc.base64String({ minLength: 100, maxLength: 1000 }),
-          width: fc.integer({ min: 1, max: VALIDATION_THRESHOLDS.MIN_WIDTH - 1 }),
-          height: fc.integer({ min: VALIDATION_THRESHOLDS.MIN_HEIGHT, max: 3000 }),
+          width: fc.integer({
+            min: 1,
+            max: VALIDATION_THRESHOLDS.MIN_WIDTH - 1,
+          }),
+          height: fc.integer({
+            min: VALIDATION_THRESHOLDS.MIN_HEIGHT,
+            max: 3000,
+          }),
           timestamp: fc.integer({ min: 0, max: Date.now() + 1000000 }),
         });
 
@@ -461,16 +481,16 @@ describe('個別検証関数のプロパティ', () => {
         fc.property(lowResImageArbitrary(), (image) => {
           const result = validateResolution(image);
           expect(result).not.toBeNull();
-          expect(result?.code).toBe('RESOLUTION');
+          expect(result?.code).toBe("RESOLUTION");
           return true;
         }),
-        { numRuns: 100 }
+        { numRuns: 100 },
       );
     });
   });
 
-  describe('validateBlur', () => {
-    it('閾値以上のラプラシアン分散はnullを返す', () => {
+  describe("validateBlur", () => {
+    it("閾値以上のラプラシアン分散はnullを返す", () => {
       fc.assert(
         fc.property(
           fc.double({
@@ -482,13 +502,13 @@ describe('個別検証関数のプロパティ', () => {
             const result = validateBlur(variance);
             expect(result).toBeNull();
             return true;
-          }
+          },
         ),
-        { numRuns: 100 }
+        { numRuns: 100 },
       );
     });
 
-    it('閾値未満のラプラシアン分散はBLURエラーを返す', () => {
+    it("閾値未満のラプラシアン分散はBLURエラーを返す", () => {
       fc.assert(
         fc.property(
           fc.double({
@@ -499,17 +519,17 @@ describe('個別検証関数のプロパティ', () => {
           (variance) => {
             const result = validateBlur(variance);
             expect(result).not.toBeNull();
-            expect(result?.code).toBe('BLUR');
+            expect(result?.code).toBe("BLUR");
             return true;
-          }
+          },
         ),
-        { numRuns: 100 }
+        { numRuns: 100 },
       );
     });
   });
 
-  describe('validateAngle', () => {
-    it('最大角度以下の角度はnullを返す', () => {
+  describe("validateAngle", () => {
+    it("最大角度以下の角度はnullを返す", () => {
       fc.assert(
         fc.property(
           fc.double({
@@ -521,13 +541,13 @@ describe('個別検証関数のプロパティ', () => {
             const result = validateAngle(angle);
             expect(result).toBeNull();
             return true;
-          }
+          },
         ),
-        { numRuns: 100 }
+        { numRuns: 100 },
       );
     });
 
-    it('最大角度を超える角度はANGLEエラーを返す', () => {
+    it("最大角度を超える角度はANGLEエラーを返す", () => {
       fc.assert(
         fc.property(
           fc.double({
@@ -538,17 +558,17 @@ describe('個別検証関数のプロパティ', () => {
           (angle) => {
             const result = validateAngle(angle);
             expect(result).not.toBeNull();
-            expect(result?.code).toBe('ANGLE');
+            expect(result?.code).toBe("ANGLE");
             return true;
-          }
+          },
         ),
-        { numRuns: 100 }
+        { numRuns: 100 },
       );
     });
   });
 
-  describe('validateLighting', () => {
-    it('適切な輝度範囲内の値はnullを返す', () => {
+  describe("validateLighting", () => {
+    it("適切な輝度範囲内の値はnullを返す", () => {
       fc.assert(
         fc.property(
           fc.double({
@@ -560,13 +580,13 @@ describe('個別検証関数のプロパティ', () => {
             const result = validateLighting(brightness);
             expect(result).toBeNull();
             return true;
-          }
+          },
         ),
-        { numRuns: 100 }
+        { numRuns: 100 },
       );
     });
 
-    it('暗すぎる輝度はLIGHTING_DARKエラーを返す', () => {
+    it("暗すぎる輝度はLIGHTING_DARKエラーを返す", () => {
       fc.assert(
         fc.property(
           fc.double({
@@ -577,15 +597,15 @@ describe('個別検証関数のプロパティ', () => {
           (brightness) => {
             const result = validateLighting(brightness);
             expect(result).not.toBeNull();
-            expect(result?.code).toBe('LIGHTING_DARK');
+            expect(result?.code).toBe("LIGHTING_DARK");
             return true;
-          }
+          },
         ),
-        { numRuns: 100 }
+        { numRuns: 100 },
       );
     });
 
-    it('明るすぎる輝度はLIGHTING_BRIGHTエラーを返す', () => {
+    it("明るすぎる輝度はLIGHTING_BRIGHTエラーを返す", () => {
       fc.assert(
         fc.property(
           fc.double({
@@ -596,11 +616,11 @@ describe('個別検証関数のプロパティ', () => {
           (brightness) => {
             const result = validateLighting(brightness);
             expect(result).not.toBeNull();
-            expect(result?.code).toBe('LIGHTING_BRIGHT');
+            expect(result?.code).toBe("LIGHTING_BRIGHT");
             return true;
-          }
+          },
         ),
-        { numRuns: 100 }
+        { numRuns: 100 },
       );
     });
   });
@@ -610,14 +630,14 @@ describe('個別検証関数のプロパティ', () => {
 // エラーコードの網羅性テスト
 // ============================================================================
 
-describe('エラーコードの網羅性', () => {
-  it('ALL_VALIDATION_ERROR_CODESは全ての有効なエラーコードを含む', () => {
+describe("エラーコードの網羅性", () => {
+  it("ALL_VALIDATION_ERROR_CODESは全ての有効なエラーコードを含む", () => {
     const expectedCodes: ValidationErrorCode[] = [
-      'BLUR',
-      'ANGLE',
-      'LIGHTING_DARK',
-      'LIGHTING_BRIGHT',
-      'RESOLUTION',
+      "BLUR",
+      "ANGLE",
+      "LIGHTING_DARK",
+      "LIGHTING_BRIGHT",
+      "RESOLUTION",
     ];
 
     expect(ALL_VALIDATION_ERROR_CODES).toHaveLength(expectedCodes.length);
@@ -626,28 +646,31 @@ describe('エラーコードの網羅性', () => {
     }
   });
 
-  it('isValidValidationErrorCodeは全ての有効なコードに対してtrueを返す', () => {
+  it("isValidValidationErrorCodeは全ての有効なコードに対してtrueを返す", () => {
     fc.assert(
       fc.property(fc.constantFrom(...ALL_VALIDATION_ERROR_CODES), (code) => {
         expect(isValidValidationErrorCode(code)).toBe(true);
         return true;
       }),
-      { numRuns: 100 }
+      { numRuns: 100 },
     );
   });
 
-  it('isValidValidationErrorCodeは無効なコードに対してfalseを返す', () => {
+  it("isValidValidationErrorCodeは無効なコードに対してfalseを返す", () => {
     fc.assert(
       fc.property(
-        fc.string({ minLength: 1, maxLength: 50 }).filter(
-          (s) => !ALL_VALIDATION_ERROR_CODES.includes(s as ValidationErrorCode)
-        ),
+        fc
+          .string({ minLength: 1, maxLength: 50 })
+          .filter(
+            (s) =>
+              !ALL_VALIDATION_ERROR_CODES.includes(s as ValidationErrorCode),
+          ),
         (code) => {
           expect(isValidValidationErrorCode(code)).toBe(false);
           return true;
-        }
+        },
       ),
-      { numRuns: 100 }
+      { numRuns: 100 },
     );
   });
 });

@@ -8,7 +8,7 @@
  * @see Requirements 8.2, 8.4
  */
 
-import type { Context, Next, MiddlewareHandler } from 'hono';
+import type { Context, Next, MiddlewareHandler } from "hono";
 
 // ============================================================================
 // 型定義
@@ -43,7 +43,7 @@ export interface RateLimitConfig {
 export interface RateLimitErrorResponse {
   success: false;
   error: {
-    code: 'RATE_LIMITED';
+    code: "RATE_LIMITED";
     message: string;
     suggestion: string;
   };
@@ -131,7 +131,10 @@ export class RateLimitManager {
    * リクエスト終了を記録
    */
   endRequest(): void {
-    this.state.currentConcurrent = Math.max(0, this.state.currentConcurrent - 1);
+    this.state.currentConcurrent = Math.max(
+      0,
+      this.state.currentConcurrent - 1,
+    );
   }
 
   /**
@@ -141,7 +144,7 @@ export class RateLimitManager {
     const now = Date.now();
     const windowStart = now - this.config.windowMs;
     this.state.requestTimestamps = this.state.requestTimestamps.filter(
-      (timestamp) => timestamp > windowStart
+      (timestamp) => timestamp > windowStart,
     );
   }
 
@@ -189,7 +192,9 @@ let globalRateLimitManager: RateLimitManager | null = null;
 /**
  * グローバルなレート制限マネージャーを取得または作成
  */
-export function getOrCreateRateLimitManager(config: RateLimitConfig): RateLimitManager {
+export function getOrCreateRateLimitManager(
+  config: RateLimitConfig,
+): RateLimitManager {
   if (!globalRateLimitManager) {
     globalRateLimitManager = new RateLimitManager(config);
   }
@@ -220,7 +225,9 @@ export function resetRateLimitManager(): void {
  *
  * @see Requirements 8.2, 8.4
  */
-export function rateLimiter(config: RateLimitConfig = DEFAULT_RATE_LIMIT_CONFIG): MiddlewareHandler {
+export function rateLimiter(
+  config: RateLimitConfig = DEFAULT_RATE_LIMIT_CONFIG,
+): MiddlewareHandler {
   const manager = getOrCreateRateLimitManager(config);
 
   return async (c: Context, next: Next) => {
@@ -233,15 +240,15 @@ export function rateLimiter(config: RateLimitConfig = DEFAULT_RATE_LIMIT_CONFIG)
       const errorResponse: RateLimitErrorResponse = {
         success: false,
         error: {
-          code: 'RATE_LIMITED',
-          message: 'リクエスト数が制限を超えました',
-          suggestion: 'しばらく待ってから再試行してください',
+          code: "RATE_LIMITED",
+          message: "リクエスト数が制限を超えました",
+          suggestion: "しばらく待ってから再試行してください",
         },
         processingTime,
       };
 
       // ログ記録
-      console.warn('[RateLimiter] Rate limit exceeded:', {
+      console.warn("[RateLimiter] Rate limit exceeded:", {
         currentConcurrent: manager.getCurrentConcurrent(),
         requestCount: manager.getRequestCount(),
         maxConcurrent: config.maxConcurrent,
@@ -268,7 +275,9 @@ export function rateLimiter(config: RateLimitConfig = DEFAULT_RATE_LIMIT_CONFIG)
  * カスタムレート制限マネージャーを使用するミドルウェアを作成
  * （テスト用）
  */
-export function rateLimiterWithManager(manager: RateLimitManager): MiddlewareHandler {
+export function rateLimiterWithManager(
+  manager: RateLimitManager,
+): MiddlewareHandler {
   return async (c: Context, next: Next) => {
     const startTime = Date.now();
 
@@ -279,9 +288,9 @@ export function rateLimiterWithManager(manager: RateLimitManager): MiddlewareHan
       const errorResponse: RateLimitErrorResponse = {
         success: false,
         error: {
-          code: 'RATE_LIMITED',
-          message: 'リクエスト数が制限を超えました',
-          suggestion: 'しばらく待ってから再試行してください',
+          code: "RATE_LIMITED",
+          message: "リクエスト数が制限を超えました",
+          suggestion: "しばらく待ってから再試行してください",
         },
         processingTime,
       };

@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 /**
  * 認識結果表示コンポーネント
@@ -10,12 +10,12 @@
  * @see Requirements 3.4, 6.3
  */
 
-import { cn } from '@/lib/utils';
+import { cn } from "@/lib/utils";
 import type {
   LicensePlateData,
   RecognitionError,
   PlateType,
-} from '@/types/license-plate';
+} from "@/types/license-plate";
 
 // ============================================================================
 // 型定義
@@ -64,22 +64,22 @@ export interface RecognitionResultDisplayProps {
  * プレートタイプの表示名
  */
 const PLATE_TYPE_LABELS: Record<PlateType, string> = {
-  REGULAR: '普通自動車',
-  LIGHT: '軽自動車',
-  COMMERCIAL: '事業用',
-  RENTAL: 'レンタカー',
-  DIPLOMATIC: '外交官',
+  REGULAR: "普通自動車",
+  LIGHT: "軽自動車",
+  COMMERCIAL: "事業用",
+  RENTAL: "レンタカー",
+  DIPLOMATIC: "外交官",
 };
 
 /**
  * プレートタイプの色
  */
 const PLATE_TYPE_COLORS: Record<PlateType, { bg: string; text: string }> = {
-  REGULAR: { bg: 'bg-white', text: 'text-green-700' },
-  LIGHT: { bg: 'bg-yellow-400', text: 'text-gray-900' },
-  COMMERCIAL: { bg: 'bg-green-600', text: 'text-white' },
-  RENTAL: { bg: 'bg-white', text: 'text-green-700' },
-  DIPLOMATIC: { bg: 'bg-blue-600', text: 'text-white' },
+  REGULAR: { bg: "bg-white", text: "text-green-700" },
+  LIGHT: { bg: "bg-yellow-400", text: "text-gray-900" },
+  COMMERCIAL: { bg: "bg-green-600", text: "text-white" },
+  RENTAL: { bg: "bg-white", text: "text-green-700" },
+  DIPLOMATIC: { bg: "bg-blue-600", text: "text-white" },
 };
 
 /**
@@ -152,8 +152,8 @@ function LoadingState({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        'flex flex-col items-center justify-center gap-4 rounded-lg border border-gray-200 bg-white p-8',
-        className
+        "flex flex-col items-center justify-center gap-4 rounded-lg border border-gray-200 bg-white p-8",
+        className,
       )}
     >
       <div className="h-10 w-10 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
@@ -178,8 +178,8 @@ function ErrorState({
   return (
     <div
       className={cn(
-        'flex flex-col gap-4 rounded-lg border border-red-200 bg-red-50 p-6',
-        className
+        "flex flex-col gap-4 rounded-lg border border-red-200 bg-red-50 p-6",
+        className,
       )}
       role="alert"
     >
@@ -212,10 +212,10 @@ function ErrorState({
           type="button"
           onClick={onRetry}
           className={cn(
-            'mt-2 self-start rounded-lg px-4 py-2 text-sm font-medium',
-            'bg-red-600 text-white',
-            'hover:bg-red-700',
-            'focus:outline-none focus:ring-2 focus:ring-red-500/50'
+            "mt-2 self-start rounded-lg px-4 py-2 text-sm font-medium",
+            "bg-red-600 text-white",
+            "hover:bg-red-700",
+            "focus:outline-none focus:ring-2 focus:ring-red-500/50",
           )}
         >
           再試行
@@ -232,8 +232,8 @@ function EmptyState({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        'flex flex-col items-center justify-center gap-2 rounded-lg border border-gray-200 bg-gray-50 p-8',
-        className
+        "flex flex-col items-center justify-center gap-2 rounded-lg border border-gray-200 bg-gray-50 p-8",
+        className,
       )}
     >
       <span className="text-4xl">📷</span>
@@ -262,8 +262,8 @@ function SuccessState({
   return (
     <div
       className={cn(
-        'flex flex-col gap-4 rounded-lg border border-green-200 bg-green-50 p-6',
-        className
+        "flex flex-col gap-4 rounded-lg border border-green-200 bg-green-50 p-6",
+        className,
       )}
     >
       {/* ヘッダー */}
@@ -278,11 +278,11 @@ function SuccessState({
       {/* ナンバープレート表示 */}
       <div
         className={cn(
-          'flex items-center justify-center rounded-lg border-2 border-gray-800 p-4',
-          plateColors.bg
+          "flex items-center justify-center rounded-lg border-2 border-gray-800 p-4",
+          plateColors.bg,
         )}
       >
-        <span className={cn('text-2xl font-bold', plateColors.text)}>
+        <span className={cn("text-2xl font-bold", plateColors.text)}>
           {result.fullText}
         </span>
       </div>
@@ -314,16 +314,12 @@ function SuccessState({
 /**
  * 部分認識データ表示
  */
-function PartialDataDisplay({
-  data,
-}: {
-  data: Partial<LicensePlateData>;
-}) {
+function PartialDataDisplay({ data }: { data: Partial<LicensePlateData> }) {
   const items = [
-    { label: '地名', value: data.region },
-    { label: '分類番号', value: data.classificationNumber },
-    { label: 'ひらがな', value: data.hiragana },
-    { label: '一連番号', value: data.serialNumber },
+    { label: "地名", value: data.region },
+    { label: "分類番号", value: data.classificationNumber },
+    { label: "ひらがな", value: data.hiragana },
+    { label: "一連番号", value: data.serialNumber },
   ].filter((item) => item.value !== undefined);
 
   if (items.length === 0) {
@@ -364,19 +360,19 @@ function ConfidenceBadge({ confidence }: { confidence: number }) {
   let label: string;
 
   if (confidence >= CONFIDENCE_THRESHOLDS.HIGH) {
-    colorClass = 'bg-green-100 text-green-800';
-    label = '高信頼度';
+    colorClass = "bg-green-100 text-green-800";
+    label = "高信頼度";
   } else if (confidence >= CONFIDENCE_THRESHOLDS.MEDIUM) {
-    colorClass = 'bg-yellow-100 text-yellow-800';
-    label = '中信頼度';
+    colorClass = "bg-yellow-100 text-yellow-800";
+    label = "中信頼度";
   } else {
-    colorClass = 'bg-red-100 text-red-800';
-    label = '低信頼度';
+    colorClass = "bg-red-100 text-red-800";
+    label = "低信頼度";
   }
 
   return (
     <span
-      className={cn('rounded-full px-2 py-1 text-xs font-medium', colorClass)}
+      className={cn("rounded-full px-2 py-1 text-xs font-medium", colorClass)}
     >
       {label}: {confidence}%
     </span>
@@ -393,9 +389,9 @@ function PlateTypeBadge({ type }: { type: PlateType }) {
   return (
     <span
       className={cn(
-        'rounded-full border border-gray-300 px-2 py-1 text-xs font-medium',
+        "rounded-full border border-gray-300 px-2 py-1 text-xs font-medium",
         colors.bg,
-        colors.text
+        colors.text,
       )}
     >
       {label}
@@ -412,10 +408,10 @@ function PlateTypeBadge({ type }: { type: PlateType }) {
  */
 function formatTimestamp(timestamp: number): string {
   const date = new Date(timestamp);
-  return date.toLocaleTimeString('ja-JP', {
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
+  return date.toLocaleTimeString("ja-JP", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
   });
 }
 

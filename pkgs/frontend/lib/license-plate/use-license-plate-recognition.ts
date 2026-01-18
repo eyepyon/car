@@ -8,23 +8,23 @@
  * @see Requirements 1.1, 2.1, 3.1, 3.4, 7.4
  */
 
-'use client';
+"use client";
 
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef } from "react";
 import type {
   LicensePlateData,
   RecognitionError,
   CapturedImage,
   CaptureError,
-} from '@/types/license-plate';
-import { validateImage } from './image-validator';
+} from "@/types/license-plate";
+import { validateImage } from "./image-validator";
 import {
   LicensePlateApiClient,
   getLicensePlateApiClient,
   LicensePlateApiError,
-} from './api-client';
-import { useDuplicateSuppression } from './use-duplicate-suppression';
-import type { DuplicateSuppressionConfig } from './duplicate-suppression';
+} from "./api-client";
+import { useDuplicateSuppression } from "./use-duplicate-suppression";
+import type { DuplicateSuppressionConfig } from "./duplicate-suppression";
 
 // ============================================================================
 // 型定義
@@ -34,11 +34,11 @@ import type { DuplicateSuppressionConfig } from './duplicate-suppression';
  * 認識状態
  */
 export type RecognitionState =
-  | 'idle' // 待機中
-  | 'validating' // 画像検証中
-  | 'recognizing' // 認識中
-  | 'success' // 成功
-  | 'error'; // エラー
+  | "idle" // 待機中
+  | "validating" // 画像検証中
+  | "recognizing" // 認識中
+  | "success" // 成功
+  | "error"; // エラー
 
 /**
  * フックの設定
@@ -48,7 +48,7 @@ export interface UseLicensePlateRecognitionConfig {
    * 認識モード
    * @default 'single'
    */
-  mode?: 'single' | 'realtime';
+  mode?: "single" | "realtime";
 
   /**
    * 画像検証をスキップするか
@@ -169,10 +169,10 @@ export interface UseLicensePlateRecognitionReturn {
  * ```
  */
 export function useLicensePlateRecognition(
-  config: UseLicensePlateRecognitionConfig = {}
+  config: UseLicensePlateRecognitionConfig = {},
 ): UseLicensePlateRecognitionReturn {
   const {
-    mode = 'single',
+    mode = "single",
     skipValidation = false,
     duplicateSuppressionConfig,
     apiClient,
@@ -182,7 +182,7 @@ export function useLicensePlateRecognition(
   } = config;
 
   // State
-  const [state, setState] = useState<RecognitionState>('idle');
+  const [state, setState] = useState<RecognitionState>("idle");
   const [result, setResult] = useState<LicensePlateData | null>(null);
   const [error, setError] = useState<RecognitionError | null>(null);
   const [processingTime, setProcessingTime] = useState<number | null>(null);
@@ -193,7 +193,7 @@ export function useLicensePlateRecognition(
 
   // 重複抑制フック
   const { processRecognition, clearHistory } = useDuplicateSuppression(
-    duplicateSuppressionConfig
+    duplicateSuppressionConfig,
   );
 
   // APIクライアントの取得
@@ -223,26 +223,26 @@ export function useLicensePlateRecognition(
       try {
         // 画像検証
         if (!skipValidation) {
-          setState('validating');
+          setState("validating");
           const validationResult = await validateImage(image);
 
           if (!validationResult.isValid) {
             const validationError: RecognitionError = {
-              code: 'INVALID_IMAGE',
-              message: validationResult.errors[0]?.message || '画像が無効です',
+              code: "INVALID_IMAGE",
+              message: validationResult.errors[0]?.message || "画像が無効です",
               suggestion:
                 validationResult.errors[0]?.suggestion ||
-                '有効な画像を使用してください',
+                "有効な画像を使用してください",
             };
             setError(validationError);
-            setState('error');
+            setState("error");
             onError?.(validationError);
             return;
           }
         }
 
         // 認識開始
-        setState('recognizing');
+        setState("recognizing");
         setError(null);
 
         const client = getClient();
@@ -260,31 +260,31 @@ export function useLicensePlateRecognition(
 
         if (response.success && response.data) {
           // リアルタイムモードの場合は重複チェック
-          if (mode === 'realtime') {
+          if (mode === "realtime") {
             const duplicateResult = processRecognition(
               response.data,
               (validData) => {
                 setResult(validData);
-                setState('success');
+                setState("success");
                 onSuccess?.(validData);
-              }
+              },
             );
 
             if (duplicateResult.isDuplicate) {
               // 重複の場合は状態を更新しない
               onDuplicate?.(response.data);
-              setState('idle');
+              setState("idle");
               return;
             }
           } else {
             // シングルモードの場合はそのまま結果を設定
             setResult(response.data);
-            setState('success');
+            setState("success");
             onSuccess?.(response.data);
           }
         } else if (response.error) {
           setError(response.error);
-          setState('error');
+          setState("error");
           onError?.(response.error);
         }
       } catch (err) {
@@ -297,20 +297,21 @@ export function useLicensePlateRecognition(
 
         if (err instanceof LicensePlateApiError) {
           recognitionError = {
-            code: err.code as RecognitionError['code'],
+            code: err.code as RecognitionError["code"],
             message: err.message,
-            suggestion: err.suggestion || 'しばらく待ってから再試行してください',
+            suggestion:
+              err.suggestion || "しばらく待ってから再試行してください",
           };
         } else {
           recognitionError = {
-            code: 'API_CONNECTION_FAILED',
-            message: err instanceof Error ? err.message : 'Unknown error',
-            suggestion: 'しばらく待ってから再試行してください',
+            code: "API_CONNECTION_FAILED",
+            message: err instanceof Error ? err.message : "Unknown error",
+            suggestion: "しばらく待ってから再試行してください",
           };
         }
 
         setError(recognitionError);
-        setState('error');
+        setState("error");
         onError?.(recognitionError);
       }
     },
@@ -322,7 +323,7 @@ export function useLicensePlateRecognition(
       onSuccess,
       onError,
       onDuplicate,
-    ]
+    ],
   );
 
   /**
@@ -333,7 +334,7 @@ export function useLicensePlateRecognition(
       abortControllerRef.current.abort();
       abortControllerRef.current = null;
     }
-    setState('idle');
+    setState("idle");
     setResult(null);
     setError(null);
     setProcessingTime(null);
@@ -347,7 +348,7 @@ export function useLicensePlateRecognition(
       abortControllerRef.current.abort();
       abortControllerRef.current = null;
     }
-    setState('idle');
+    setState("idle");
   }, []);
 
   /**
@@ -359,7 +360,7 @@ export function useLicensePlateRecognition(
 
   return {
     state,
-    isLoading: state === 'validating' || state === 'recognizing',
+    isLoading: state === "validating" || state === "recognizing",
     result,
     error,
     processingTime,

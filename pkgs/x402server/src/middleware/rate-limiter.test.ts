@@ -7,16 +7,16 @@
  * @see Requirements 8.2, 8.4
  */
 
-import { describe, it, expect, beforeEach } from 'vitest';
-import { Hono } from 'hono';
+import { describe, it, expect, beforeEach } from "vitest";
+import { Hono } from "hono";
 import {
   RateLimitManager,
   rateLimiterWithManager,
   type RateLimitConfig,
   type RateLimitErrorResponse,
-} from './rate-limiter';
+} from "./rate-limiter";
 
-describe('RateLimitManager', () => {
+describe("RateLimitManager", () => {
   let manager: RateLimitManager;
   const defaultConfig: RateLimitConfig = {
     maxConcurrent: 5,
@@ -28,12 +28,12 @@ describe('RateLimitManager', () => {
     manager = new RateLimitManager(defaultConfig);
   });
 
-  describe('canAcceptRequest', () => {
-    it('初期状態ではリクエストを受け付ける', () => {
+  describe("canAcceptRequest", () => {
+    it("初期状態ではリクエストを受け付ける", () => {
       expect(manager.canAcceptRequest()).toBe(true);
     });
 
-    it('同時リクエスト数が上限に達するとリクエストを拒否する', () => {
+    it("同時リクエスト数が上限に達するとリクエストを拒否する", () => {
       // 5つのリクエストを開始
       for (let i = 0; i < 5; i++) {
         manager.startRequest();
@@ -42,7 +42,7 @@ describe('RateLimitManager', () => {
       expect(manager.canAcceptRequest()).toBe(false);
     });
 
-    it('リクエスト終了後は再びリクエストを受け付ける', () => {
+    it("リクエスト終了後は再びリクエストを受け付ける", () => {
       // 5つのリクエストを開始
       for (let i = 0; i < 5; i++) {
         manager.startRequest();
@@ -56,7 +56,7 @@ describe('RateLimitManager', () => {
       expect(manager.canAcceptRequest()).toBe(true);
     });
 
-    it('ウィンドウ内のリクエスト数が上限に達するとリクエストを拒否する', () => {
+    it("ウィンドウ内のリクエスト数が上限に達するとリクエストを拒否する", () => {
       // 10個のリクエストを開始して終了
       for (let i = 0; i < 10; i++) {
         manager.startRequest();
@@ -67,8 +67,8 @@ describe('RateLimitManager', () => {
     });
   });
 
-  describe('getCurrentConcurrent', () => {
-    it('現在の同時リクエスト数を正しく返す', () => {
+  describe("getCurrentConcurrent", () => {
+    it("現在の同時リクエスト数を正しく返す", () => {
       expect(manager.getCurrentConcurrent()).toBe(0);
 
       manager.startRequest();
@@ -82,8 +82,8 @@ describe('RateLimitManager', () => {
     });
   });
 
-  describe('getRequestCount', () => {
-    it('ウィンドウ内のリクエスト数を正しく返す', () => {
+  describe("getRequestCount", () => {
+    it("ウィンドウ内のリクエスト数を正しく返す", () => {
       expect(manager.getRequestCount()).toBe(0);
 
       manager.startRequest();
@@ -94,8 +94,8 @@ describe('RateLimitManager', () => {
     });
   });
 
-  describe('reset', () => {
-    it('状態をリセットする', () => {
+  describe("reset", () => {
+    it("状態をリセットする", () => {
       manager.startRequest();
       manager.startRequest();
 
@@ -109,8 +109,8 @@ describe('RateLimitManager', () => {
     });
   });
 
-  describe('ウィンドウのクリーンアップ', () => {
-    it('古いタイムスタンプはクリーンアップされる', async () => {
+  describe("ウィンドウのクリーンアップ", () => {
+    it("古いタイムスタンプはクリーンアップされる", async () => {
       // 短いウィンドウで新しいマネージャーを作成
       const shortWindowManager = new RateLimitManager({
         maxConcurrent: 100,
@@ -135,7 +135,7 @@ describe('RateLimitManager', () => {
   });
 });
 
-describe('rateLimiterWithManager middleware', () => {
+describe("rateLimiterWithManager middleware", () => {
   let app: Hono;
   let manager: RateLimitManager;
 
@@ -147,75 +147,75 @@ describe('rateLimiterWithManager middleware', () => {
     });
 
     app = new Hono();
-    app.use('/*', rateLimiterWithManager(manager));
-    app.get('/test', (c) => c.json({ message: 'ok' }));
+    app.use("/*", rateLimiterWithManager(manager));
+    app.get("/test", (c) => c.json({ message: "ok" }));
   });
 
-  it('レート制限内のリクエストは成功する', async () => {
-    const response = await app.request('/test');
+  it("レート制限内のリクエストは成功する", async () => {
+    const response = await app.request("/test");
 
     expect(response.status).toBe(200);
     const body = await response.json();
-    expect(body).toEqual({ message: 'ok' });
+    expect(body).toEqual({ message: "ok" });
   });
 
-  it('レート制限を超えるとRATE_LIMITEDエラーを返す', async () => {
+  it("レート制限を超えるとRATE_LIMITEDエラーを返す", async () => {
     // ウィンドウ内のリクエスト数を上限まで使い切る
     for (let i = 0; i < 5; i++) {
       manager.startRequest();
       manager.endRequest();
     }
 
-    const response = await app.request('/test');
+    const response = await app.request("/test");
 
     expect(response.status).toBe(429);
 
     const body = (await response.json()) as RateLimitErrorResponse;
     expect(body.success).toBe(false);
-    expect(body.error.code).toBe('RATE_LIMITED');
-    expect(body.error.message).toBe('リクエスト数が制限を超えました');
-    expect(body.error.suggestion).toBe('しばらく待ってから再試行してください');
+    expect(body.error.code).toBe("RATE_LIMITED");
+    expect(body.error.message).toBe("リクエスト数が制限を超えました");
+    expect(body.error.suggestion).toBe("しばらく待ってから再試行してください");
   });
 
-  it('同時リクエスト数が上限を超えるとRATE_LIMITEDエラーを返す', async () => {
+  it("同時リクエスト数が上限を超えるとRATE_LIMITEDエラーを返す", async () => {
     // 2つの同時リクエストを開始（終了しない）
     manager.startRequest();
     manager.startRequest();
 
-    const response = await app.request('/test');
+    const response = await app.request("/test");
 
     expect(response.status).toBe(429);
 
     const body = (await response.json()) as RateLimitErrorResponse;
     expect(body.success).toBe(false);
-    expect(body.error.code).toBe('RATE_LIMITED');
+    expect(body.error.code).toBe("RATE_LIMITED");
   });
 
-  it('リクエスト完了後は同時リクエストカウントが減少する', async () => {
+  it("リクエスト完了後は同時リクエストカウントが減少する", async () => {
     // 最初のリクエスト
-    const response1 = await app.request('/test');
+    const response1 = await app.request("/test");
     expect(response1.status).toBe(200);
 
     // 2番目のリクエスト
-    const response2 = await app.request('/test');
+    const response2 = await app.request("/test");
     expect(response2.status).toBe(200);
 
     // 同時リクエスト数は0に戻っているはず
     expect(manager.getCurrentConcurrent()).toBe(0);
   });
 
-  it('エラーレスポンスにprocessingTimeが含まれる', async () => {
+  it("エラーレスポンスにprocessingTimeが含まれる", async () => {
     // レート制限を超える
     for (let i = 0; i < 5; i++) {
       manager.startRequest();
       manager.endRequest();
     }
 
-    const response = await app.request('/test');
+    const response = await app.request("/test");
     const body = (await response.json()) as RateLimitErrorResponse;
 
-    expect(body).toHaveProperty('processingTime');
-    expect(typeof body.processingTime).toBe('number');
+    expect(body).toHaveProperty("processingTime");
+    expect(typeof body.processingTime).toBe("number");
     expect(body.processingTime).toBeGreaterThanOrEqual(0);
   });
 });

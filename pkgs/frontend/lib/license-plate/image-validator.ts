@@ -15,7 +15,7 @@ import {
   type ValidationError,
   type ValidationErrorCode,
   createValidationError,
-} from '@/types/license-plate';
+} from "@/types/license-plate";
 
 // ============================================================================
 // 定数定義
@@ -49,20 +49,22 @@ export const VALIDATION_THRESHOLDS = {
  * @param base64 - Base64エンコードされた画像データ
  * @returns ImageDataまたはnull
  */
-export async function getImageDataFromBase64(base64: string): Promise<ImageData | null> {
+export async function getImageDataFromBase64(
+  base64: string,
+): Promise<ImageData | null> {
   return new Promise((resolve) => {
     // ブラウザ環境でない場合はnullを返す
-    if (typeof window === 'undefined' || typeof document === 'undefined') {
+    if (typeof window === "undefined" || typeof document === "undefined") {
       resolve(null);
       return;
     }
 
     const img = new Image();
     img.onload = () => {
-      const canvas = document.createElement('canvas');
+      const canvas = document.createElement("canvas");
       canvas.width = img.width;
       canvas.height = img.height;
-      const ctx = canvas.getContext('2d');
+      const ctx = canvas.getContext("2d");
       if (!ctx) {
         resolve(null);
         return;
@@ -74,7 +76,7 @@ export async function getImageDataFromBase64(base64: string): Promise<ImageData 
     img.onerror = () => resolve(null);
 
     // Base64データにdata:image/...プレフィックスがない場合は追加
-    if (base64.startsWith('data:')) {
+    if (base64.startsWith("data:")) {
       img.src = base64;
     } else {
       img.src = `data:image/jpeg;base64,${base64}`;
@@ -95,7 +97,8 @@ export function calculateAverageBrightness(imageData: ImageData): number {
 
   for (let i = 0; i < data.length; i += 4) {
     // RGB to grayscale using luminosity method
-    const brightness = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+    const brightness =
+      0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
     totalBrightness += brightness;
   }
 
@@ -144,7 +147,9 @@ export function calculateLaplacianVariance(imageData: ImageData): number {
 
   // 分散を計算
   const mean = laplacian.reduce((a, b) => a + b, 0) / laplacian.length;
-  const variance = laplacian.reduce((sum, val) => sum + (val - mean) ** 2, 0) / laplacian.length;
+  const variance =
+    laplacian.reduce((sum, val) => sum + (val - mean) ** 2, 0) /
+    laplacian.length;
 
   return variance;
 }
@@ -231,7 +236,11 @@ export function estimateAngle(imageData: ImageData): number {
   // 90度に近いほど垂直エッジが多い（正常）
   // 0度や180度に近いほど水平エッジが多い（正常）
   // 45度付近は斜めのエッジが多い（角度が急）
-  const deviation = Math.min(dominantAngle, Math.abs(90 - dominantAngle), Math.abs(180 - dominantAngle));
+  const deviation = Math.min(
+    dominantAngle,
+    Math.abs(90 - dominantAngle),
+    Math.abs(180 - dominantAngle),
+  );
 
   return deviation;
 }
@@ -246,9 +255,14 @@ export function estimateAngle(imageData: ImageData): number {
  * @param image - キャプチャされた画像
  * @returns 検証エラー（問題がない場合はnull）
  */
-export function validateResolution(image: CapturedImage): ValidationError | null {
-  if (image.width < VALIDATION_THRESHOLDS.MIN_WIDTH || image.height < VALIDATION_THRESHOLDS.MIN_HEIGHT) {
-    return createValidationError('RESOLUTION');
+export function validateResolution(
+  image: CapturedImage,
+): ValidationError | null {
+  if (
+    image.width < VALIDATION_THRESHOLDS.MIN_WIDTH ||
+    image.height < VALIDATION_THRESHOLDS.MIN_HEIGHT
+  ) {
+    return createValidationError("RESOLUTION");
   }
   return null;
 }
@@ -259,9 +273,11 @@ export function validateResolution(image: CapturedImage): ValidationError | null
  * @param laplacianVariance - ラプラシアン分散値
  * @returns 検証エラー（問題がない場合はnull）
  */
-export function validateBlur(laplacianVariance: number): ValidationError | null {
+export function validateBlur(
+  laplacianVariance: number,
+): ValidationError | null {
   if (laplacianVariance < VALIDATION_THRESHOLDS.BLUR_THRESHOLD) {
-    return createValidationError('BLUR');
+    return createValidationError("BLUR");
   }
   return null;
 }
@@ -274,7 +290,7 @@ export function validateBlur(laplacianVariance: number): ValidationError | null 
  */
 export function validateAngle(angle: number): ValidationError | null {
   if (angle > VALIDATION_THRESHOLDS.MAX_ANGLE) {
-    return createValidationError('ANGLE');
+    return createValidationError("ANGLE");
   }
   return null;
 }
@@ -287,10 +303,10 @@ export function validateAngle(angle: number): ValidationError | null {
  */
 export function validateLighting(brightness: number): ValidationError | null {
   if (brightness < VALIDATION_THRESHOLDS.DARK_THRESHOLD) {
-    return createValidationError('LIGHTING_DARK');
+    return createValidationError("LIGHTING_DARK");
   }
   if (brightness > VALIDATION_THRESHOLDS.BRIGHT_THRESHOLD) {
-    return createValidationError('LIGHTING_BRIGHT');
+    return createValidationError("LIGHTING_BRIGHT");
   }
   return null;
 }
@@ -317,7 +333,9 @@ export interface ImageQualityMetrics {
  * @param imageData - ImageData
  * @returns 画像品質メトリクス
  */
-export function calculateImageQualityMetrics(imageData: ImageData): ImageQualityMetrics {
+export function calculateImageQualityMetrics(
+  imageData: ImageData,
+): ImageQualityMetrics {
   return {
     laplacianVariance: calculateLaplacianVariance(imageData),
     estimatedAngle: estimateAngle(imageData),
@@ -334,7 +352,7 @@ export function calculateImageQualityMetrics(imageData: ImageData): ImageQuality
  */
 export function validateImageWithMetrics(
   image: CapturedImage,
-  metrics: ImageQualityMetrics
+  metrics: ImageQualityMetrics,
 ): ValidationResult {
   const errors: ValidationError[] = [];
 
@@ -389,7 +407,9 @@ export function validateImageWithMetrics(
  *
  * @see Requirements 2.1, 2.2, 2.3, 2.4, 2.5
  */
-export async function validateImage(image: CapturedImage): Promise<ValidationResult> {
+export async function validateImage(
+  image: CapturedImage,
+): Promise<ValidationResult> {
   const errors: ValidationError[] = [];
 
   // 解像度チェック（ImageDataなしで実行可能）
@@ -447,7 +467,10 @@ export async function validateImage(image: CapturedImage): Promise<ValidationRes
  * @param imageData - ImageData（オプション）
  * @returns 検証結果
  */
-export function validateImageSync(image: CapturedImage, imageData?: ImageData): ValidationResult {
+export function validateImageSync(
+  image: CapturedImage,
+  imageData?: ImageData,
+): ValidationResult {
   const errors: ValidationError[] = [];
 
   // 解像度チェック
@@ -495,11 +518,11 @@ export function validateImageSync(image: CapturedImage, imageData?: ImageData): 
  * 検証エラーコードの一覧
  */
 export const ALL_VALIDATION_ERROR_CODES: ValidationErrorCode[] = [
-  'BLUR',
-  'ANGLE',
-  'LIGHTING_DARK',
-  'LIGHTING_BRIGHT',
-  'RESOLUTION',
+  "BLUR",
+  "ANGLE",
+  "LIGHTING_DARK",
+  "LIGHTING_BRIGHT",
+  "RESOLUTION",
 ];
 
 /**
@@ -508,6 +531,8 @@ export const ALL_VALIDATION_ERROR_CODES: ValidationErrorCode[] = [
  * @param code - チェック対象のコード
  * @returns 有効な場合true
  */
-export function isValidValidationErrorCode(code: string): code is ValidationErrorCode {
+export function isValidValidationErrorCode(
+  code: string,
+): code is ValidationErrorCode {
   return ALL_VALIDATION_ERROR_CODES.includes(code as ValidationErrorCode);
 }

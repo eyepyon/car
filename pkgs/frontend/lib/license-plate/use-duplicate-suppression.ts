@@ -8,15 +8,15 @@
  * @see Property 9: 重複認識の抑制
  */
 
-'use client';
+"use client";
 
-import { useCallback, useRef, useMemo } from 'react';
-import type { LicensePlateData } from '@/types/license-plate';
+import { useCallback, useRef, useMemo } from "react";
+import type { LicensePlateData } from "@/types/license-plate";
 import {
   DuplicateSuppressionManager,
   type DuplicateSuppressionConfig,
   type DuplicateCheckResult,
-} from './duplicate-suppression';
+} from "./duplicate-suppression";
 
 // ============================================================================
 // 型定義
@@ -35,7 +35,7 @@ export interface UseDuplicateSuppressionReturn {
    */
   processRecognition: (
     data: LicensePlateData,
-    callback?: (data: LicensePlateData) => void
+    callback?: (data: LicensePlateData) => void,
   ) => DuplicateCheckResult;
 
   /**
@@ -103,7 +103,7 @@ export interface UseDuplicateSuppressionReturn {
  * @see Requirements 7.4
  */
 export function useDuplicateSuppression(
-  config?: DuplicateSuppressionConfig
+  config?: DuplicateSuppressionConfig,
 ): UseDuplicateSuppressionReturn {
   // マネージャーインスタンスをrefで保持（再レンダリングで再作成されない）
   const managerRef = useRef<DuplicateSuppressionManager | null>(null);
@@ -119,7 +119,7 @@ export function useDuplicateSuppression(
   const processRecognition = useCallback(
     (
       data: LicensePlateData,
-      callback?: (data: LicensePlateData) => void
+      callback?: (data: LicensePlateData) => void,
     ): DuplicateCheckResult => {
       const manager = managerRef.current!;
       const result = manager.checkAndRecord(data);
@@ -130,7 +130,7 @@ export function useDuplicateSuppression(
 
       return result;
     },
-    []
+    [],
   );
 
   /**

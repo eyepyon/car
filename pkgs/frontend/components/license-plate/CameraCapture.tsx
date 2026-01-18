@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 /**
  * カメラキャプチャコンポーネント
@@ -10,16 +10,16 @@
  * @see Requirements 1.1, 1.2, 1.3, 1.4, 1.5, 7.1
  */
 
-import { useCallback, useEffect, useRef, useState } from 'react';
-import Webcam from 'react-webcam';
-import { cn } from '@/lib/utils';
+import { useCallback, useEffect, useRef, useState } from "react";
+import Webcam from "react-webcam";
+import { cn } from "@/lib/utils";
 import {
   type CapturedImage,
   type CaptureError,
   type CaptureErrorCode,
   createCaptureError,
   CAPTURE_ERROR_MESSAGES,
-} from '@/types/license-plate';
+} from "@/types/license-plate";
 
 // ============================================================================
 // 定数
@@ -38,7 +38,7 @@ const MIN_HEIGHT = 480;
 const DEFAULT_VIDEO_CONSTRAINTS: MediaTrackConstraints = {
   width: { min: MIN_WIDTH, ideal: 1280 },
   height: { min: MIN_HEIGHT, ideal: 720 },
-  facingMode: 'environment', // 背面カメラを優先
+  facingMode: "environment", // 背面カメラを優先
 };
 
 /**
@@ -61,7 +61,7 @@ export interface CameraCaptureProps {
    * - realtime: リアルタイムキャプチャ
    * @see Requirements 1.4, 7.1
    */
-  mode: 'single' | 'realtime';
+  mode: "single" | "realtime";
 
   /**
    * 画像キャプチャ成功時のコールバック
@@ -101,7 +101,7 @@ export interface CameraCaptureProps {
 /**
  * カメラの状態
  */
-type CameraStatus = 'initializing' | 'ready' | 'error' | 'permission_denied';
+type CameraStatus = "initializing" | "ready" | "error" | "permission_denied";
 
 // ============================================================================
 // コンポーネント
@@ -133,7 +133,7 @@ export function CameraCapture({
   const realtimeIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // State
-  const [status, setStatus] = useState<CameraStatus>('initializing');
+  const [status, setStatus] = useState<CameraStatus>("initializing");
   const [isCapturing, setIsCapturing] = useState(false);
   const [retryKey, setRetryKey] = useState(0);
 
@@ -145,7 +145,7 @@ export function CameraCapture({
    * カメラを再初期化する
    */
   const handleRetry = useCallback(() => {
-    setStatus('initializing');
+    setStatus("initializing");
     setRetryKey((prev) => prev + 1);
   }, []);
 
@@ -161,10 +161,12 @@ export function CameraCapture({
     try {
       // navigator.permissions APIが利用可能な場合
       if (navigator.permissions) {
-        const result = await navigator.permissions.query({ name: 'camera' as PermissionName });
-        if (result.state === 'denied') {
-          setStatus('permission_denied');
-          onError(createCaptureError('PERMISSION_DENIED'));
+        const result = await navigator.permissions.query({
+          name: "camera" as PermissionName,
+        });
+        if (result.state === "denied") {
+          setStatus("permission_denied");
+          onError(createCaptureError("PERMISSION_DENIED"));
           return false;
         }
       }
@@ -218,7 +220,7 @@ export function CameraCapture({
    * @see Requirements 1.1
    */
   const handleSingleCapture = useCallback(() => {
-    if (status !== 'ready' || isCapturing) {
+    if (status !== "ready" || isCapturing) {
       return;
     }
 
@@ -229,11 +231,11 @@ export function CameraCapture({
       if (image) {
         onCapture(image);
       } else {
-        onError(createCaptureError('CAPTURE_FAILED'));
+        onError(createCaptureError("CAPTURE_FAILED"));
       }
     } catch (error) {
-      console.error('キャプチャエラー:', error);
-      onError(createCaptureError('CAPTURE_FAILED'));
+      console.error("キャプチャエラー:", error);
+      onError(createCaptureError("CAPTURE_FAILED"));
     } finally {
       setIsCapturing(false);
     }
@@ -278,11 +280,11 @@ export function CameraCapture({
    * カメラの準備完了時
    */
   const handleUserMedia = useCallback(() => {
-    setStatus('ready');
+    setStatus("ready");
     onReady?.();
 
     // リアルタイムモードの場合、自動的にキャプチャを開始
-    if (mode === 'realtime' && realtimeEnabled) {
+    if (mode === "realtime" && realtimeEnabled) {
       startRealtimeCapture();
     }
   }, [mode, realtimeEnabled, onReady, startRealtimeCapture]);
@@ -293,32 +295,32 @@ export function CameraCapture({
    */
   const handleUserMediaError = useCallback(
     (error: string | DOMException) => {
-      console.error('カメラエラー:', error);
+      console.error("カメラエラー:", error);
 
-      let errorCode: CaptureErrorCode = 'CAPTURE_FAILED';
+      let errorCode: CaptureErrorCode = "CAPTURE_FAILED";
 
       if (error instanceof DOMException) {
         switch (error.name) {
-          case 'NotAllowedError':
-          case 'PermissionDeniedError':
-            errorCode = 'PERMISSION_DENIED';
-            setStatus('permission_denied');
+          case "NotAllowedError":
+          case "PermissionDeniedError":
+            errorCode = "PERMISSION_DENIED";
+            setStatus("permission_denied");
             break;
-          case 'NotFoundError':
-          case 'DevicesNotFoundError':
-            errorCode = 'DEVICE_NOT_FOUND';
-            setStatus('error');
+          case "NotFoundError":
+          case "DevicesNotFoundError":
+            errorCode = "DEVICE_NOT_FOUND";
+            setStatus("error");
             break;
           default:
-            setStatus('error');
+            setStatus("error");
         }
       } else {
-        setStatus('error');
+        setStatus("error");
       }
 
       onError(createCaptureError(errorCode));
     },
-    [onError]
+    [onError],
   );
 
   // ============================================================================
@@ -332,7 +334,7 @@ export function CameraCapture({
 
   // リアルタイムモードの切り替え
   useEffect(() => {
-    if (mode === 'realtime' && realtimeEnabled && status === 'ready') {
+    if (mode === "realtime" && realtimeEnabled && status === "ready") {
       startRealtimeCapture();
     } else {
       stopRealtimeCapture();
@@ -341,19 +343,25 @@ export function CameraCapture({
     return () => {
       stopRealtimeCapture();
     };
-  }, [mode, realtimeEnabled, status, startRealtimeCapture, stopRealtimeCapture]);
+  }, [
+    mode,
+    realtimeEnabled,
+    status,
+    startRealtimeCapture,
+    stopRealtimeCapture,
+  ]);
 
   // ============================================================================
   // レンダリング
   // ============================================================================
 
   return (
-    <div className={cn('relative flex flex-col items-center gap-4', className)}>
+    <div className={cn("relative flex flex-col items-center gap-4", className)}>
       {/* カメラプレビュー */}
       <div className="relative w-full max-w-2xl overflow-hidden rounded-lg bg-gray-900">
-        {status === 'permission_denied' ? (
+        {status === "permission_denied" ? (
           <PermissionDeniedMessage onRetry={handleRetry} />
-        ) : status === 'error' ? (
+        ) : status === "error" ? (
           <ErrorMessage
             message={CAPTURE_ERROR_MESSAGES.DEVICE_NOT_FOUND}
             suggestion="USBカメラを接続するか、スマートフォンのカメラを使用してください"
@@ -374,10 +382,10 @@ export function CameraCapture({
             />
 
             {/* ローディングオーバーレイ */}
-            {status === 'initializing' && <LoadingOverlay />}
+            {status === "initializing" && <LoadingOverlay />}
 
             {/* リアルタイムモードインジケーター */}
-            {mode === 'realtime' && status === 'ready' && realtimeEnabled && (
+            {mode === "realtime" && status === "ready" && realtimeEnabled && (
               <RealtimeIndicator />
             )}
           </>
@@ -385,12 +393,12 @@ export function CameraCapture({
       </div>
 
       {/* キャプチャボタン（シングルショットモード） */}
-      {mode === 'single' && status === 'ready' && (
+      {mode === "single" && status === "ready" && (
         <CaptureButton onClick={handleSingleCapture} disabled={isCapturing} />
       )}
 
       {/* リアルタイムモードコントロール */}
-      {mode === 'realtime' && status === 'ready' && (
+      {mode === "realtime" && status === "ready" && (
         <RealtimeControls
           enabled={realtimeEnabled}
           onCapture={handleSingleCapture}
@@ -430,10 +438,10 @@ function PermissionDeniedMessage({ onRetry }: { onRetry?: () => void }) {
           type="button"
           onClick={onRetry}
           className={cn(
-            'mt-4 rounded-lg px-4 py-2 text-sm font-medium',
-            'bg-blue-600 text-white',
-            'hover:bg-blue-700',
-            'focus:outline-none focus:ring-2 focus:ring-blue-500/50'
+            "mt-4 rounded-lg px-4 py-2 text-sm font-medium",
+            "bg-blue-600 text-white",
+            "hover:bg-blue-700",
+            "focus:outline-none focus:ring-2 focus:ring-blue-500/50",
           )}
         >
           再試行
@@ -461,17 +469,17 @@ function ErrorMessage({
       <div className="text-4xl">⚠️</div>
       <div className="text-lg font-semibold text-white">{message}</div>
       <div className="text-sm text-gray-400">
-        {suggestion || 'カメラが正しく接続されているか確認してください'}
+        {suggestion || "カメラが正しく接続されているか確認してください"}
       </div>
       {onRetry && (
         <button
           type="button"
           onClick={onRetry}
           className={cn(
-            'mt-4 rounded-lg px-4 py-2 text-sm font-medium',
-            'bg-blue-600 text-white',
-            'hover:bg-blue-700',
-            'focus:outline-none focus:ring-2 focus:ring-blue-500/50'
+            "mt-4 rounded-lg px-4 py-2 text-sm font-medium",
+            "bg-blue-600 text-white",
+            "hover:bg-blue-700",
+            "focus:outline-none focus:ring-2 focus:ring-blue-500/50",
           )}
         >
           再試行
@@ -523,12 +531,12 @@ function CaptureButton({
       onClick={onClick}
       disabled={disabled}
       className={cn(
-        'flex h-16 w-16 items-center justify-center rounded-full',
-        'bg-white shadow-lg transition-all',
-        'hover:scale-105 hover:bg-gray-100',
-        'active:scale-95',
-        'disabled:cursor-not-allowed disabled:opacity-50',
-        'focus:outline-none focus:ring-4 focus:ring-blue-500/50'
+        "flex h-16 w-16 items-center justify-center rounded-full",
+        "bg-white shadow-lg transition-all",
+        "hover:scale-105 hover:bg-gray-100",
+        "active:scale-95",
+        "disabled:cursor-not-allowed disabled:opacity-50",
+        "focus:outline-none focus:ring-4 focus:ring-blue-500/50",
       )}
       aria-label="写真を撮影"
     >
@@ -552,18 +560,18 @@ function RealtimeControls({
   return (
     <div className="flex items-center gap-4">
       <div className="text-sm text-gray-600">
-        {enabled ? '自動認識中...' : '自動認識停止中'}
+        {enabled ? "自動認識中..." : "自動認識停止中"}
       </div>
       <button
         type="button"
         onClick={onCapture}
         disabled={isCapturing}
         className={cn(
-          'rounded-lg px-4 py-2 text-sm font-medium',
-          'bg-blue-600 text-white',
-          'hover:bg-blue-700',
-          'disabled:cursor-not-allowed disabled:opacity-50',
-          'focus:outline-none focus:ring-2 focus:ring-blue-500/50'
+          "rounded-lg px-4 py-2 text-sm font-medium",
+          "bg-blue-600 text-white",
+          "hover:bg-blue-700",
+          "disabled:cursor-not-allowed disabled:opacity-50",
+          "focus:outline-none focus:ring-2 focus:ring-blue-500/50",
         )}
       >
         手動キャプチャ
