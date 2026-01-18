@@ -18,6 +18,7 @@
     "coverage": "SOLIDITY_COVERAGE=true npx hardhat coverage",
     "deploy:LicensePlate": "npx hardhat ignition deploy ./ignition/modules/LicensePlateAccountFactory.ts",
     "deploy:LicensePlate:baseSepolia": "npx hardhat ignition deploy ./ignition/modules/LicensePlateAccountFactory.ts --network base-sepolia --verify",
+    "verifyTestnet": "npx hardhat verifyTestnet",
     "local": "npx hardhat node",
     "getBalance": "npx hardhat getBalance",
     "getChainInfo": "npx hardhat getChainInfo"
