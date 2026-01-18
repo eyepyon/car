@@ -10,17 +10,18 @@
  * @see Requirements 2.1, 2.2, 2.3, 2.4
  */
 
-import { useCallback, useEffect, useState } from "react";
-import { X } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { CameraCapture } from "@/components/license-plate/CameraCapture";
 import { RecognitionResultDisplay } from "@/components/license-plate/RecognitionResult";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import type {
   CapturedImage,
   CaptureError,
   LicensePlateData,
   RecognitionError,
 } from "@/types/license-plate";
+import { X } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
 
 // ============================================================================
 // 型定義
@@ -223,32 +224,22 @@ export function CameraModal({
               onRetry={handleRetry}
             />
             <div className="mt-6 flex gap-3">
-              <button
+              <Button
                 type="button"
+                variant="secondary"
                 onClick={handleRetry}
-                className={cn(
-                  "flex-1 py-3 px-4 rounded-lg",
-                  "bg-gray-700 text-white",
-                  "hover:bg-gray-600",
-                  "transition-colors duration-200",
-                  "focus:outline-none focus-visible:ring-2 focus-visible:ring-white",
-                )}
+                className="flex-1 py-6 text-base"
               >
                 再撮影
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
+                variant="default"
                 onClick={onClose}
-                className={cn(
-                  "flex-1 py-3 px-4 rounded-lg",
-                  "bg-blue-600 text-white",
-                  "hover:bg-blue-500",
-                  "transition-colors duration-200",
-                  "focus:outline-none focus-visible:ring-2 focus-visible:ring-white",
-                )}
+                className="flex-1 py-6 text-base"
               >
                 完了
-              </button>
+              </Button>
             </div>
           </div>
         )}

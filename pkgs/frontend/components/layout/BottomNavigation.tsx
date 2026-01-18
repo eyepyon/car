@@ -10,10 +10,10 @@
  * @see Requirements 5.1, 5.2, 5.3, 5.4, 5.5
  */
 
+import { cn } from "@/lib/utils";
+import { Home, Wallet } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Wallet } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 // ============================================================================
 // 型定義
@@ -65,9 +65,8 @@ export function BottomNavigation({ className }: BottomNavigationProps) {
     <nav
       className={cn(
         "fixed bottom-0 left-0 right-0 z-50",
-        "h-16 bg-white/80 backdrop-blur-lg",
-        "border-t border-gray-200",
-        "dark:bg-gray-900/80 dark:border-gray-800",
+        "h-16 bg-background/80 backdrop-blur-md",
+        "border-t border-border",
         "safe-area-inset-bottom",
         className,
       )}
@@ -86,10 +85,10 @@ export function BottomNavigation({ className }: BottomNavigationProps) {
                 "flex flex-col items-center justify-center gap-1",
                 "w-full h-full px-4 py-2",
                 "transition-colors duration-200",
-                "focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2",
+                "focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                 isActive
-                  ? "text-blue-600 dark:text-blue-400"
-                  : "text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100",
+                  ? "text-primary"
+                  : "text-muted-foreground hover:text-foreground",
               )}
               aria-current={isActive ? "page" : undefined}
             >

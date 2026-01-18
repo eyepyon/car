@@ -14,9 +14,11 @@
   },
   "dependencies": {
     "@ducanh2912/next-pwa": "^10.2.9",
+    "@radix-ui/react-slot": "^1.2.4",
     "@types/react-webcam": "^1.1.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "framer-motion": "^12.26.2",
     "lucide-react": "^0.562.0",
     "motion": "^12.26.2",
     "next": "16.1.3",

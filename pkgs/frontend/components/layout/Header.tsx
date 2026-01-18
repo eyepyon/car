@@ -9,9 +9,10 @@
  * @see Requirements 1.1
  */
 
-import { useRouter } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
+import ShinyText from "@/components/ui/react-bits/ShinyText";
 import { cn } from "@/lib/utils";
+import { ArrowLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 // ============================================================================
 // 型定義
@@ -19,7 +20,7 @@ import { cn } from "@/lib/utils";
 
 export interface HeaderProps {
   /** ヘッダータイトル */
-  title?: string;
+  title?: React.ReactNode;
   /** 戻るボタンを表示するか */
   showBackButton?: boolean;
   /** 追加のCSSクラス */
@@ -61,9 +62,8 @@ export function Header({
         "sticky top-0 z-40",
         "h-14 px-4",
         "flex items-center",
-        "bg-white/80 backdrop-blur-lg",
-        "border-b border-gray-200",
-        "dark:bg-gray-900/80 dark:border-gray-800",
+        "bg-background/80 backdrop-blur-md",
+        "border-b border-border",
         className,
       )}
     >
@@ -76,10 +76,10 @@ export function Header({
               "flex items-center justify-center",
               "w-10 h-10 -ml-2",
               "rounded-full",
-              "text-gray-600 dark:text-gray-400",
-              "hover:bg-gray-100 dark:hover:bg-gray-800",
+              "text-muted-foreground",
+              "hover:bg-accent hover:text-foreground",
               "transition-colors duration-200",
-              "focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500",
+              "focus:outline-none focus-visible:ring-2 focus-visible:ring-ring",
             )}
             aria-label="戻る"
           >
@@ -87,8 +87,12 @@ export function Header({
           </button>
         )}
 
-        <h1 className="text-lg font-semibold text-gray-900 dark:text-white">
-          {title}
+        <h1 className="text-lg font-semibold">
+          {typeof title === "string" ? (
+            <ShinyText text={title} className="font-bold text-xl" />
+          ) : (
+            title
+          )}
         </h1>
       </div>
     </header>
