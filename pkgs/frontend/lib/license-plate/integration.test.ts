@@ -41,10 +41,10 @@ const createMockLicensePlateData = (
   overrides?: Partial<LicensePlateData>
 ): LicensePlateData => ({
   region: '品川',
-  classificationNumber: '330',
-  hiragana: 'あ',
-  serialNumber: '1234',
-  fullText: '品川330あ1234',
+  classificationNumber: '302',
+  hiragana: 'ほ',
+  serialNumber: '3184',
+  fullText: '品川302ほ3184',
   confidence: 98,
   plateType: 'REGULAR',
   recognizedAt: Date.now(),

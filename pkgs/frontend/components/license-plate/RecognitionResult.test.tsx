@@ -21,10 +21,10 @@ import type {
 
 const mockSuccessResult: LicensePlateData = {
   region: '品川',
-  classificationNumber: '330',
-  hiragana: 'あ',
-  serialNumber: '1234',
-  fullText: '品川330あ1234',
+  classificationNumber: '302',
+  hiragana: 'ほ',
+  serialNumber: '3184',
+  fullText: '品川302ほ3184',
   confidence: 98,
   plateType: 'REGULAR',
   recognizedAt: Date.now(),
@@ -52,7 +52,7 @@ const mockErrorWithPartialData: RecognitionError = {
   suggestion: 'より鮮明な画像で再試行してください',
   partialData: {
     region: '品川',
-    classificationNumber: '330',
+    classificationNumber: '302',
   },
 };
 
@@ -71,13 +71,13 @@ describe('RecognitionResultDisplay - 成功状態', () => {
     );
 
     // フルテキストが表示される
-    expect(screen.getByText('品川330あ1234')).toBeInTheDocument();
+    expect(screen.getByText('品川302ほ3184')).toBeInTheDocument();
 
     // 各フィールドが表示される
     expect(screen.getByText('品川')).toBeInTheDocument();
-    expect(screen.getByText('330')).toBeInTheDocument();
-    expect(screen.getByText('あ')).toBeInTheDocument();
-    expect(screen.getByText('1234')).toBeInTheDocument();
+    expect(screen.getByText('302')).toBeInTheDocument();
+    expect(screen.getByText('ほ')).toBeInTheDocument();
+    expect(screen.getByText('3184')).toBeInTheDocument();
 
     // 成功メッセージが表示される
     expect(screen.getByText('認識成功')).toBeInTheDocument();
