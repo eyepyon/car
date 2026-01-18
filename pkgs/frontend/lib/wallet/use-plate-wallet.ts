@@ -157,14 +157,20 @@ export function usePlateWalletCreation(
         if (storedData) {
           try {
             const { commitment, salt } = JSON.parse(storedData);
-            console.log("LocalStorageから取得:", { commitment, salt });
+            const normalizedSalt =
+              typeof salt === "string"
+                ? BigInt(salt)
+                : typeof salt === "number"
+                  ? BigInt(salt)
+                  : (salt as bigint);
+            console.log("LocalStorageから取得:", { commitment, salt: normalizedSalt });
 
             // アドレスを予測
             const predictedAddress = (await publicClient.readContract({
               address: factoryAddress,
               abi: LICENSE_PLATE_FACTORY_ABI,
               functionName: "getAddressFromPlate",
-              args: [ownerAddress, commitment as Hex, salt],
+              args: [ownerAddress, commitment as Hex, normalizedSalt],
             })) as Hex;
 
             // コードが存在するかチェック（デプロイ済みかどうか）
@@ -174,6 +180,12 @@ export function usePlateWalletCreation(
               console.log("既存のSmart Accountが見つかりました:", predictedAddress);
               return predictedAddress;
             }
+
+            console.warn(
+              "Smart Accountのコードが見つかりませんでしたが、予測アドレスを使用します:",
+              predictedAddress,
+            );
+            return predictedAddress;
           } catch (parseErr) {
             console.error("LocalStorageデータのパースに失敗:", parseErr);
           }
@@ -280,7 +292,7 @@ export function usePlateWalletCreation(
         const storageKey = `wallet_${currentOwner.toLowerCase()}`;
         localStorage.setItem(
           storageKey,
-          JSON.stringify({ commitment: commitmentHex, salt }),
+          JSON.stringify({ commitment: commitmentHex, salt: salt.toString() }),
         );
         console.log("LocalStorageに保存しました:", { commitment: commitmentHex, salt });
 

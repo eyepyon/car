@@ -390,6 +390,18 @@ export default function ChatPage() {
                       : "MetaMaskを接続"}
                   </Button>
                 )}
+                {owner && !accountAddress && (
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={connect}
+                    disabled={status === "connecting"}
+                  >
+                    {status === "connecting"
+                      ? "CarWallet読込中..."
+                      : "CarWalletを読み込む"}
+                  </Button>
+                )}
                 {!accountAddress && recognitionResult && (
                   <Button
                     type="button"
