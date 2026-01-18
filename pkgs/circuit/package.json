@@ -1,29 +1,29 @@
 {
-    "name": "circuit",
-    "version": "1.0.0",
-    "description": "",
-    "private": true,
-    "type": "commonjs",
-    "main": "index.js",
-    "scripts": {
-        "compile": "./scripts/compile.sh",
-        "generateWitness": "./scripts/generateWitness.sh",
-        "executeGroth16": "./scripts/executeGroth16.sh",
-        "generateInput": "node ./scripts/generateInput.js",
-        "test:LicensePlateCommitment": "node ./test/LicensePlateCommitment.test.js",
-        "cp:verifier": "cp LicensePlateCommitmentVerifier.sol ../backend/contracts",
-        "cp:zk": "cp LicensePlateCommitment_js/LicensePlateCommitment.wasm ../backend/zk && cp zkey/LicensePlateCommitment_final.zkey ../backend/zk && cp LicensePlateCommitment_js/LicensePlateCommitment.wasm ../frontend/zk && cp zkey/LicensePlateCommitment_final.zkey ../frontend/zk"
-    },
-    "keywords": [],
-    "author": "",
-    "license": "ISC",
-    "dependencies": {
-        "circom_tester": "^0.0.20",
-        "circomlib": "^2.0.5",
-        "circomlibjs": "^0.1.7",
-        "snarkjs": "0.6.9"
-    },
-    "devDependencies": {
-        "chai": "^4.3.10"
-    }
+  "name": "circuit",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "compile": "./scripts/compile.sh",
+    "generateWitness": "./scripts/generateWitness.sh",
+    "executeGroth16": "./scripts/executeGroth16.sh",
+    "generateInput": "node ./scripts/generateInput.js",
+    "test:LicensePlateCommitment": "node ./test/LicensePlateCommitment.test.js",
+    "cp:verifier": "cp LicensePlateCommitmentVerifier.sol ../backend/contracts",
+    "cp:zk": "cp LicensePlateCommitment_js/LicensePlateCommitment.wasm ../backend/zk && cp zkey/LicensePlateCommitment_final.zkey ../backend/zk && cp LicensePlateCommitment_js/LicensePlateCommitment.wasm ../frontend/zk && cp zkey/LicensePlateCommitment_final.zkey ../frontend/zk"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "circom_tester": "^0.0.20",
+    "circomlib": "^2.0.5",
+    "circomlibjs": "^0.1.7",
+    "snarkjs": "0.6.9"
+  },
+  "devDependencies": {
+    "chai": "^4.3.10"
+  }
 }

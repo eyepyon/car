@@ -44,7 +44,11 @@ export default function Home() {
         {/* ウェルカムメッセージ */}
         <div className="text-center mb-12">
           <h2 className="text-2xl font-bold text-foreground mb-2 h-8">
-            <DecryptedText text="ナンバープレートを撮影" animateOn="view" speed={80} />
+            <DecryptedText
+              text="ナンバープレートを撮影"
+              animateOn="view"
+              speed={80}
+            />
           </h2>
           <p className="text-muted-foreground">
             カメラでナンバープレートを撮影して認識します

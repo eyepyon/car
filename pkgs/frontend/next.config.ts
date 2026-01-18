@@ -3,8 +3,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
-  // Turbopack対応のため空のturbopack設定を追加
-  turbopack: {},
+  // Turbopackの代わりにWebpackを使用（Turbopackのバグ回避）
 };
 
 export default withPWA({

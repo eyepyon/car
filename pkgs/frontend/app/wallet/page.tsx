@@ -88,10 +88,14 @@ export default function WalletPage() {
               </span>
             </div>
             <div className="mb-2">
-                <ShinyText text="¥0.00" className="text-4xl font-bold" />
+              <ShinyText text="¥0.00" className="text-4xl font-bold" />
             </div>
             <p className="text-muted-foreground/80 text-sm">
-              <DecryptedText text="ウォレット機能は開発中です" speed={50} animateOn="view" />
+              <DecryptedText
+                text="ウォレット機能は開発中です"
+                speed={50}
+                animateOn="view"
+              />
             </p>
           </CardContent>
         </Card>
@@ -150,9 +154,7 @@ export default function WalletPage() {
                   <p className="text-sm font-medium text-foreground">
                     {tx.description}
                   </p>
-                  <p className="text-xs text-muted-foreground">
-                    {tx.time}
-                  </p>
+                  <p className="text-xs text-muted-foreground">{tx.time}</p>
                 </div>
                 <span
                   className={cn(
@@ -173,9 +175,9 @@ export default function WalletPage() {
         <div className="mt-8 p-4 bg-muted/20 border border-muted/30 rounded-xl text-center">
           <p className="text-sm text-muted-foreground">
             <DecryptedText
-                text="ウォレット機能は現在開発中です。今後のアップデートをお待ちください。"
-                speed={30}
-                animateOn="view"
+              text="ウォレット機能は現在開発中です。今後のアップデートをお待ちください。"
+              speed={30}
+              animateOn="view"
             />
           </p>
         </div>

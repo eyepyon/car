@@ -38,13 +38,18 @@ export default function Page() {
         Molmo2-8B 事故動画の安全要約（ローカル）
       </h1>
       <p style={{ marginTop: 0, color: "#444", lineHeight: 1.6 }}>
-        動画をアップロードすると、サーバ側でフレーム抽出 → Molmo2-8B 推論 → 安全制約付き要約を返します。
+        動画をアップロードすると、サーバ側でフレーム抽出 → Molmo2-8B 推論 →
+        安全制約付き要約を返します。
       </p>
 
-      <section style={{ border: "1px solid #ddd", borderRadius: 14, padding: 16 }}>
+      <section
+        style={{ border: "1px solid #ddd", borderRadius: 14, padding: 16 }}
+      >
         <div style={{ display: "grid", gap: 12 }}>
           <label>
-            <div style={{ fontWeight: 700, marginBottom: 6 }}>動画ファイル（mp4推奨）</div>
+            <div style={{ fontWeight: 700, marginBottom: 6 }}>
+              動画ファイル（mp4推奨）
+            </div>
             <input
               type="file"
               accept="video/*"
@@ -152,4 +157,3 @@ export default function Page() {
     </main>
   );
 }
-

@@ -23,7 +23,10 @@ export async function POST(req: Request) {
     const file = form.get("video");
 
     if (!file || !(file instanceof File)) {
-      return NextResponse.json({ ok: false, error: "video file is required" }, { status: 400 });
+      return NextResponse.json(
+        { ok: false, error: "video file is required" },
+        { status: 400 },
+      );
     }
 
     const dir = makeWorkDir(jobId);
@@ -59,24 +62,32 @@ export async function POST(req: Request) {
     const r = await runCmd(
       PYTHON,
       [pyScript, "--frames", framesDir, "--max_frames", String(MAX_FRAMES)],
-      { cwd: repoRoot, timeoutMs: 10 * 60 * 1000 }
+      { cwd: repoRoot, timeoutMs: 10 * 60 * 1000 },
     );
 
     const logs = (r.stderr || "").slice(-4000);
 
     if (r.code !== 0) {
       return NextResponse.json(
-        { ok: false, jobId, error: `Molmo2 failed.\n${r.stderr || r.stdout}`, logs },
-        { status: 500 }
+        {
+          ok: false,
+          jobId,
+          error: `Molmo2 failed.\n${r.stderr || r.stdout}`,
+          logs,
+        },
+        { status: 500 },
       );
     }
 
     const summary = postRedact((r.stdout || "").trim());
-    return NextResponse.json({ ok: true, jobId, summary, logs }, { status: 200 });
+    return NextResponse.json(
+      { ok: true, jobId, summary, logs },
+      { status: 200 },
+    );
   } catch (e: any) {
     return NextResponse.json(
       { ok: false, jobId, error: e?.message ?? "Unknown error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

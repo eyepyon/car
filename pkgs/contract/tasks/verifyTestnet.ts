@@ -9,7 +9,10 @@ task("verifyTestnet", "Verify vehicle wallet on testnet").setAction(
     console.log("Using deployer address:", deployer.address);
 
     // Load deployed addresses
-    const deploymentsDir = path.join(__dirname, "../ignition/deployments/chain-84532");
+    const deploymentsDir = path.join(
+      __dirname,
+      "../ignition/deployments/chain-84532",
+    );
     const addressesPath = path.join(deploymentsDir, "deployed_addresses.json");
 
     if (!fs.existsSync(addressesPath)) {
@@ -18,24 +21,40 @@ task("verifyTestnet", "Verify vehicle wallet on testnet").setAction(
 
     const addresses = JSON.parse(fs.readFileSync(addressesPath, "utf8"));
 
-    const factoryAddress = addresses["LicensePlateAccountFactoryModule#LicensePlateAccountFactory"];
+    const factoryAddress =
+      addresses["LicensePlateAccountFactoryModule#LicensePlateAccountFactory"];
     console.log("Factory Address:", factoryAddress);
 
-    const factory = await hre.ethers.getContractAt("LicensePlateAccountFactory", factoryAddress);
+    const factory = await hre.ethers.getContractAt(
+      "LicensePlateAccountFactory",
+      factoryAddress,
+    );
 
     // 1. Create/Get Vehicle Wallet
     const plateNumber = "TEST-PLATE-TASK-1234";
     const userSalt = hre.ethers.id("test-salt-task-testnet");
     const deploymentSalt = BigInt(Math.floor(Math.random() * 100000));
 
-    const commitment = await factory.computePlateCommitment(plateNumber, userSalt);
+    const commitment = await factory.computePlateCommitment(
+      plateNumber,
+      userSalt,
+    );
     console.log("Plate Commitment:", commitment);
 
-    const predictedAddress = await factory.getAddressFromPlate(deployer.address, commitment, deploymentSalt);
+    const predictedAddress = await factory.getAddressFromPlate(
+      deployer.address,
+      commitment,
+      deploymentSalt,
+    );
     console.log("Predicted Wallet Address:", predictedAddress);
 
     console.log("Creating/Getting account...");
-    const createTx = await factory.createAccountFromPlate(deployer.address, commitment, deploymentSalt, "0x");
+    const createTx = await factory.createAccountFromPlate(
+      deployer.address,
+      commitment,
+      deploymentSalt,
+      "0x",
+    );
     await createTx.wait();
     console.log("Account created/ready at:", predictedAddress);
 
@@ -49,7 +68,9 @@ task("verifyTestnet", "Verify vehicle wallet on testnet").setAction(
 
     // 3. Mint tokens to Vehicle Wallet
     const marketValue = hre.ethers.parseEther("777");
-    console.log(`Minting ${hre.ethers.formatEther(marketValue)} CVTT to wallet...`);
+    console.log(
+      `Minting ${hre.ethers.formatEther(marketValue)} CVTT to wallet...`,
+    );
     const mintTx = await mockToken.mint(predictedAddress, marketValue);
     await mintTx.wait();
 
@@ -58,13 +79,25 @@ task("verifyTestnet", "Verify vehicle wallet on testnet").setAction(
 
     // 4. Execute transfer via Vehicle Wallet
     const transferAmount = hre.ethers.parseEther("770");
-    console.log(`Transferring ${hre.ethers.formatEther(transferAmount)} CVTT from wallet to deployer...`);
+    console.log(
+      `Transferring ${hre.ethers.formatEther(transferAmount)} CVTT from wallet to deployer...`,
+    );
 
-    const accountContract = await hre.ethers.getContractAt("PrivacyProtectedAccount", predictedAddress);
-    const transferData = mockToken.interface.encodeFunctionData("transfer", [deployer.address, transferAmount]);
+    const accountContract = await hre.ethers.getContractAt(
+      "PrivacyProtectedAccount",
+      predictedAddress,
+    );
+    const transferData = mockToken.interface.encodeFunctionData("transfer", [
+      deployer.address,
+      transferAmount,
+    ]);
 
     // execute(dest, value, func)
-    const executeTx = await accountContract.execute(mockTokenAddress, 0n, transferData);
+    const executeTx = await accountContract.execute(
+      mockTokenAddress,
+      0n,
+      transferData,
+    );
     const receipt = await executeTx.wait();
     console.log("Execute Transaction Hash:", receipt?.hash);
 
@@ -73,8 +106,16 @@ task("verifyTestnet", "Verify vehicle wallet on testnet").setAction(
     const finalDeployerBalance = await mockToken.balanceOf(deployer.address);
 
     console.log("--- Final Results ---");
-    console.log("Final Wallet Balance:", hre.ethers.formatEther(finalWalletBalance), "CVTT");
-    console.log("Final Deployer Balance:", hre.ethers.formatEther(finalDeployerBalance), "CVTT");
+    console.log(
+      "Final Wallet Balance:",
+      hre.ethers.formatEther(finalWalletBalance),
+      "CVTT",
+    );
+    console.log(
+      "Final Deployer Balance:",
+      hre.ethers.formatEther(finalDeployerBalance),
+      "CVTT",
+    );
     console.log("Verification Successful via Task!");
-  }
+  },
 );

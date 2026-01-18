@@ -14,11 +14,12 @@ import { CameraCapture } from "@/components/license-plate/CameraCapture";
 import { RecognitionResultDisplay } from "@/components/license-plate/RecognitionResult";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useLicensePlateRecognition } from "@/lib/license-plate/use-license-plate-recognition";
+import { usePlateWalletCreation } from "@/lib/wallet/use-plate-wallet";
 import type {
   CapturedImage,
   CaptureError,
   LicensePlateData,
-  RecognitionError,
 } from "@/types/license-plate";
 import { X } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
@@ -60,21 +61,43 @@ export function CameraModal({
   onRecognitionComplete,
 }: CameraModalProps) {
   const [state, setState] = useState<ModalState>("camera");
-  const [recognitionResult, setRecognitionResult] =
-    useState<LicensePlateData | null>(null);
-  const [recognitionError, setRecognitionError] =
-    useState<RecognitionError | null>(null);
   const [captureError, setCaptureError] = useState<CaptureError | null>(null);
+
+  const {
+    state: recognitionState,
+    result: recognitionResult,
+    error: recognitionError,
+    recognizeImage,
+    reset: resetRecognition,
+  } = useLicensePlateRecognition({
+    mode: "single",
+    onSuccess: (result) => {
+      setState("result");
+      onRecognitionComplete?.(result);
+    },
+    onError: () => {
+      setState("result");
+    },
+  });
+
+  const {
+    status: walletStatus,
+    owner,
+    txHash,
+    commitment,
+    error: walletError,
+    connect,
+    createWallet,
+  } = usePlateWalletCreation();
 
   // モーダルが閉じられたときに状態をリセット
   useEffect(() => {
     if (!isOpen) {
       setState("camera");
-      setRecognitionResult(null);
-      setRecognitionError(null);
       setCaptureError(null);
+      resetRecognition();
     }
-  }, [isOpen]);
+  }, [isOpen, resetRecognition]);
 
   // ESCキーでモーダルを閉じる
   useEffect(() => {
@@ -107,38 +130,10 @@ export function CameraModal({
     async (image: CapturedImage) => {
       setState("recognizing");
       setCaptureError(null);
-      setRecognitionError(null);
-
-      try {
-        // TODO: 実際のAPI呼び出しに置き換える
-        // 現在はモック認識結果を返す
-        await new Promise((resolve) => setTimeout(resolve, 1500));
-
-        const mockResult: LicensePlateData = {
-          region: "品川",
-          classificationNumber: "302",
-          hiragana: "ほ",
-          serialNumber: "3184",
-          fullText: "品川302ほ3184",
-          confidence: 95,
-          plateType: "REGULAR",
-          recognizedAt: Date.now(),
-        };
-
-        setRecognitionResult(mockResult);
-        setState("result");
-        onRecognitionComplete?.(mockResult);
-      } catch (error) {
-        console.error("Recognition error:", error);
-        setRecognitionError({
-          code: "API_CONNECTION_FAILED",
-          message: "サービスに接続できません",
-          suggestion: "しばらく待ってから再試行してください",
-        });
-        setState("result");
-      }
+      resetRecognition();
+      await recognizeImage(image);
     },
-    [onRecognitionComplete],
+    [recognizeImage, resetRecognition],
   );
 
   /**
@@ -153,10 +148,16 @@ export function CameraModal({
    */
   const handleRetry = useCallback(() => {
     setState("camera");
-    setRecognitionResult(null);
-    setRecognitionError(null);
     setCaptureError(null);
-  }, []);
+    resetRecognition();
+  }, [resetRecognition]);
+
+  const handleCreateWallet = useCallback(async () => {
+    if (!recognitionResult) {
+      return;
+    }
+    await createWallet(recognitionResult);
+  }, [recognitionResult, createWallet]);
 
   if (!isOpen) {
     return null;
@@ -211,7 +212,11 @@ export function CameraModal({
         {state === "recognizing" && (
           <div className="flex flex-col items-center gap-4">
             <div className="h-12 w-12 animate-spin rounded-full border-4 border-white border-t-transparent" />
-            <p className="text-white text-lg">認識中...</p>
+            <p className="text-white text-lg">
+              {recognitionState === "validating"
+                ? "画像を検証中..."
+                : "認識中..."}
+            </p>
           </div>
         )}
 
@@ -223,6 +228,61 @@ export function CameraModal({
               error={recognitionError}
               onRetry={handleRetry}
             />
+            {recognitionResult && (
+              <div className="mt-6 rounded-xl border border-white/10 bg-white/5 p-4 text-white">
+                <p className="text-sm text-white/70">ウォレット作成</p>
+                <p className="mt-1 text-base font-semibold">
+                  {owner ? "接続済み" : "MetaMaskを接続してください"}
+                </p>
+                {owner && (
+                  <p className="mt-1 text-xs text-white/60 break-all">
+                    {owner}
+                  </p>
+                )}
+                {commitment && (
+                  <p className="mt-2 text-xs text-white/60 break-all">
+                    Commitment: {commitment}
+                  </p>
+                )}
+                {txHash && (
+                  <p className="mt-2 text-xs text-white/60 break-all">
+                    Tx Hash: {txHash}
+                  </p>
+                )}
+                {walletError && (
+                  <p className="mt-2 text-xs text-red-200 break-all">
+                    {walletError}
+                  </p>
+                )}
+                <div className="mt-4 flex flex-col gap-2">
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={connect}
+                    disabled={walletStatus === "connecting"}
+                  >
+                    {walletStatus === "connecting"
+                      ? "接続中..."
+                      : "MetaMaskを接続"}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="default"
+                    onClick={handleCreateWallet}
+                    disabled={
+                      walletStatus === "proving" ||
+                      walletStatus === "submitting"
+                    }
+                  >
+                    {walletStatus === "proving" && "ZK証明を生成中..."}
+                    {walletStatus === "submitting" && "送信中..."}
+                    {walletStatus === "success" && "作成完了"}
+                    {walletStatus === "idle" && "ウォレットを作成"}
+                    {walletStatus === "error" && "再試行する"}
+                  </Button>
+                </div>
+              </div>
+            )}
             <div className="mt-6 flex gap-3">
               <Button
                 type="button"

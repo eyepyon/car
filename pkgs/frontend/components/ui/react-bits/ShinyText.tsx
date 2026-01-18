@@ -17,11 +17,13 @@ export default function ShinyText({
     <span
       className={cn(
         "bg-clip-text text-transparent bg-gradient-to-r from-primary via-white to-primary bg-[length:200%_auto] animate-shine",
-        className
+        className,
       )}
-      style={{
+      style={
+        {
           // Custom CSS variable for shine animation width if we wanted to make it dynamic
-      }}
+        }
+      }
     >
       {text}
     </span>

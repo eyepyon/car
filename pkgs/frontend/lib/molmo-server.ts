@@ -22,7 +22,7 @@ export function makeWorkDir(jobId: string) {
 export async function runCmd(
   cmd: string,
   args: string[],
-  opts?: { cwd?: string; timeoutMs?: number }
+  opts?: { cwd?: string; timeoutMs?: number },
 ): Promise<{ code: number; stdout: string; stderr: string }> {
   return new Promise((resolve, reject) => {
     const p = spawn(cmd, args, {

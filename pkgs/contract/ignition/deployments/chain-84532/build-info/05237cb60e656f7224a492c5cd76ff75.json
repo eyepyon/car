@@ -26,9 +26,7 @@
             "evm.methodIdentifiers",
             "metadata"
           ],
-          "": [
-            "ast"
-          ]
+          "": ["ast"]
         }
       }
     }
@@ -39,12 +37,8 @@
         "ast": {
           "absolutePath": "contracts/LicensePlateCommitmentVerifier.sol",
           "exportedSymbols": {
-            "LicensePlateCommitmentVerifier": [
-              1012
-            ],
-            "Pairing": [
-              631
-            ]
+            "LicensePlateCommitmentVerifier": [1012],
+            "Pairing": [631]
           },
           "id": 1013,
           "license": "GPL-3.0",
@@ -52,12 +46,7 @@
           "nodes": [
             {
               "id": 1,
-              "literals": [
-                "solidity",
-                "^",
-                "0.8",
-                ".20"
-              ],
+              "literals": ["solidity", "^", "0.8", ".20"],
               "nodeType": "PragmaDirective",
               "src": "1232:24:0"
             },
@@ -69,9 +58,7 @@
               "contractKind": "library",
               "fullyImplemented": true,
               "id": 631,
-              "linearizedBaseContracts": [
-                631
-              ],
+              "linearizedBaseContracts": [631],
               "name": "Pairing",
               "nameLocation": "1265:7:0",
               "nodeType": "ContractDefinition",
@@ -389,9 +376,7 @@
                           "pathNode": {
                             "id": 18,
                             "name": "G1Point",
-                            "nameLocations": [
-                              "1530:7:0"
-                            ],
+                            "nameLocations": ["1530:7:0"],
                             "nodeType": "IdentifierPath",
                             "referencedDeclaration": 6,
                             "src": "1530:7:0"
@@ -609,9 +594,7 @@
                           "pathNode": {
                             "id": 31,
                             "name": "G2Point",
-                            "nameLocations": [
-                              "1661:7:0"
-                            ],
+                            "nameLocations": ["1661:7:0"],
                             "nodeType": "IdentifierPath",
                             "referencedDeclaration": 15,
                             "src": "1661:7:0"
@@ -641,9 +624,7 @@
                     "src": "2721:267:0",
                     "statements": [
                       {
-                        "assignments": [
-                          56
-                        ],
+                        "assignments": [56],
                         "declarations": [
                           {
                             "constant": false,
@@ -1138,9 +1119,7 @@
                           "pathNode": {
                             "id": 47,
                             "name": "G1Point",
-                            "nameLocations": [
-                              "2662:7:0"
-                            ],
+                            "nameLocations": ["2662:7:0"],
                             "nodeType": "IdentifierPath",
                             "referencedDeclaration": 6,
                             "src": "2662:7:0"
@@ -1182,9 +1161,7 @@
                           "pathNode": {
                             "id": 51,
                             "name": "G1Point",
-                            "nameLocations": [
-                              "2703:7:0"
-                            ],
+                            "nameLocations": ["2703:7:0"],
                             "nodeType": "IdentifierPath",
                             "referencedDeclaration": 6,
                             "src": "2703:7:0"
@@ -1214,9 +1191,7 @@
                     "src": "3136:481:0",
                     "statements": [
                       {
-                        "assignments": [
-                          105
-                        ],
+                        "assignments": [105],
                         "declarations": [
                           {
                             "constant": false,
@@ -1628,9 +1603,7 @@
                         "src": "3251:15:0"
                       },
                       {
-                        "assignments": [
-                          136
-                        ],
+                        "assignments": [136],
                         "declarations": [
                           {
                             "constant": false,
@@ -1898,11 +1871,7 @@
                             "id": 139,
                             "name": "require",
                             "nodeType": "Identifier",
-                            "overloadedDeclarations": [
-                              -18,
-                              -18,
-                              -18
-                            ],
+                            "overloadedDeclarations": [-18, -18, -18],
                             "referencedDeclaration": -18,
                             "src": "3573:7:0",
                             "typeDescriptions": {
@@ -1970,9 +1939,7 @@
                           "pathNode": {
                             "id": 89,
                             "name": "G1Point",
-                            "nameLocations": [
-                              "3057:7:0"
-                            ],
+                            "nameLocations": ["3057:7:0"],
                             "nodeType": "IdentifierPath",
                             "referencedDeclaration": 6,
                             "src": "3057:7:0"
@@ -2007,9 +1974,7 @@
                           "pathNode": {
                             "id": 92,
                             "name": "G1Point",
-                            "nameLocations": [
-                              "3076:7:0"
-                            ],
+                            "nameLocations": ["3076:7:0"],
                             "nodeType": "IdentifierPath",
                             "referencedDeclaration": 6,
                             "src": "3076:7:0"
@@ -2051,9 +2016,7 @@
                           "pathNode": {
                             "id": 96,
                             "name": "G1Point",
-                            "nameLocations": [
-                              "3118:7:0"
-                            ],
+                            "nameLocations": ["3118:7:0"],
                             "nodeType": "IdentifierPath",
                             "referencedDeclaration": 6,
                             "src": "3118:7:0"
@@ -2083,9 +2046,7 @@
                     "src": "3859:452:0",
                     "statements": [
                       {
-                        "assignments": [
-                          162
-                        ],
+                        "assignments": [162],
                         "declarations": [
                           {
                             "constant": false,
@@ -2393,9 +2354,7 @@
                         "src": "3947:12:0"
                       },
                       {
-                        "assignments": [
-                          185
-                        ],
+                        "assignments": [185],
                         "declarations": [
                           {
                             "constant": false,
@@ -2663,11 +2622,7 @@
                             "id": 188,
                             "name": "require",
                             "nodeType": "Identifier",
-                            "overloadedDeclarations": [
-                              -18,
-                              -18,
-                              -18
-                            ],
+                            "overloadedDeclarations": [-18, -18, -18],
                             "referencedDeclaration": -18,
                             "src": "4266:7:0",
                             "typeDescriptions": {
@@ -2735,9 +2690,7 @@
                           "pathNode": {
                             "id": 147,
                             "name": "G1Point",
-                            "nameLocations": [
-                              "3792:7:0"
-                            ],
+                            "nameLocations": ["3792:7:0"],
                             "nodeType": "IdentifierPath",
                             "referencedDeclaration": 6,
                             "src": "3792:7:0"
@@ -2806,9 +2759,7 @@
                           "pathNode": {
                             "id": 153,
                             "name": "G1Point",
-                            "nameLocations": [
-                              "3841:7:0"
-                            ],
+                            "nameLocations": ["3841:7:0"],
                             "nodeType": "IdentifierPath",
                             "referencedDeclaration": 6,
                             "src": "3841:7:0"
@@ -2943,11 +2894,7 @@
                             "id": 208,
                             "name": "require",
                             "nodeType": "Identifier",
-                            "overloadedDeclarations": [
-                              -18,
-                              -18,
-                              -18
-                            ],
+                            "overloadedDeclarations": [-18, -18, -18],
                             "referencedDeclaration": -18,
                             "src": "4620:7:0",
                             "typeDescriptions": {
@@ -2976,9 +2923,7 @@
                         "src": "4620:56:0"
                       },
                       {
-                        "assignments": [
-                          218
-                        ],
+                        "assignments": [218],
                         "declarations": [
                           {
                             "constant": false,
@@ -3040,9 +2985,7 @@
                         "src": "4686:25:0"
                       },
                       {
-                        "assignments": [
-                          223
-                        ],
+                        "assignments": [223],
                         "declarations": [
                           {
                             "constant": false,
@@ -3123,9 +3066,7 @@
                         "src": "4721:29:0"
                       },
                       {
-                        "assignments": [
-                          232
-                        ],
+                        "assignments": [232],
                         "declarations": [
                           {
                             "constant": false,
@@ -4467,9 +4408,7 @@
                         },
                         "id": 336,
                         "initializationExpression": {
-                          "assignments": [
-                            240
-                          ],
+                          "assignments": [240],
                           "declarations": [
                             {
                               "constant": false,
@@ -4556,9 +4495,7 @@
                         "src": "4813:307:0"
                       },
                       {
-                        "assignments": [
-                          342
-                        ],
+                        "assignments": [342],
                         "declarations": [
                           {
                             "constant": false,
@@ -4618,9 +4555,7 @@
                         "src": "5129:18:0"
                       },
                       {
-                        "assignments": [
-                          345
-                        ],
+                        "assignments": [345],
                         "declarations": [
                           {
                             "constant": false,
@@ -4935,11 +4870,7 @@
                             "id": 348,
                             "name": "require",
                             "nodeType": "Identifier",
-                            "overloadedDeclarations": [
-                              -18,
-                              -18,
-                              -18
-                            ],
+                            "overloadedDeclarations": [-18, -18, -18],
                             "referencedDeclaration": -18,
                             "src": "5483:7:0",
                             "typeDescriptions": {
@@ -5089,9 +5020,7 @@
                             "pathNode": {
                               "id": 196,
                               "name": "G1Point",
-                              "nameLocations": [
-                                "4539:7:0"
-                              ],
+                              "nameLocations": ["4539:7:0"],
                               "nodeType": "IdentifierPath",
                               "referencedDeclaration": 6,
                               "src": "4539:7:0"
@@ -5135,9 +5064,7 @@
                             "pathNode": {
                               "id": 200,
                               "name": "G2Point",
-                              "nameLocations": [
-                                "4560:7:0"
-                              ],
+                              "nameLocations": ["4560:7:0"],
                               "nodeType": "IdentifierPath",
                               "referencedDeclaration": 15,
                               "src": "4560:7:0"
@@ -5209,9 +5136,7 @@
                     "src": "5752:215:0",
                     "statements": [
                       {
-                        "assignments": [
-                          382
-                        ],
+                        "assignments": [382],
                         "declarations": [
                           {
                             "constant": false,
@@ -5235,9 +5160,7 @@
                                 "pathNode": {
                                   "id": 379,
                                   "name": "G1Point",
-                                  "nameLocations": [
-                                    "5762:7:0"
-                                  ],
+                                  "nameLocations": ["5762:7:0"],
                                   "nodeType": "IdentifierPath",
                                   "referencedDeclaration": 6,
                                   "src": "5762:7:0"
@@ -5305,9 +5228,7 @@
                                 "pathNode": {
                                   "id": 383,
                                   "name": "G1Point",
-                                  "nameLocations": [
-                                    "5788:7:0"
-                                  ],
+                                  "nameLocations": ["5788:7:0"],
                                   "nodeType": "IdentifierPath",
                                   "referencedDeclaration": 6,
                                   "src": "5788:7:0"
@@ -5348,9 +5269,7 @@
                         "src": "5762:38:0"
                       },
                       {
-                        "assignments": [
-                          394
-                        ],
+                        "assignments": [394],
                         "declarations": [
                           {
                             "constant": false,
@@ -5374,9 +5293,7 @@
                                 "pathNode": {
                                   "id": 391,
                                   "name": "G2Point",
-                                  "nameLocations": [
-                                    "5810:7:0"
-                                  ],
+                                  "nameLocations": ["5810:7:0"],
                                   "nodeType": "IdentifierPath",
                                   "referencedDeclaration": 15,
                                   "src": "5810:7:0"
@@ -5444,9 +5361,7 @@
                                 "pathNode": {
                                   "id": 395,
                                   "name": "G2Point",
-                                  "nameLocations": [
-                                    "5836:7:0"
-                                  ],
+                                  "nameLocations": ["5836:7:0"],
                                   "nodeType": "IdentifierPath",
                                   "referencedDeclaration": 15,
                                   "src": "5836:7:0"
@@ -5885,9 +5800,7 @@
                           "pathNode": {
                             "id": 362,
                             "name": "G1Point",
-                            "nameLocations": [
-                              "5647:7:0"
-                            ],
+                            "nameLocations": ["5647:7:0"],
                             "nodeType": "IdentifierPath",
                             "referencedDeclaration": 6,
                             "src": "5647:7:0"
@@ -5922,9 +5835,7 @@
                           "pathNode": {
                             "id": 365,
                             "name": "G2Point",
-                            "nameLocations": [
-                              "5666:7:0"
-                            ],
+                            "nameLocations": ["5666:7:0"],
                             "nodeType": "IdentifierPath",
                             "referencedDeclaration": 15,
                             "src": "5666:7:0"
@@ -5959,9 +5870,7 @@
                           "pathNode": {
                             "id": 368,
                             "name": "G1Point",
-                            "nameLocations": [
-                              "5685:7:0"
-                            ],
+                            "nameLocations": ["5685:7:0"],
                             "nodeType": "IdentifierPath",
                             "referencedDeclaration": 6,
                             "src": "5685:7:0"
@@ -5996,9 +5905,7 @@
                           "pathNode": {
                             "id": 371,
                             "name": "G2Point",
-                            "nameLocations": [
-                              "5704:7:0"
-                            ],
+                            "nameLocations": ["5704:7:0"],
                             "nodeType": "IdentifierPath",
                             "referencedDeclaration": 15,
                             "src": "5704:7:0"
@@ -6062,9 +5969,7 @@
                     "src": "6243:255:0",
                     "statements": [
                       {
-                        "assignments": [
-                          460
-                        ],
+                        "assignments": [460],
                         "declarations": [
                           {
                             "constant": false,
@@ -6088,9 +5993,7 @@
                                 "pathNode": {
                                   "id": 457,
                                   "name": "G1Point",
-                                  "nameLocations": [
-                                    "6253:7:0"
-                                  ],
+                                  "nameLocations": ["6253:7:0"],
                                   "nodeType": "IdentifierPath",
                                   "referencedDeclaration": 6,
                                   "src": "6253:7:0"
@@ -6158,9 +6061,7 @@
                                 "pathNode": {
                                   "id": 461,
                                   "name": "G1Point",
-                                  "nameLocations": [
-                                    "6279:7:0"
-                                  ],
+                                  "nameLocations": ["6279:7:0"],
                                   "nodeType": "IdentifierPath",
                                   "referencedDeclaration": 6,
                                   "src": "6279:7:0"
@@ -6201,9 +6102,7 @@
                         "src": "6253:38:0"
                       },
                       {
-                        "assignments": [
-                          472
-                        ],
+                        "assignments": [472],
                         "declarations": [
                           {
                             "constant": false,
@@ -6227,9 +6126,7 @@
                                 "pathNode": {
                                   "id": 469,
                                   "name": "G2Point",
-                                  "nameLocations": [
-                                    "6301:7:0"
-                                  ],
+                                  "nameLocations": ["6301:7:0"],
                                   "nodeType": "IdentifierPath",
                                   "referencedDeclaration": 15,
                                   "src": "6301:7:0"
@@ -6297,9 +6194,7 @@
                                 "pathNode": {
                                   "id": 473,
                                   "name": "G2Point",
-                                  "nameLocations": [
-                                    "6327:7:0"
-                                  ],
+                                  "nameLocations": ["6327:7:0"],
                                   "nodeType": "IdentifierPath",
                                   "referencedDeclaration": 15,
                                   "src": "6327:7:0"
@@ -6882,9 +6777,7 @@
                           "pathNode": {
                             "id": 434,
                             "name": "G1Point",
-                            "nameLocations": [
-                              "6071:7:0"
-                            ],
+                            "nameLocations": ["6071:7:0"],
                             "nodeType": "IdentifierPath",
                             "referencedDeclaration": 6,
                             "src": "6071:7:0"
@@ -6919,9 +6812,7 @@
                           "pathNode": {
                             "id": 437,
                             "name": "G2Point",
-                            "nameLocations": [
-                              "6090:7:0"
-                            ],
+                            "nameLocations": ["6090:7:0"],
                             "nodeType": "IdentifierPath",
                             "referencedDeclaration": 15,
                             "src": "6090:7:0"
@@ -6956,9 +6847,7 @@
                           "pathNode": {
                             "id": 440,
                             "name": "G1Point",
-                            "nameLocations": [
-                              "6121:7:0"
-                            ],
+                            "nameLocations": ["6121:7:0"],
                             "nodeType": "IdentifierPath",
                             "referencedDeclaration": 6,
                             "src": "6121:7:0"
@@ -6993,9 +6882,7 @@
                           "pathNode": {
                             "id": 443,
                             "name": "G2Point",
-                            "nameLocations": [
-                              "6140:7:0"
-                            ],
+                            "nameLocations": ["6140:7:0"],
                             "nodeType": "IdentifierPath",
                             "referencedDeclaration": 15,
                             "src": "6140:7:0"
@@ -7030,9 +6917,7 @@
                           "pathNode": {
                             "id": 446,
                             "name": "G1Point",
-                            "nameLocations": [
-                              "6171:7:0"
-                            ],
+                            "nameLocations": ["6171:7:0"],
                             "nodeType": "IdentifierPath",
                             "referencedDeclaration": 6,
                             "src": "6171:7:0"
@@ -7067,9 +6952,7 @@
                           "pathNode": {
                             "id": 449,
                             "name": "G2Point",
-                            "nameLocations": [
-                              "6190:7:0"
-                            ],
+                            "nameLocations": ["6190:7:0"],
                             "nodeType": "IdentifierPath",
                             "referencedDeclaration": 15,
                             "src": "6190:7:0"
@@ -7133,9 +7016,7 @@
                     "src": "6823:295:0",
                     "statements": [
                       {
-                        "assignments": [
-                          556
-                        ],
+                        "assignments": [556],
                         "declarations": [
                           {
                             "constant": false,
@@ -7159,9 +7040,7 @@
                                 "pathNode": {
                                   "id": 553,
                                   "name": "G1Point",
-                                  "nameLocations": [
-                                    "6833:7:0"
-                                  ],
+                                  "nameLocations": ["6833:7:0"],
                                   "nodeType": "IdentifierPath",
                                   "referencedDeclaration": 6,
                                   "src": "6833:7:0"
@@ -7229,9 +7108,7 @@
                                 "pathNode": {
                                   "id": 557,
                                   "name": "G1Point",
-                                  "nameLocations": [
-                                    "6859:7:0"
-                                  ],
+                                  "nameLocations": ["6859:7:0"],
                                   "nodeType": "IdentifierPath",
                                   "referencedDeclaration": 6,
                                   "src": "6859:7:0"
@@ -7272,9 +7149,7 @@
                         "src": "6833:38:0"
                       },
                       {
-                        "assignments": [
-                          568
-                        ],
+                        "assignments": [568],
                         "declarations": [
                           {
                             "constant": false,
@@ -7298,9 +7173,7 @@
                                 "pathNode": {
                                   "id": 565,
                                   "name": "G2Point",
-                                  "nameLocations": [
-                                    "6881:7:0"
-                                  ],
+                                  "nameLocations": ["6881:7:0"],
                                   "nodeType": "IdentifierPath",
                                   "referencedDeclaration": 15,
                                   "src": "6881:7:0"
@@ -7368,9 +7241,7 @@
                                 "pathNode": {
                                   "id": 569,
                                   "name": "G2Point",
-                                  "nameLocations": [
-                                    "6907:7:0"
-                                  ],
+                                  "nameLocations": ["6907:7:0"],
                                   "nodeType": "IdentifierPath",
                                   "referencedDeclaration": 15,
                                   "src": "6907:7:0"
@@ -8097,9 +7968,7 @@
                           "pathNode": {
                             "id": 524,
                             "name": "G1Point",
-                            "nameLocations": [
-                              "6601:7:0"
-                            ],
+                            "nameLocations": ["6601:7:0"],
                             "nodeType": "IdentifierPath",
                             "referencedDeclaration": 6,
                             "src": "6601:7:0"
@@ -8134,9 +8003,7 @@
                           "pathNode": {
                             "id": 527,
                             "name": "G2Point",
-                            "nameLocations": [
-                              "6620:7:0"
-                            ],
+                            "nameLocations": ["6620:7:0"],
                             "nodeType": "IdentifierPath",
                             "referencedDeclaration": 15,
                             "src": "6620:7:0"
@@ -8171,9 +8038,7 @@
                           "pathNode": {
                             "id": 530,
                             "name": "G1Point",
-                            "nameLocations": [
-                              "6651:7:0"
-                            ],
+                            "nameLocations": ["6651:7:0"],
                             "nodeType": "IdentifierPath",
                             "referencedDeclaration": 6,
                             "src": "6651:7:0"
@@ -8208,9 +8073,7 @@
                           "pathNode": {
                             "id": 533,
                             "name": "G2Point",
-                            "nameLocations": [
-                              "6670:7:0"
-                            ],
+                            "nameLocations": ["6670:7:0"],
                             "nodeType": "IdentifierPath",
                             "referencedDeclaration": 15,
                             "src": "6670:7:0"
@@ -8245,9 +8108,7 @@
                           "pathNode": {
                             "id": 536,
                             "name": "G1Point",
-                            "nameLocations": [
-                              "6701:7:0"
-                            ],
+                            "nameLocations": ["6701:7:0"],
                             "nodeType": "IdentifierPath",
                             "referencedDeclaration": 6,
                             "src": "6701:7:0"
@@ -8282,9 +8143,7 @@
                           "pathNode": {
                             "id": 539,
                             "name": "G2Point",
-                            "nameLocations": [
-                              "6720:7:0"
-                            ],
+                            "nameLocations": ["6720:7:0"],
                             "nodeType": "IdentifierPath",
                             "referencedDeclaration": 15,
                             "src": "6720:7:0"
@@ -8319,9 +8178,7 @@
                           "pathNode": {
                             "id": 542,
                             "name": "G1Point",
-                            "nameLocations": [
-                              "6751:7:0"
-                            ],
+                            "nameLocations": ["6751:7:0"],
                             "nodeType": "IdentifierPath",
                             "referencedDeclaration": 6,
                             "src": "6751:7:0"
@@ -8356,9 +8213,7 @@
                           "pathNode": {
                             "id": 545,
                             "name": "G2Point",
-                            "nameLocations": [
-                              "6770:7:0"
-                            ],
+                            "nameLocations": ["6770:7:0"],
                             "nodeType": "IdentifierPath",
                             "referencedDeclaration": 15,
                             "src": "6770:7:0"
@@ -8429,9 +8284,7 @@
               "contractKind": "contract",
               "fullyImplemented": true,
               "id": 1012,
-              "linearizedBaseContracts": [
-                1012
-              ],
+              "linearizedBaseContracts": [1012],
               "name": "LicensePlateCommitmentVerifier",
               "nameLocation": "7130:30:0",
               "nodeType": "ContractDefinition",
@@ -8442,9 +8295,7 @@
                   "libraryName": {
                     "id": 632,
                     "name": "Pairing",
-                    "nameLocations": [
-                      "7173:7:0"
-                    ],
+                    "nameLocations": ["7173:7:0"],
                     "nodeType": "IdentifierPath",
                     "referencedDeclaration": 631,
                     "src": "7173:7:0"
@@ -8477,10 +8328,7 @@
                         "pathNode": {
                           "id": 634,
                           "name": "Pairing.G1Point",
-                          "nameLocations": [
-                            "7222:7:0",
-                            "7230:7:0"
-                          ],
+                          "nameLocations": ["7222:7:0", "7230:7:0"],
                           "nodeType": "IdentifierPath",
                           "referencedDeclaration": 6,
                           "src": "7222:15:0"
@@ -8515,10 +8363,7 @@
                         "pathNode": {
                           "id": 637,
                           "name": "Pairing.G2Point",
-                          "nameLocations": [
-                            "7253:7:0",
-                            "7261:7:0"
-                          ],
+                          "nameLocations": ["7253:7:0", "7261:7:0"],
                           "nodeType": "IdentifierPath",
                           "referencedDeclaration": 15,
                           "src": "7253:15:0"
@@ -8553,10 +8398,7 @@
                         "pathNode": {
                           "id": 640,
                           "name": "Pairing.G2Point",
-                          "nameLocations": [
-                            "7284:7:0",
-                            "7292:7:0"
-                          ],
+                          "nameLocations": ["7284:7:0", "7292:7:0"],
                           "nodeType": "IdentifierPath",
                           "referencedDeclaration": 15,
                           "src": "7284:15:0"
@@ -8591,10 +8433,7 @@
                         "pathNode": {
                           "id": 643,
                           "name": "Pairing.G2Point",
-                          "nameLocations": [
-                            "7316:7:0",
-                            "7324:7:0"
-                          ],
+                          "nameLocations": ["7316:7:0", "7324:7:0"],
                           "nodeType": "IdentifierPath",
                           "referencedDeclaration": 15,
                           "src": "7316:15:0"
@@ -8630,10 +8469,7 @@
                           "pathNode": {
                             "id": 646,
                             "name": "Pairing.G1Point",
-                            "nameLocations": [
-                              "7348:7:0",
-                              "7356:7:0"
-                            ],
+                            "nameLocations": ["7348:7:0", "7356:7:0"],
                             "nodeType": "IdentifierPath",
                             "referencedDeclaration": 6,
                             "src": "7348:15:0"
@@ -8688,10 +8524,7 @@
                         "pathNode": {
                           "id": 651,
                           "name": "Pairing.G1Point",
-                          "nameLocations": [
-                            "7403:7:0",
-                            "7411:7:0"
-                          ],
+                          "nameLocations": ["7403:7:0", "7411:7:0"],
                           "nodeType": "IdentifierPath",
                           "referencedDeclaration": 6,
                           "src": "7403:15:0"
@@ -8726,10 +8559,7 @@
                         "pathNode": {
                           "id": 654,
                           "name": "Pairing.G2Point",
-                          "nameLocations": [
-                            "7430:7:0",
-                            "7438:7:0"
-                          ],
+                          "nameLocations": ["7430:7:0", "7438:7:0"],
                           "nodeType": "IdentifierPath",
                           "referencedDeclaration": 15,
                           "src": "7430:15:0"
@@ -8764,10 +8594,7 @@
                         "pathNode": {
                           "id": 657,
                           "name": "Pairing.G1Point",
-                          "nameLocations": [
-                            "7457:7:0",
-                            "7465:7:0"
-                          ],
+                          "nameLocations": ["7457:7:0", "7465:7:0"],
                           "nodeType": "IdentifierPath",
                           "referencedDeclaration": 6,
                           "src": "7457:15:0"
@@ -9612,10 +9439,7 @@
                                   "pathNode": {
                                     "id": 721,
                                     "name": "Pairing.G1Point",
-                                    "nameLocations": [
-                                      "9052:7:0",
-                                      "9060:7:0"
-                                    ],
+                                    "nameLocations": ["9052:7:0", "9060:7:0"],
                                     "nodeType": "IdentifierPath",
                                     "referencedDeclaration": 6,
                                     "src": "9052:15:0"
@@ -10032,9 +9856,7 @@
                           "pathNode": {
                             "id": 662,
                             "name": "VerifyingKey",
-                            "nameLocations": [
-                              "7533:12:0"
-                            ],
+                            "nameLocations": ["7533:12:0"],
                             "nodeType": "IdentifierPath",
                             "referencedDeclaration": 650,
                             "src": "7533:12:0"
@@ -10064,9 +9886,7 @@
                     "src": "9728:846:0",
                     "statements": [
                       {
-                        "assignments": [
-                          766
-                        ],
+                        "assignments": [766],
                         "declarations": [
                           {
                             "constant": false,
@@ -10117,9 +9937,7 @@
                         "src": "9738:106:0"
                       },
                       {
-                        "assignments": [
-                          771
-                        ],
+                        "assignments": [771],
                         "declarations": [
                           {
                             "constant": false,
@@ -10142,9 +9960,7 @@
                               "pathNode": {
                                 "id": 769,
                                 "name": "VerifyingKey",
-                                "nameLocations": [
-                                  "9854:12:0"
-                                ],
+                                "nameLocations": ["9854:12:0"],
                                 "nodeType": "IdentifierPath",
                                 "referencedDeclaration": 650,
                                 "src": "9854:12:0"
@@ -10350,11 +10166,7 @@
                             "id": 775,
                             "name": "require",
                             "nodeType": "Identifier",
-                            "overloadedDeclarations": [
-                              -18,
-                              -18,
-                              -18
-                            ],
+                            "overloadedDeclarations": [-18, -18, -18],
                             "referencedDeclaration": -18,
                             "src": "9903:7:0",
                             "typeDescriptions": {
@@ -10383,9 +10195,7 @@
                         "src": "9903:62:0"
                       },
                       {
-                        "assignments": [
-                          791
-                        ],
+                        "assignments": [791],
                         "declarations": [
                           {
                             "constant": false,
@@ -10408,10 +10218,7 @@
                               "pathNode": {
                                 "id": 789,
                                 "name": "Pairing.G1Point",
-                                "nameLocations": [
-                                  "10022:7:0",
-                                  "10030:7:0"
-                                ],
+                                "nameLocations": ["10022:7:0", "10030:7:0"],
                                 "nodeType": "IdentifierPath",
                                 "referencedDeclaration": 6,
                                 "src": "10022:15:0"
@@ -10626,11 +10433,7 @@
                                   "id": 809,
                                   "name": "require",
                                   "nodeType": "Identifier",
-                                  "overloadedDeclarations": [
-                                    -18,
-                                    -18,
-                                    -18
-                                  ],
+                                  "overloadedDeclarations": [-18, -18, -18],
                                   "referencedDeclaration": -18,
                                   "src": "10137:7:0",
                                   "typeDescriptions": {
@@ -11000,9 +10803,7 @@
                         },
                         "id": 838,
                         "initializationExpression": {
-                          "assignments": [
-                            799
-                          ],
+                          "assignments": [799],
                           "declarations": [
                             {
                               "constant": false,
@@ -11721,9 +11522,7 @@
                           "pathNode": {
                             "id": 758,
                             "name": "Proof",
-                            "nameLocations": [
-                              "9679:5:0"
-                            ],
+                            "nameLocations": ["9679:5:0"],
                             "nodeType": "IdentifierPath",
                             "referencedDeclaration": 660,
                             "src": "9679:5:0"
@@ -11787,9 +11586,7 @@
                     "src": "10813:488:0",
                     "statements": [
                       {
-                        "assignments": [
-                          904
-                        ],
+                        "assignments": [904],
                         "declarations": [
                           {
                             "constant": false,
@@ -11812,9 +11609,7 @@
                               "pathNode": {
                                 "id": 902,
                                 "name": "Proof",
-                                "nameLocations": [
-                                  "10823:5:0"
-                                ],
+                                "nameLocations": ["10823:5:0"],
                                 "nodeType": "IdentifierPath",
                                 "referencedDeclaration": 660,
                                 "src": "10823:5:0"
@@ -12622,9 +12417,7 @@
                         "src": "10973:37:0"
                       },
                       {
-                        "assignments": [
-                          968
-                        ],
+                        "assignments": [968],
                         "declarations": [
                           {
                             "constant": false,
@@ -12911,9 +12704,7 @@
                         },
                         "id": 996,
                         "initializationExpression": {
-                          "assignments": [
-                            977
-                          ],
+                          "assignments": [977],
                           "declarations": [
                             {
                               "constant": false,

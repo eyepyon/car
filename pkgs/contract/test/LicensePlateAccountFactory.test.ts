@@ -4,7 +4,7 @@ import { ethers } from "hardhat";
 import {
   LicensePlateAccountFactory,
   LicensePlateCommitmentVerifier,
-  VehicleRegistry
+  VehicleRegistry,
 } from "../typechain-types";
 
 describe("LicensePlateAccountFactory", function () {
@@ -26,10 +26,10 @@ describe("LicensePlateAccountFactory", function () {
 
     // LicensePlateAccountFactoryをデプロイ
     const LicensePlateAccountFactory = await ethers.getContractFactory(
-      "LicensePlateAccountFactory"
+      "LicensePlateAccountFactory",
     );
     factory = (await LicensePlateAccountFactory.deploy(
-      entryPoint
+      entryPoint,
     )) as unknown as LicensePlateAccountFactory;
     await factory.waitForDeployment();
 
@@ -48,7 +48,7 @@ describe("LicensePlateAccountFactory", function () {
       const accountImpl = await factory.accountImplementation();
       const account = await ethers.getContractAt(
         "PrivacyProtectedAccount",
-        accountImpl
+        accountImpl,
       );
       expect(await account.entryPoint()).to.equal(entryPoint);
     });
@@ -75,7 +75,7 @@ describe("LicensePlateAccountFactory", function () {
     it("一貫したコミットメントを計算すること", async function () {
       const commitment2 = await factory.computePlateCommitment(
         plateNumber,
-        userSalt
+        userSalt,
       );
       expect(commitment).to.equal(commitment2);
     });
@@ -84,7 +84,7 @@ describe("LicensePlateAccountFactory", function () {
       const differentSalt = ethers.id("different-secret");
       const commitment2 = await factory.computePlateCommitment(
         plateNumber,
-        differentSalt
+        differentSalt,
       );
       expect(commitment).to.not.equal(commitment2);
     });
@@ -93,7 +93,7 @@ describe("LicensePlateAccountFactory", function () {
       const differentPlate = "横浜501さ5678";
       const commitment2 = await factory.computePlateCommitment(
         differentPlate,
-        userSalt
+        userSalt,
       );
       expect(commitment).to.not.equal(commitment2);
     });
@@ -117,7 +117,7 @@ describe("LicensePlateAccountFactory", function () {
         user.address,
         commitment,
         deploymentSalt,
-        "0x" // 証明なし (ZK不要)
+        "0x", // 証明なし (ZK不要)
       );
 
       const receipt = await tx.wait();
@@ -127,12 +127,12 @@ describe("LicensePlateAccountFactory", function () {
       const predictedAddress = await factory.getAddressFromPlate(
         user.address,
         commitment,
-        deploymentSalt
+        deploymentSalt,
       );
 
       const account = await ethers.getContractAt(
         "PrivacyProtectedAccount",
-        predictedAddress
+        predictedAddress,
       );
 
       expect(await account.owner()).to.equal(user.address);
@@ -143,19 +143,19 @@ describe("LicensePlateAccountFactory", function () {
       const predictedAddress = await factory.getAddressFromPlate(
         user.address,
         commitment,
-        deploymentSalt
+        deploymentSalt,
       );
 
       await factory.createAccountFromPlate(
         user.address,
         commitment,
         deploymentSalt,
-        "0x"
+        "0x",
       );
 
       const account = await ethers.getContractAt(
         "PrivacyProtectedAccount",
-        predictedAddress
+        predictedAddress,
       );
 
       expect(await account.getAddress()).to.equal(predictedAddress);
@@ -166,7 +166,7 @@ describe("LicensePlateAccountFactory", function () {
         user.address,
         commitment,
         deploymentSalt,
-        "0x"
+        "0x",
       );
       await tx1.wait();
 
@@ -174,7 +174,7 @@ describe("LicensePlateAccountFactory", function () {
         user.address,
         commitment,
         deploymentSalt,
-        "0x"
+        "0x",
       );
       await tx2.wait();
 
@@ -182,12 +182,12 @@ describe("LicensePlateAccountFactory", function () {
       const predictedAddress = await factory.getAddressFromPlate(
         user.address,
         commitment,
-        deploymentSalt
+        deploymentSalt,
       );
 
       const account = await ethers.getContractAt(
         "PrivacyProtectedAccount",
-        predictedAddress
+        predictedAddress,
       );
 
       expect(await account.owner()).to.equal(user.address);
@@ -201,25 +201,25 @@ describe("LicensePlateAccountFactory", function () {
         user.address,
         commitment,
         salt1,
-        "0x"
+        "0x",
       );
 
       await factory.createAccountFromPlate(
         user.address,
         commitment,
         salt2,
-        "0x"
+        "0x",
       );
 
       const address1 = await factory.getAddressFromPlate(
         user.address,
         commitment,
-        salt1
+        salt1,
       );
       const address2 = await factory.getAddressFromPlate(
         user.address,
         commitment,
-        salt2
+        salt2,
       );
 
       expect(address1).to.not.equal(address2);
@@ -239,7 +239,7 @@ describe("LicensePlateAccountFactory", function () {
         user.address,
         commitment,
         12345,
-        "0x"
+        "0x",
       );
     });
 
@@ -247,7 +247,7 @@ describe("LicensePlateAccountFactory", function () {
       const accountAddress = await factory.getAddressFromPlate(
         user.address,
         commitment,
-        12345
+        12345,
       );
 
       // 最初の20個のストレージスロットを確認
@@ -258,7 +258,7 @@ describe("LicensePlateAccountFactory", function () {
 
         // ストレージには生のナンバープレート番号が含まれていてはならない
         expect(storage.toLowerCase()).to.not.include(
-          plateHex.slice(2).toLowerCase()
+          plateHex.slice(2).toLowerCase(),
         );
       }
     });
@@ -267,17 +267,17 @@ describe("LicensePlateAccountFactory", function () {
       const accountAddress = await factory.getAddressFromPlate(
         user.address,
         commitment,
-        12345
+        12345,
       );
 
       const account = await ethers.getContractAt(
         "PrivacyProtectedAccount",
-        accountAddress
+        accountAddress,
       );
 
       const isValid = await account.verifyVehicleOwnership(
         plateNumber,
-        userSalt
+        userSalt,
       );
       expect(isValid).to.be.true;
     });
@@ -286,17 +286,17 @@ describe("LicensePlateAccountFactory", function () {
       const accountAddress = await factory.getAddressFromPlate(
         user.address,
         commitment,
-        12345
+        12345,
       );
 
       const account = await ethers.getContractAt(
         "PrivacyProtectedAccount",
-        accountAddress
+        accountAddress,
       );
 
       const isValid = await account.verifyVehicleOwnership(
         "横浜501さ5678", // 間違ったプレート
-        userSalt
+        userSalt,
       );
       expect(isValid).to.be.false;
     });
@@ -305,18 +305,18 @@ describe("LicensePlateAccountFactory", function () {
       const accountAddress = await factory.getAddressFromPlate(
         user.address,
         commitment,
-        12345
+        12345,
       );
 
       const account = await ethers.getContractAt(
         "PrivacyProtectedAccount",
-        accountAddress
+        accountAddress,
       );
 
       const wrongSalt = ethers.id("wrong-secret");
       const isValid = await account.verifyVehicleOwnership(
         plateNumber,
-        wrongSalt
+        wrongSalt,
       );
       expect(isValid).to.be.false;
     });
@@ -328,9 +328,10 @@ describe("LicensePlateAccountFactory", function () {
     beforeEach(async function () {
       // ZK検証器コントラクトをデプロイ
       const LicensePlateCommitmentVerifier = await ethers.getContractFactory(
-        "LicensePlateCommitmentVerifier"
+        "LicensePlateCommitmentVerifier",
       );
-      verifier = (await LicensePlateCommitmentVerifier.deploy()) as unknown as LicensePlateCommitmentVerifier;
+      verifier =
+        (await LicensePlateCommitmentVerifier.deploy()) as unknown as LicensePlateCommitmentVerifier;
       await verifier.waitForDeployment();
     });
 
@@ -352,12 +353,12 @@ describe("LicensePlateAccountFactory", function () {
       const userSalt = ethers.id("user-secret");
       const commitment = await factory.computePlateCommitment(
         "品川330あ1234",
-        userSalt
+        userSalt,
       );
 
       // 空の証明は失敗するはずです
       await expect(
-        factory.createAccountFromPlate(user.address, commitment, 12345, "0x")
+        factory.createAccountFromPlate(user.address, commitment, 12345, "0x"),
       ).to.be.revertedWith("LicensePlateAccountFactory: proof required");
     });
 
@@ -367,7 +368,7 @@ describe("LicensePlateAccountFactory", function () {
       const userSalt = ethers.id("user-secret");
       const commitment = await factory.computePlateCommitment(
         "品川330あ1234",
-        userSalt
+        userSalt,
       );
 
       // モック証明データ（検証には失敗しますが、まずは検証器をチェックするはずです）
@@ -375,9 +376,12 @@ describe("LicensePlateAccountFactory", function () {
         ["uint[2]", "uint[2][2]", "uint[2]"],
         [
           [1, 2],
-          [[3, 4], [5, 6]],
-          [7, 8]
-        ]
+          [
+            [3, 4],
+            [5, 6],
+          ],
+          [7, 8],
+        ],
       );
 
       // 検証器が設定されていないため失敗するはずです
@@ -386,8 +390,8 @@ describe("LicensePlateAccountFactory", function () {
           user.address,
           commitment,
           12345,
-          mockProof
-        )
+          mockProof,
+        ),
       ).to.be.revertedWith("LicensePlateAccountFactory: ZK verifier not set");
     });
 
@@ -398,7 +402,7 @@ describe("LicensePlateAccountFactory", function () {
       const userSalt = ethers.id("user-secret");
       const commitment = await factory.computePlateCommitment(
         "品川330あ1234",
-        userSalt
+        userSalt,
       );
 
       // 無効な証明（ランダム値）
@@ -406,9 +410,12 @@ describe("LicensePlateAccountFactory", function () {
         ["uint[2]", "uint[2][2]", "uint[2]"],
         [
           [1, 2],
-          [[3, 4], [5, 6]],
-          [7, 8]
-        ]
+          [
+            [3, 4],
+            [5, 6],
+          ],
+          [7, 8],
+        ],
       );
 
       // 検証に失敗するはずです（検証器は最初にスカラーフィールドの範囲をチェックします）
@@ -417,8 +424,8 @@ describe("LicensePlateAccountFactory", function () {
           user.address,
           commitment,
           12345,
-          invalidProof
-        )
+          invalidProof,
+        ),
       ).to.be.reverted; // 様々な検証器エラーメッセージで失敗する可能性があります
     });
 
@@ -429,7 +436,7 @@ describe("LicensePlateAccountFactory", function () {
       const userSalt = ethers.id("user-secret");
       const commitment = await factory.computePlateCommitment(
         "品川330あ1234",
-        userSalt
+        userSalt,
       );
 
       // 証明なしで成功するはずです
@@ -437,7 +444,7 @@ describe("LicensePlateAccountFactory", function () {
         user.address,
         commitment,
         12345,
-        "0x"
+        "0x",
       );
 
       const receipt = await tx.wait();
@@ -449,8 +456,14 @@ describe("LicensePlateAccountFactory", function () {
     it("バッチで複数のアカウントを作成すること", async function () {
       const owners = [user.address, owner.address];
       const commitments = [
-        await factory.computePlateCommitment("品川330あ1234", ethers.id("salt1")),
-        await factory.computePlateCommitment("横浜501さ5678", ethers.id("salt2")),
+        await factory.computePlateCommitment(
+          "品川330あ1234",
+          ethers.id("salt1"),
+        ),
+        await factory.computePlateCommitment(
+          "横浜501さ5678",
+          ethers.id("salt2"),
+        ),
       ];
       const salts = [11111, 22222];
       const proofs: string[] = [];
@@ -459,7 +472,7 @@ describe("LicensePlateAccountFactory", function () {
         owners,
         commitments,
         salts,
-        proofs
+        proofs,
       );
 
       const receipt = await tx.wait();
@@ -469,21 +482,21 @@ describe("LicensePlateAccountFactory", function () {
       const address1 = await factory.getAddressFromPlate(
         owners[0],
         commitments[0],
-        salts[0]
+        salts[0],
       );
       const address2 = await factory.getAddressFromPlate(
         owners[1],
         commitments[1],
-        salts[1]
+        salts[1],
       );
 
       const account1 = await ethers.getContractAt(
         "PrivacyProtectedAccount",
-        address1
+        address1,
       );
       const account2 = await ethers.getContractAt(
         "PrivacyProtectedAccount",
-        address2
+        address2,
       );
 
       expect(await account1.owner()).to.equal(owners[0]);
@@ -504,7 +517,7 @@ describe("LicensePlateAccountFactory", function () {
       const MockERC20 = await ethers.getContractFactory("MockERC20");
       mockToken = (await MockERC20.deploy(
         "CarValueToken",
-        "CVT"
+        "CVT",
       )) as unknown as MockERC20;
       await mockToken.waitForDeployment();
 
@@ -518,14 +531,14 @@ describe("LicensePlateAccountFactory", function () {
         user.address,
         commitment,
         deploymentSalt,
-        "0x"
+        "0x",
       );
       await createTx.wait();
 
       accountAddress = await factory.getAddressFromPlate(
         user.address,
         commitment,
-        deploymentSalt
+        deploymentSalt,
       );
 
       // 2. 市場価値を取得（モック実装: 例えば1000 CVT）
@@ -540,7 +553,7 @@ describe("LicensePlateAccountFactory", function () {
       // 4. 車両アカウントから所有者へトークンを送金
       const accountContract = (await ethers.getContractAt(
         "PrivacyProtectedAccount",
-        accountAddress
+        accountAddress,
       )) as unknown as PrivacyProtectedAccount;
 
       // 送金データを作成 (ERC20 transfer)
@@ -559,7 +572,9 @@ describe("LicensePlateAccountFactory", function () {
 
       // 5. 最終的な残高を確認
       expect(await mockToken.balanceOf(accountAddress)).to.equal(10n);
-      expect(await mockToken.balanceOf(owner.address)).to.equal(marketValue - 10n);
+      expect(await mockToken.balanceOf(owner.address)).to.equal(
+        marketValue - 10n,
+      );
     });
   });
 });

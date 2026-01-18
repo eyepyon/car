@@ -39,7 +39,7 @@ const LicensePlateAccountFactoryModule = buildModule(
       [ENTRYPOINT_ADDRESS],
       {
         id: "LicensePlateAccountFactory",
-      }
+      },
     );
 
     // VehicleRegistryをデプロイ
@@ -56,7 +56,7 @@ const LicensePlateAccountFactoryModule = buildModule(
       licensePlateAccountFactory,
       vehicleRegistry,
     };
-  }
+  },
 );
 
 export default LicensePlateAccountFactoryModule;

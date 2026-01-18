@@ -32,7 +32,8 @@ export default function DecryptedText({
   const [isHovering, setIsHovering] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+";
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+";
 
   const scramble = () => {
     let iteration = 0;
@@ -50,7 +51,7 @@ export default function DecryptedText({
             }
             return characters[Math.floor(Math.random() * characters.length)];
           })
-          .join("")
+          .join(""),
       );
 
       if (iteration >= text.length) {
@@ -67,7 +68,7 @@ export default function DecryptedText({
 
   useEffect(() => {
     if (animateOn === "view") {
-        scramble();
+      scramble();
     }
   }, [animateOn, text]);
 
@@ -79,8 +80,8 @@ export default function DecryptedText({
   };
 
   const handleMouseLeave = () => {
-      setIsHovering(false);
-  }
+    setIsHovering(false);
+  };
 
   return (
     <motion.span
