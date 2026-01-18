@@ -8,6 +8,137 @@
 
 これにより、専用アプリの操作を必要とせず、走行するだけで相手や施設を特定し、シームレスな決済やデータ連携を可能にします。技術スタックとしては、低コスト・高速決済を実現する「Base L2」ブロックチェーンや、画像・音声認識を統合したマルチモーダルAI「Qwen」を採用しており、実用性の高いスケーラブルな構成となっています,。
 
+## システム構成図
+
+```mermaid
+graph TB
+    subgraph "クライアント層"
+        Mobile["📱 モバイルアプリ<br/>(Next.js PWA)"]
+        Camera["📷 AIカメラ<br/>(ゲート設置)"]
+        DashCam["🎥 ドライブレコーダー"]
+    end
+
+    subgraph "フロントエンド層"
+        NextJS["⚛️ Next.js<br/>TypeScript + TailwindCSS<br/>Shadcn/ui + React Bits"]
+        PWA["📲 PWA機能<br/>(オフライン対応)"]
+        Wallet["👛 ウォレットUI<br/>(SmartAccount連携)"]
+    end
+
+    subgraph "バックエンド層 - PHP"
+        Laravel["🐘 Laravel 11<br/>(PHP)"]
+        GateAPI["🚧 ゲート開閉API<br/>(Sesame連携)"]
+        MySQL["🗄️ MySQL 8<br/>(トランザクション履歴)"]
+    end
+
+    subgraph "バックエンド層 - Python"
+        Flask["🐍 Flask<br/>(Python)"]
+        ConversationAPI["💬 会話API<br/>(Qwen MCP連携)"]
+        BatchJobs["⚙️ バッチ処理<br/>(データ集計)"]
+    end
+
+    subgraph "AI/ML層"
+        Qwen["🤖 Qwen<br/>(マルチモーダルAI)"]
+        Molmo["🔍 Molmo2-8B<br/>(画像認識)"]
+        MCP["🔌 MCP Server<br/>(AI統合)"]
+        OCR["📝 OCR処理<br/>(ナンバー認識)"]
+    end
+
+    subgraph "Web3/ブロックチェーン層"
+        BaseSepolia["⛓️ Base Sepolia<br/>(L2 Testnet)"]
+        SmartAccount["📜 SmartAccount<br/>(ERC4337)"]
+        Factory["🏭 LicensePlateAccountFactory<br/>(アカウント生成)"]
+        MockERC20["💰 MockERC20<br/>(トークン)"]
+        Verifier["✅ Verifier Contract<br/>(ZK検証)"]
+    end
+
+    subgraph "ZK証明層"
+        Circom["⚡ Circom回路<br/>(ナンバー秘匿化)"]
+        Groth16["🔐 Groth16証明<br/>(ゼロ知識証明)"]
+        WASM["📦 WASM<br/>(Witness生成)"]
+    end
+
+    subgraph "外部サービス"
+        Sesame["🔓 Sesame Web API<br/>(スマートロック)"]
+        Oracle["🔮 価格Oracle<br/>(車両査定)"]
+        x402["💸 x402 Protocol<br/>(決済)"]
+    end
+
+    subgraph "インフラ・ツール"
+        Alchemy["🌐 Alchemy API<br/>(RPC Provider)"]
+        Basescan["🔍 Basescan API<br/>(Contract Verify)"]
+        Biome["🧹 Biome<br/>(Linter/Formatter)"]
+    end
+
+    %% クライアント → フロントエンド
+    Mobile --> NextJS
+    Camera --> OCR
+    DashCam --> OCR
+
+    %% フロントエンド内部
+    NextJS --> PWA
+    NextJS --> Wallet
+
+    %% フロントエンド → バックエンド
+    NextJS --> Laravel
+    NextJS --> Flask
+    Wallet --> SmartAccount
+
+    %% バックエンド PHP
+    Laravel --> MySQL
+    Laravel --> GateAPI
+    GateAPI --> Sesame
+
+    %% バックエンド Python
+    Flask --> ConversationAPI
+    Flask --> BatchJobs
+    ConversationAPI --> MCP
+
+    %% AI層
+    OCR --> Molmo
+    Molmo --> Qwen
+    MCP --> Qwen
+    Qwen --> ConversationAPI
+
+    %% ZK証明フロー
+    OCR --> Circom
+    Circom --> WASM
+    WASM --> Groth16
+    Groth16 --> Verifier
+
+    %% Web3層
+    Verifier --> BaseSepolia
+    Factory --> BaseSepolia
+    SmartAccount --> BaseSepolia
+    MockERC20 --> BaseSepolia
+    SmartAccount --> x402
+
+    %% 外部サービス連携
+    SmartAccount --> Oracle
+    Laravel --> Alchemy
+    Factory --> Alchemy
+
+    %% インフラ
+    BaseSepolia --> Basescan
+    NextJS --> Biome
+
+    %% スタイリング
+    classDef frontend fill:#61dafb,stroke:#333,stroke-width:2px,color:#000
+    classDef backend fill:#ff6b6b,stroke:#333,stroke-width:2px,color:#fff
+    classDef ai fill:#ffd93d,stroke:#333,stroke-width:2px,color:#000
+    classDef blockchain fill:#8b5cf6,stroke:#333,stroke-width:2px,color:#fff
+    classDef zk fill:#10b981,stroke:#333,stroke-width:2px,color:#fff
+    classDef external fill:#f97316,stroke:#333,stroke-width:2px,color:#fff
+    classDef infra fill:#6b7280,stroke:#333,stroke-width:2px,color:#fff
+
+    class NextJS,PWA,Wallet,Mobile frontend
+    class Laravel,Flask,GateAPI,ConversationAPI,BatchJobs,MySQL backend
+    class Qwen,Molmo,MCP,OCR ai
+    class BaseSepolia,SmartAccount,Factory,MockERC20,Verifier blockchain
+    class Circom,Groth16,WASM zk
+    class Sesame,Oracle,x402 external
+    class Alchemy,Basescan,Biome,Camera,DashCam infra
+```
+
 ## 解決したい課題
 
 このプロダクトは、現在のモビリティ社会における「ユーザーの摩擦」と「社会的な非効率性」の解決を目指しています。

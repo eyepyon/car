@@ -1,23 +1,23 @@
+import type { LicensePlateData } from "@/types/license-plate";
+import { useCallback, useMemo, useRef, useState } from "react";
 import {
-  createPublicClient,
-  createWalletClient,
-  custom,
-  encodeAbiParameters,
-  formatEther,
-  formatUnits,
-  parseUnits,
-  publicActions,
-  type Hex,
+    createPublicClient,
+    createWalletClient,
+    custom,
+    encodeAbiParameters,
+    formatEther,
+    formatUnits,
+    parseUnits,
+    publicActions,
+    type Hex,
 } from "viem";
 import { baseSepolia } from "viem/chains";
-import type { LicensePlateData } from "@/types/license-plate";
 import {
-  encodeLicensePlateToChars,
-  createRandomFieldSalt,
+    createRandomFieldSalt,
+    encodeLicensePlateToChars,
 } from "./plate-encoding";
-import { generateLicensePlateProof } from "./zk-proof";
 import { ERC20_ABI, LICENSE_PLATE_FACTORY_ABI } from "./wallet-abi";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { generateLicensePlateProof } from "./zk-proof";
 
 const DEFAULT_FACTORY_ADDRESS =
   process.env.NEXT_PUBLIC_LICENSE_PLATE_FACTORY_ADDRESS ||
@@ -140,6 +140,56 @@ export function usePlateWalletCreation(
     return publicClientRef.current;
   }, []);
 
+  /**
+   * 既存のSmart Accountをチェックする関数
+   * @param ownerAddress EOAアドレス
+   * @returns 既存のアカウントアドレス、または undefined
+   */
+  const checkExistingAccount = useCallback(
+    async (ownerAddress: Hex): Promise<Hex | undefined> => {
+      try {
+        const publicClient = await ensurePublicClient();
+
+        // LocalStorageから保存されたcommitmentとsaltを取得
+        const storageKey = `wallet_${ownerAddress.toLowerCase()}`;
+        const storedData = localStorage.getItem(storageKey);
+
+        if (storedData) {
+          try {
+            const { commitment, salt } = JSON.parse(storedData);
+            console.log("LocalStorageから取得:", { commitment, salt });
+
+            // アドレスを予測
+            const predictedAddress = (await publicClient.readContract({
+              address: factoryAddress,
+              abi: LICENSE_PLATE_FACTORY_ABI,
+              functionName: "getAddressFromPlate",
+              args: [ownerAddress, commitment as Hex, salt],
+            })) as Hex;
+
+            // コードが存在するかチェック（デプロイ済みかどうか）
+            const code = await publicClient.getCode({ address: predictedAddress });
+
+            if (code && code !== "0x" && code.length > 2) {
+              console.log("既存のSmart Accountが見つかりました:", predictedAddress);
+              return predictedAddress;
+            }
+          } catch (parseErr) {
+            console.error("LocalStorageデータのパースに失敗:", parseErr);
+          }
+        } else {
+          console.log("LocalStorageにデータが見つかりませんでした");
+        }
+
+        return undefined;
+      } catch (err) {
+        console.error("既存アカウントのチェックに失敗:", err);
+        return undefined;
+      }
+    },
+    [ensurePublicClient, factoryAddress],
+  );
+
   const connect = useCallback(async () => {
     setStatus("connecting");
     setError(undefined);
@@ -148,6 +198,27 @@ export function usePlateWalletCreation(
       const walletClient = await ensureWalletClient();
       const [address] = await walletClient.requestAddresses();
       setOwner(address);
+
+      // 既存のSmart Accountをチェック
+      const existingAccount = await checkExistingAccount(address);
+      if (existingAccount) {
+        setAccountAddress(existingAccount);
+        // 残高も取得
+        const publicClient = await ensurePublicClient();
+        const ethBalance = await publicClient.getBalance({
+          address: existingAccount,
+        });
+        setBalance(formatEther(ethBalance));
+
+        const tokenBal = await publicClient.readContract({
+          address: tokenAddress,
+          abi: ERC20_ABI,
+          functionName: "balanceOf",
+          args: [existingAccount],
+        });
+        setTokenBalance(formatUnits(tokenBal, tokenDecimals));
+      }
+
       setStatus("idle");
     } catch (err) {
       setStatus("error");
@@ -155,7 +226,7 @@ export function usePlateWalletCreation(
         err instanceof Error ? err.message : "ウォレット接続に失敗しました",
       );
     }
-  }, [ensureWalletClient]);
+  }, [ensureWalletClient, ensurePublicClient, checkExistingAccount, tokenAddress, tokenDecimals]);
 
   const createWallet = useCallback(
     async (plate: LicensePlateData) => {
@@ -204,6 +275,14 @@ export function usePlateWalletCreation(
           args: [currentOwner, commitmentHex, salt],
         })) as Hex;
         setAccountAddress(predictedAddress);
+
+        // LocalStorageにcommitmentとsaltを保存
+        const storageKey = `wallet_${currentOwner.toLowerCase()}`;
+        localStorage.setItem(
+          storageKey,
+          JSON.stringify({ commitment: commitmentHex, salt }),
+        );
+        console.log("LocalStorageに保存しました:", { commitment: commitmentHex, salt });
 
         setStatus("submitting");
         const hash = await walletClient.writeContract({

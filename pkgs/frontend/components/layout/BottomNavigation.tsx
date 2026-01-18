@@ -11,7 +11,7 @@
  */
 
 import { cn } from "@/lib/utils";
-import { Home, Wallet } from "lucide-react";
+import { Home, MessageCircle, Wallet } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -43,6 +43,11 @@ const NAV_ITEMS: NavItem[] = [
     href: "/wallet",
     label: "ウォレット",
     icon: <Wallet className="h-6 w-6" />,
+  },
+  {
+    href: "/chat",
+    label: "チャット",
+    icon: <MessageCircle className="h-6 w-6" />,
   },
 ];
 
