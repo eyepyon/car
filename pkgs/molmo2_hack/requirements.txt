@@ -1,0 +1,9 @@
+transformers==4.57.1
+torch
+torchvision
+accelerate
+pillow
+einops
+huggingface_hub
+python-dotenv
+
